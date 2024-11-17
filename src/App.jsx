@@ -1,11 +1,12 @@
 import "./App.css";
-import ModeSelect from "./components/Mode";
 import Board from "./pages/Boards/_id";
 
 function App() {
   return (
-    <div className="bg-white dark:bg-gray-800">
-      <Board />
+    <div className="bg-[url('assets/bg.jpg')] bg-cover h-[100vh]">
+      <div className="bg-black bg-opacity-5 h-full dark:bg-opacity-50">
+        <Board />
+      </div>
     </div>
   );
 }

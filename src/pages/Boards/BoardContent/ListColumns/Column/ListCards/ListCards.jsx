@@ -1,6 +1,6 @@
 import Card from "./Card/Card";
 
-function ListCards() {
+function ListCards({ cards }) {
   return (
     <div
       className="list-card max-h-[calc(100vh-14rem)] space-y-2 overflow-y-auto
@@ -12,11 +12,9 @@ function ListCards() {
         dark:[&::-webkit-scrollbar-track]:bg-neutral-500
         dark:[&::-webkit-scrollbar-thumb]:bg-secondary"
     >
-      <Card />
-      <Card nonvalue/>
-      <Card nonvalue/>
-      <Card nonvalue/>
-      <Card nonvalue/>
+      {cards.map((card) => (
+        <Card key={card._id} card={card} />
+      ))}
     </div>
   );
 }
