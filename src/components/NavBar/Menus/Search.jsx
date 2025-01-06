@@ -22,9 +22,9 @@ function Search() {
           type="text"
           placeholder="Search..."
           id="searchInput"
-          className="w-40 md:w-64 xl:focus:w-96 py-[6px] pl-10 pr-4 bg-gray-100 rounded-full outline-none transition-all border border-primary dark:border-secondary"
+          className="w-40 md:w-64 xl:focus:w-96 py-[6px] text-primary pl-8 pr-4 bg-gray-100 rounded-full outline-none transition-all border border-primary dark:border-secondary"
         />
-        <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+        <div className="absolute inset-y-0 left-0 text-primary flex items-center pl-3">
           <CiSearch size={20} />
         </div>
       </div>

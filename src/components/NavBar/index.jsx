@@ -40,7 +40,7 @@ function Navbar() {
   }, []);
 
   return (
-    <div className="relative flex flex-col lg:flex-row justify-between gap-2 px-4 py-2 bg-light dark:bg-dark text-primary dark:text-secondary text-xs md:text-base shadow-md">
+    <div id="navbar" className="relative flex flex-col lg:flex-row justify-between gap-2 px-4 py-2 bg-light dark:bg-dark text-primary dark:text-secondary text-xs md:text-sm shadow-md">
       <div className="flex items-center gap-1 justify-between">
         <div className="p-2 hover:bg-gray-700 rounded-full">
           <BiSolidGrid className="text-primary dark:text-secondary" size={20} />
@@ -76,12 +76,12 @@ function Navbar() {
           Create
         </button>
       </div>
-      <div className="flex items-center gap-1 justify-between">
+      <div className="flex items-center gap-2 justify-between">
         <Search />
         <ModeSelect />
         <div
           id="notify"
-          className="w-10 h-10 relative flex items-center justify-center rounded-full hover:bg-gray-200"
+          className="w-10 h-10 relative flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
         >
           <BsBell size={20} />
           <span className="absolute w-2 h-2 rounded-full bg-red-600 top-2 right-2"></span>
@@ -91,7 +91,7 @@ function Navbar() {
         </Tooltip>
         <div
           id="information"
-          className="w-10 h-10 relative flex items-center justify-center rounded-full hover:bg-gray-200"
+          className="w-10 h-10 relative flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
         >
           <IoIosInformationCircleOutline size={20} />
         </div>

@@ -63,7 +63,7 @@ function BoardBar({ board }) {
   ];
 
   return (
-    <div className="text-primary dark:text-secondary bg-white bg-opacity-15 px-4 py-2 flex justify-between text-xs md:text-base flex-col lg:flex-row">
+    <div id="boardbar" className="text-primary dark:text-secondary bg-white bg-opacity-15 px-4 py-2 flex justify-between text-xs md:text-sm flex-col lg:flex-row">
       <div className="flex items-center gap-4 justify-between lg:justify-start">
         <h1 className="font-semibold p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
           {board?.title}
@@ -114,7 +114,7 @@ function BoardBar({ board }) {
                 <li
                   onClick={() => handleVisibilityChange(option.value)}
                   key={option.value}
-                  className="px-4 py-2 space-y-1 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:bg-gray-700 rounded-md"
+                  className="px-4 py-2 space-y-1 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
                 >
                   <span className="flex items-center gap-1">
                     {option.icon}
@@ -188,7 +188,7 @@ function BoardBar({ board }) {
         <div className="relative -ml-[3px] lg:-ml-[5px]">
           <img
             id="hieu"
-            className="w-6 h-6 lg:w-8 lg:h-8 rounded-full border"
+            className="w-6 h-6 lg:w-7 lg:h-7 rounded-full border"
             src="https://png.pngtree.com/png-vector/20240819/ourlarge/pngtree-cartoon-astronaut-avatar-png-image_13315942.png"
             alt=""
           />
@@ -215,7 +215,7 @@ function BoardBar({ board }) {
         <div className="relative -ml-[3px] lg:-ml-[5px]">
           <img
             id="hieu"
-            className="w-6 h-6 lg:w-8 lg:h-8 rounded-full border"
+            className="w-6 h-6 lg:w-7 lg:h-7 rounded-full border"
             src="https://png.pngtree.com/png-vector/20240819/ourlarge/pngtree-cartoon-astronaut-avatar-png-image_13315942.png"
             alt=""
           />
@@ -242,7 +242,7 @@ function BoardBar({ board }) {
         <div className="relative -ml-[3px] lg:-ml-[5px]">
           <img
             id="hieu"
-            className="w-6 h-6 lg:w-8 lg:h-8 rounded-full border"
+            className="w-6 h-6 lg:w-7 lg:h-7 rounded-full border"
             src="https://png.pngtree.com/png-vector/20240819/ourlarge/pngtree-cartoon-astronaut-avatar-png-image_13315942.png"
             alt=""
           />
@@ -258,7 +258,7 @@ function BoardBar({ board }) {
         <div className="relative -ml-[3px] lg:-ml-[5px]">
           <img
             id="hieu"
-            className="w-6 h-6 lg:w-8 lg:h-8 rounded-full border"
+            className="w-6 h-6 lg:w-7 lg:h-7 rounded-full border"
             src="https://png.pngtree.com/png-vector/20240819/ourlarge/pngtree-cartoon-astronaut-avatar-png-image_13315942.png"
             alt=""
           />
@@ -274,7 +274,7 @@ function BoardBar({ board }) {
         <div className="relative -ml-[3px] lg:-ml-[5px]">
           <span
             id="more"
-            className="flex justify-center items-center w-6 h-6 lg:w-8 lg:h-8 rounded-full border bg-gray-700 text-xs"
+            className="flex justify-center items-center w-6 h-6 lg:w-7 lg:h-7 rounded-full border bg-gray-700 text-xs"
           >
             +6
           </span>
@@ -289,7 +289,7 @@ function BoardBar({ board }) {
         </div>
         <span
           id="invite"
-          className="ml-6 py-1 px-2 lg:py-2 lg:px-3 rounded-md bg-primary dark:bg-gray-700 cursor-pointer text-white flex items-center gap-1"
+          className="text-sm ml-6 py-1 px-2 lg:py-1 lg:px-3 rounded-md bg-primary dark:bg-gray-700 cursor-pointer text-white flex items-center gap-1"
         >
           <IoPersonAddOutline size={15} /> Invite
         </span>

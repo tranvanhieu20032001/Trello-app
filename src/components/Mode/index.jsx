@@ -78,7 +78,7 @@ function ModeSelect() {
     <div className="relative inline-block" ref={dropdownRef}>
       <button
         id="theme"
-        className="flex items-center justify-center w-full appearance-none gap-1 border border-primary dark:border-secondary rounded-md p-1 lg:p-2"
+        className="flex items-center justify-center w-full appearance-none gap-1 border border-primary dark:border-secondary rounded-md p-1 lg:p-1.5"
         onClick={() => setDropdownOpen((prev) => !prev)}
       >
         {modes.find((mode) => mode.value === selectedMode).icon}

@@ -4,3 +4,13 @@
 :root {
   font-family: 'Poppins', sans-serif !important;
 }
+
+body{
+  height: 100vh;
+  overflow-y: hidden;
+  display: block;
+}
+
+body::-webkit-scrollbar {
+  display: none;  /* Ẩn scrollbar */
+}
