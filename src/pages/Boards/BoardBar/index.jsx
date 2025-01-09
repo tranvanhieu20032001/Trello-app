@@ -1,17 +1,83 @@
+import { useEffect, useRef, useState } from "react";
 import { BsBookmarkStarFill } from "react-icons/bs";
-import { FaGoogleDrive, FaRegStar } from "react-icons/fa6";
+import { CiLock } from "react-icons/ci";
+import { FaGoogleDrive, FaRegStar, FaStar } from "react-icons/fa6";
 import { IoIosFlash } from "react-icons/io";
-import { IoPersonAddOutline } from "react-icons/io5";
+import { IoCheckmarkOutline, IoPersonAddOutline } from "react-icons/io5";
 import { MdFilterList, MdOutlinePublic } from "react-icons/md";
+import { PiUsersThreeLight } from "react-icons/pi";
 import { Tooltip } from "react-tooltip";
+import { data } from "~/data/data";
 
-function BoardBar() {
+function BoardBar({ board }) {
+  const [isStarred, setIsStarred] = useState(data.board.starred);
+  const [currentVisibility, setCurrentVisibility] = useState(data.board.type);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const dropdownRef = useRef(null);
+
+  const handleToggleStar = () => {
+    setIsStarred(!isStarred);
+  };
+
+  const handleVisibilityChange = (visibility) => {
+    setCurrentVisibility(visibility);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const visibilityOptions = [
+    {
+      value: "private",
+      label: "Private",
+      icon: <CiLock size={20} />,
+      description:
+        "Only board members can see this board. Workspace admins can close the board or remove members.",
+    },
+    {
+      value: "public",
+      label: "Public",
+      icon: <MdOutlinePublic size={20} />,
+      description:
+        "All members of the Sprint-1 Workspace can see and edit this board.",
+    },
+    {
+      value: "workspace",
+      label: "Workspace",
+      icon: <PiUsersThreeLight size={20} />,
+      description:
+        "All members of the Sprint-1 Workspace can see and edit this board.",
+    },
+  ];
+
   return (
-    <div className="text-primary dark:text-secondary px-4 py-2 flex justify-between text-xs md:text-base flex-col lg:flex-row">
-      <div className="flex items-center gap-1 justify-between lg:justify-start">
-        <h1 className="font-semibold p-2 hover:bg-gray-200">WorkSpace Name</h1>
-        <span id="star" className="p-2 hover:bg-gray-200">
-          <FaRegStar size={20} />
+    <div id="boardbar" className="text-primary dark:text-secondary bg-white bg-opacity-15 px-4 py-2 flex justify-between text-xs md:text-sm flex-col lg:flex-row">
+      <div className="flex items-center gap-4 justify-between lg:justify-start">
+        <h1 className="font-semibold p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
+          {board?.title}
+        </h1>
+        <span
+          onClick={handleToggleStar}
+          id="star"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
+        >
+          {isStarred ? (
+            <FaRegStar className="hover:text-yellow-500" size={20} />
+          ) : (
+            <FaStar size={20} color="#ffd600" />
+          )}
         </span>
         <Tooltip
           anchorSelect="#star"
@@ -23,11 +89,49 @@ function BoardBar() {
           of your boards list.
         </Tooltip>
         <span
+          onClick={toggleDropdown}
+          ref={dropdownRef}
           id="visibility"
-          className="p-2 hover:bg-gray-200 flex items-center gap-1"
+          className={`p-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-1 relative rounded-md border ${
+            isDropdownOpen ? "border-primary" : "border-transparent"
+          }`}
         >
-          <MdOutlinePublic size={20} />{" "}
-          <span className="hidden lg:inline-block">Public</span>
+          {
+            visibilityOptions.find(
+              (option) => option.value === currentVisibility
+            ).icon
+          }
+          <span className="hidden lg:inline-block">
+            {
+              visibilityOptions.find(
+                (option) => option.value === currentVisibility
+              ).label
+            }
+          </span>
+          {isDropdownOpen && (
+            <ul className="absolute z-10 mt-2 top-full -right-20 lg:-left-1 min-w-72 lg:min-w-96 bg-white dark:bg-gray-800 border border-gray-300 dark:border-secondary">
+              {visibilityOptions.map((option) => (
+                <li
+                  onClick={() => handleVisibilityChange(option.value)}
+                  key={option.value}
+                  className="px-4 py-2 space-y-1 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
+                >
+                  <span className="flex items-center gap-1">
+                    {option.icon}
+                    <span className="text-xs lg:text-[14px]">
+                      {option.label}
+                    </span>
+                    {option.value === currentVisibility ? (
+                      <IoCheckmarkOutline size={20} />
+                    ) : (
+                      ""
+                    )}
+                  </span>
+                  <p className="text-xs">{option.description}</p>
+                </li>
+              ))}
+            </ul>
+          )}
         </span>
         <Tooltip
           anchorSelect="#visibility"
@@ -38,23 +142,23 @@ function BoardBar() {
           Change visibility
         </Tooltip>
         <span
-          id="gg-driver"
-          className="p-2 hover:bg-gray-200 flex items-center gap-1"
+          id="gg-drive"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center gap-1"
         >
           <FaGoogleDrive size={20} />{" "}
-          <span className="hidden lg:inline-block">Add to Google Driver</span>
+          <span className="hidden lg:inline-block">Add to Google Drive</span>
         </span>
         <Tooltip
-          anchorSelect="#gg-driver"
+          anchorSelect="#gg-drive"
           clickable
           className="z-10"
           place="bottom"
         >
-          Add to Google Driver
+          Add to Google Drive
         </Tooltip>
         <span
           id="automation"
-          className="p-2 hover:bg-gray-200 flex items-center gap-1"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center gap-1"
         >
           <IoIosFlash size={20} />{" "}
           <span className="hidden lg:inline-block">Automation</span>
@@ -70,16 +174,12 @@ function BoardBar() {
 
         <span
           id="filter"
-          className="p-2 hover:bg-gray-200 flex items-center gap-1"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center gap-1"
         >
           <MdFilterList size={20} />
           <span className="hidden lg:inline-block">Filter</span>
         </span>
-        <Tooltip
-          anchorSelect="#filter"
-          className="z-10"
-          place="bottom"
-        >
+        <Tooltip anchorSelect="#filter" className="z-10" place="bottom">
           Filter <span className="px-2 py-1 bg-slate-600">F</span>
         </Tooltip>
       </div>
@@ -88,7 +188,7 @@ function BoardBar() {
         <div className="relative -ml-[3px] lg:-ml-[5px]">
           <img
             id="hieu"
-            className="w-6 h-6 lg:w-8 lg:h-8 rounded-full border"
+            className="w-6 h-6 lg:w-7 lg:h-7 rounded-full border"
             src="https://png.pngtree.com/png-vector/20240819/ourlarge/pngtree-cartoon-astronaut-avatar-png-image_13315942.png"
             alt=""
           />
@@ -115,7 +215,7 @@ function BoardBar() {
         <div className="relative -ml-[3px] lg:-ml-[5px]">
           <img
             id="hieu"
-            className="w-6 h-6 lg:w-8 lg:h-8 rounded-full border"
+            className="w-6 h-6 lg:w-7 lg:h-7 rounded-full border"
             src="https://png.pngtree.com/png-vector/20240819/ourlarge/pngtree-cartoon-astronaut-avatar-png-image_13315942.png"
             alt=""
           />
@@ -142,7 +242,7 @@ function BoardBar() {
         <div className="relative -ml-[3px] lg:-ml-[5px]">
           <img
             id="hieu"
-            className="w-6 h-6 lg:w-8 lg:h-8 rounded-full border"
+            className="w-6 h-6 lg:w-7 lg:h-7 rounded-full border"
             src="https://png.pngtree.com/png-vector/20240819/ourlarge/pngtree-cartoon-astronaut-avatar-png-image_13315942.png"
             alt=""
           />
@@ -158,7 +258,7 @@ function BoardBar() {
         <div className="relative -ml-[3px] lg:-ml-[5px]">
           <img
             id="hieu"
-            className="w-6 h-6 lg:w-8 lg:h-8 rounded-full border"
+            className="w-6 h-6 lg:w-7 lg:h-7 rounded-full border"
             src="https://png.pngtree.com/png-vector/20240819/ourlarge/pngtree-cartoon-astronaut-avatar-png-image_13315942.png"
             alt=""
           />
@@ -174,7 +274,7 @@ function BoardBar() {
         <div className="relative -ml-[3px] lg:-ml-[5px]">
           <span
             id="more"
-            className="flex justify-center items-center w-6 h-6 lg:w-8 lg:h-8 rounded-full border bg-gray-200"
+            className="flex justify-center items-center w-6 h-6 lg:w-7 lg:h-7 rounded-full border bg-gray-700 text-xs"
           >
             +6
           </span>
@@ -189,9 +289,9 @@ function BoardBar() {
         </div>
         <span
           id="invite"
-          className="ml-6 py-1 px-2 lg:py-2 lg:px-3 rounded-md bg-primary dark:bg-secondary text-white flex items-center gap-1"
+          className="text-sm ml-6 py-1 px-2 lg:py-1 lg:px-3 rounded-md bg-primary dark:bg-gray-700 cursor-pointer text-white flex items-center gap-1"
         >
-          <IoPersonAddOutline size={12} /> Invite
+          <IoPersonAddOutline size={15} /> Invite
         </span>
         <Tooltip
           anchorSelect="#invite"

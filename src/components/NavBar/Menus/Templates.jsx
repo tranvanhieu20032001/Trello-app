@@ -19,8 +19,8 @@ function Templates() {
   return (
     <div className="dropdown relative" ref={dropdownRef}>
       <button
-        className={`flex items-center gap-1 px-4 py-2 rounded-md hover:bg-gray-600 lg:hover:bg-gray-200 ${
-          isOpen ? "bg-gray-600 lg:bg-gray-200" : ""
+        className={`flex items-center gap-1 px-4 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 ${
+          isOpen ? "bg-gray-200 dark:bg-gray-700" : ""
         }`}
         onClick={() => setIsOpen(!isOpen)}
       >

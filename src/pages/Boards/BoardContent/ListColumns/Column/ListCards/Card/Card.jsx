@@ -1,62 +1,105 @@
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { BsClockHistory } from "react-icons/bs";
-import { CiEdit } from "react-icons/ci";
 import { LiaCommentSolid } from "react-icons/lia";
 import { PiPaperclipLight } from "react-icons/pi";
 import { Tooltip } from "react-tooltip";
+import users from "~/data/user";
 
-function Card({ nonvalue }) {
-  if (nonvalue) {
-    return (
-      <div className="card w-full bg-white rounded-md space-y-1 py-1 shadow-md flex items-center justify-between">
-        <h1 className="text-base px-2">Use case 1</h1>
-        <span id="editCard" className="flex items-center justify-center w-6 h-6 rounded-md hover:bg-gray-200 mx-4">
-          <CiEdit size={15} />
-        </span>
-        <Tooltip
-          anchorSelect="#editCard"
-          clickable
-          className="z-10"
-          place="bottom-start"
-        >Edit card</Tooltip>
-      </div>
-    );
-  }
+function Card({ card }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: card._id,
+    data: { ...card },
+  });
+
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    transition,
+    opacity: isDragging ? 0.3 : 1, // Giảm độ mờ khi kéo
+  };
+  const extraMembers = card?.memberIds?.slice(4) || [];
+  const displayedMembers = card?.memberIds?.slice(0, 4) || [];
 
   return (
-    <div className="card w-full bg-white rounded-md space-y-1 pb-2 shadow-md">
-      <img
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwtNnDV5Uiq-xIAOyrEGgUxPA8ch1inPtI8A&s"
-        alt=""
-        className="w-full h-auto object-cover"
-      />
-      <h1 className="text-base px-2">Use case 1</h1>
-      <span className="text-[10px] inline-flex items-center gap-2 mx-2 px-2 bg-green-500 rounded-sm text-white">
-        <BsClockHistory size={12} />
-        Nov 05, 2024
-      </span>
-      <div className="flex items-center justify-around">
-        <span className="flex items-center px-2">
-          {Array.from({ length: 4 }).map((_, idx) => (
-            <img
-              key={idx}
-              className="w-6 h-6 rounded-full border -ml-1"
-              src="https://png.pngtree.com/png-vector/20240819/ourlarge/pngtree-cardoon-astronaut-avatar-png-image_13315942.png"
-              alt=""
-            />
-          ))}
-          <span className="w-6 h-6 rounded-full border -ml-1 text-xs flex items-center justify-center">
-            +6
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className={`${card.Fe_placeholderCard ? 'h-0':''} card w-full bg-white overflow-hidden dark:bg-gray-600 rounded-md shadow-md cursor-pointer text-primary dark:text-secondary text-xs md:text-sm`}
+    >
+      {card?.cover && (
+        <img
+          src={card?.cover}
+          alt="Cover"
+          className="h-auto rounded-t-md object-cover"
+        />
+      )}
+
+      <h1 className="font-normal text-[13px] px-2 py-2">
+        {card?.title}
+      </h1>
+      {card?.start_date && (
+        <span className="text-[10px] lg:text-xs inline-flex items-center gap-2 mx-2 px-2 pb-2 text-green-500 rounded-sm">
+          <BsClockHistory size={12} />
+          {card?.start_date}
+        </span>
+      )}
+
+      {(card?.memberIds?.length > 0 ||
+        card?.comments?.length > 0 ||
+        card?.attachments?.length > 0) && (
+        <div className="flex items-center justify-around pb-2">
+          <span className="flex items-center px-2">
+            {displayedMembers.map((memberId) => (
+              <img
+                key={memberId}
+                className="w-5 h-5 rounded-full border -ml-1"
+                src={users.find((user) => user?.id === memberId)?.avatar}
+                alt="User avatar"
+              />
+            ))}
+
+            {extraMembers.length > 0 && (
+              <span
+                id="memberIds"
+                className="w-5 h-5 rounded-full border -ml-1 text-[10px] flex items-center justify-center"
+              >
+                +{extraMembers?.length}
+              </span>
+            )}
+
+            {extraMembers?.length > 0 && (
+              <Tooltip
+                anchorSelect="#memberIds"
+                clickable
+                className="z-10 text-[4px]"
+                place="bottom"
+              >
+                {extraMembers.join(", ")}
+              </Tooltip>
+            )}
           </span>
-        </span>
-        <span className="flex items-center gap-1 text-xs">
-          <LiaCommentSolid size={15} />6
-        </span>
-        <span className="flex items-center gap-1 text-xs">
-          <PiPaperclipLight size={15} />8
-        </span>
-      </div>
+
+          <span className="flex items-center gap-1 text-xs">
+            <LiaCommentSolid size={18} />
+            {card?.comments?.length}
+          </span>
+
+          <span className="flex items-center gap-1 text-xs">
+            <PiPaperclipLight size={18} />
+            {card?.attachments?.length}
+          </span>
+        </div>
+      )}
     </div>
   );
 }
-
 export default Card;

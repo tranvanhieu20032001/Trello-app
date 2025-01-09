@@ -26,14 +26,14 @@ function Profile() {
     <div className="dropdown relative" ref={dropdownRef}>
       <button
         id="acount"
-        className={`flex items-center gap-1 px-2 py-1 lg:py-2 rounded-md hover:bg-gray-200 ${
+        className={`flex items-center gap-1 px-2 py-1 lg:py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 ${
           isOpen ? "bg-gray-200" : ""
         }`}
         onClick={() => setIsOpen(!isOpen)}
       >
         <img
           className="w-6 h-6 rounded-full"
-          src="https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-1/464085171_2461770087547524_5419472709119651867_n.jpg?stp=dst-jpg_s200x200&_nc_cat=102&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeFx2cscgj_YvYRA-v0aJiG4pdwmdgzqGWql3CZ2DOoZalp5TW-3jRvpsS41YRFevPzOlYQcaqa2Ok0NxZ3TGKyj&_nc_ohc=DDyvgBWCZn8Q7kNvgHHchJJ&_nc_zt=24&_nc_ht=scontent.fsgn2-8.fna&_nc_gid=AAM5EvHRXQoJW22Fm5U1z9Q&oh=00_AYBkWd3Vcz2smcN5Okzhh2ZCmeQq0HpEJnTs0u7QVTNeoA&oe=6726F195"
+          src="https://www.google.com/url?sa=i&url=https%3A%2F%2Flifestyle.znews.vn%2Fnhung-hinh-anh-luu-giu-khoanh-khac-dang-nho-cua-doi-nguoi-post860196.html&psig=AOvVaw1zkuh8oY_WL0elD36m6IR6&ust=1734457798229000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCPClufzsrIoDFQAAAAAdAAAAABAE"
           alt=""
         />
         <MdOutlineArrowDropDown className="hidden lg:block" size={20} />
@@ -51,7 +51,7 @@ function Profile() {
             <div className="flex items-center gap-2 py-1">
               <img
                 className="w-10 h-10 rounded-full"
-                src="https://scontent.fsgn2-8.fna.fbcdn.net/v/t39.30808-1/464085171_2461770087547524_5419472709119651867_n.jpg?stp=dst-jpg_s200x200&_nc_cat=102&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeFx2cscgj_YvYRA-v0aJiG4pdwmdgzqGWql3CZ2DOoZalp5TW-3jRvpsS41YRFevPzOlYQcaqa2Ok0NxZ3TGKyj&_nc_ohc=DDyvgBWCZn8Q7kNvgHHchJJ&_nc_zt=24&_nc_ht=scontent.fsgn2-8.fna&_nc_gid=AAM5EvHRXQoJW22Fm5U1z9Q&oh=00_AYBkWd3Vcz2smcN5Okzhh2ZCmeQq0HpEJnTs0u7QVTNeoA&oe=6726F195"
+                src="https://www.google.com/url?sa=i&url=https%3A%2F%2Flifestyle.znews.vn%2Fnhung-hinh-anh-luu-giu-khoanh-khac-dang-nho-cua-doi-nguoi-post860196.html&psig=AOvVaw1zkuh8oY_WL0elD36m6IR6&ust=1734457798229000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCPClufzsrIoDFQAAAAAdAAAAABAE"
                 alt=""
               />
               <div>

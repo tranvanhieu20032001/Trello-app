@@ -1,0 +1,223 @@
+export const data = {
+  board: {
+    _id: "board-id-01",
+    title: "React Learning Project",
+    description: "Board to track React learning progress",
+    starred: false,
+    type: "public",
+    ownerIds: [],
+    start_date: "",
+    memberIds: [],
+    columnOrderIds: ["column-id-01", "column-id-02", "column-id-03"],
+    columns: [
+      {
+        _id: "column-id-01",
+        boardId: "board-id-01",
+        title: "To Learn",
+        cardOrderIds: [
+          "card-id-01",
+          "card-id-02",
+          "card-id-03",
+          "card-id-04",
+          "card-id-05",
+        ],
+        cards: [
+          {
+            _id: "card-id-01",
+            boardId: "board-id-01",
+            columnId: "column-id-01",
+            title: "Introduction to React",
+            description:
+              "Learn the basics of React, including virtual DOM, JSX syntax, and why React is popular for building user interfaces.",
+            cover: "https://reactjs.org/logo-og.png",
+            start_date: "Nov 05, 2024",
+            memberIds: ["user-01", "user-02"],
+            comments: [
+              "Find basic React resources",
+              "Review React's virtual DOM concept",
+            ],
+            attachments: ["React docs link", "Introductory video on React"],
+          },
+          {
+            _id: "card-id-02",
+            boardId: "board-id-01",
+            columnId: "column-id-01",
+            title: "JSX and Components",
+            description:
+              "Understand JSX syntax, how it differs from HTML, and learn to create functional and class-based components.",
+            cover: null,
+            start_date: "",
+            memberIds: [],
+            comments: [],
+            attachments: [],
+          },
+          {
+            _id: "card-id-03",
+            boardId: "board-id-01",
+            columnId: "column-id-01",
+            title: "Props and State",
+            description:
+              "Learn about props for passing data between components and managing component state with useState.",
+            cover: null,
+            start_date: "",
+            memberIds: [],
+            comments: [],
+            attachments: [],
+          },
+          {
+            _id: "card-id-04",
+            boardId: "board-id-01",
+            columnId: "column-id-01",
+            title: "Conditional Rendering",
+            description:
+              "Explore techniques for displaying components based on certain conditions using conditional rendering in React.",
+            cover: null,
+            start_date: "",
+            memberIds: [],
+            comments: [],
+            attachments: [],
+          },
+          {
+            _id: "card-id-05",
+            boardId: "board-id-01",
+            columnId: "column-id-01",
+            title: "Lists and Keys",
+            description:
+              "Understand how to efficiently render lists in React and use keys to uniquely identify list items.",
+            cover: null,
+            start_date: "",
+            memberIds: [],
+            comments: [],
+            attachments: [],
+          },
+        ],
+      },
+      {
+        _id: "column-id-02",
+        boardId: "board-id-01",
+        title: "In Progress",
+        cardOrderIds: ["card-id-06", "card-id-07", "card-id-08"],
+        cards: [
+          {
+            _id: "card-id-06",
+            boardId: "board-id-01",
+            columnId: "column-id-02",
+            title: "Basic Hooks",
+            description:
+              "Dive into React Hooks, focusing on useState for state management and useEffect for handling side effects.",
+            cover: null,
+            start_date: "",
+            memberIds: [],
+            comments: [
+              "Explore examples of useState",
+              "Learn to use useEffect for data fetching",
+            ],
+            attachments: [],
+          },
+          {
+            _id: "card-id-07",
+            boardId: "board-id-01",
+            columnId: "column-id-02",
+            title: "Form Handling",
+            description:
+              "Manage form input and handle form submission with controlled components and useState.",
+            cover: null,
+            start_date: "",
+            memberIds: [],
+            comments: [
+              "Look for best practices in form validation",
+              "Implement basic form with name and email fields",
+            ],
+            attachments: [],
+          },
+          {
+            _id: "card-id-08",
+            boardId: "board-id-01",
+            columnId: "column-id-02",
+            title: "Lifting State Up",
+            description:
+              "Learn to share state between multiple components by moving state to the nearest common ancestor.",
+            cover: null,
+            start_date: "",
+            memberIds: [],
+            comments: [
+              "Study examples with state shared between child components",
+            ],
+            attachments: [],
+          },
+        ],
+      },
+      {
+        _id: "column-id-03",
+        boardId: "board-id-01",
+        title: "Completed",
+        cardOrderIds: ["card-id-09", "card-id-10", "card-id-11"],
+        cards: [
+          {
+            _id: "card-id-09",
+            boardId: "board-id-01",
+            columnId: "column-id-03",
+            title: "First React Project",
+            description:
+              "Build a simple React app to apply the learned concepts, such as creating components, using state, and rendering lists.",
+            cover: null,
+            start_date: "",
+            memberIds: [],
+            comments: [
+              "Experiment with different components",
+              "Deploy the app to a static hosting site",
+            ],
+            attachments: [],
+          },
+          {
+            _id: "card-id-10",
+            boardId: "board-id-01",
+            columnId: "column-id-03",
+            title: "Styling with CSS and TailwindCSS",
+            description:
+              "Style React components using standard CSS and TailwindCSS to create a responsive UI.",
+            cover: null,
+            start_date: "",
+            memberIds: [],
+            comments: [
+              "Experiment with Tailwind classes",
+              "Implement mobile responsiveness",
+            ],
+            attachments: [],
+          },
+          {
+            _id: "card-id-11",
+            boardId: "board-id-01",
+            columnId: "column-id-03",
+            title: "Context API",
+            description:
+              "Understand how to use the Context API for managing global state and passing data across the app without prop drilling.",
+            cover: null,
+            start_date: "",
+            memberIds: [],
+            comments: [
+              "Implement context for theme management",
+              "Explore examples of context in large apps",
+            ],
+            attachments: [],
+          },
+        ],
+      },
+      {
+        _id: "column-id-04",
+        boardId: "board-id-01",
+        title: "Empty",
+        cardOrderIds: ["card-id-12-placeholder-card"],
+        cards: [
+          {
+            _id: "card-id-12-placeholder-card",
+            boardId: "board-id-01",
+            columnId: "column-id-04",
+            Fe_placeholderCard: true,
+            // memberIds: [],
+          },
+        ],
+      },
+    ],
+  },
+};

@@ -1,14 +1,14 @@
-import React from "react";
 import Navbar from "../../components/NavBar";
 import BoardBar from "./BoardBar";
 import BoardContent from "./BoardContent";
+import { data } from "./../../data/data";
 
 function Board() {
   return (
     <>
       <Navbar />
-      <BoardBar />
-      <BoardContent />
+      <BoardBar board={data?.board} />
+      <BoardContent board={data?.board} />
     </>
   );
 }

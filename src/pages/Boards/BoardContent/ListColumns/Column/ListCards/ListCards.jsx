@@ -1,23 +1,21 @@
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import Card from "./Card/Card";
 
-function ListCards() {
+function ListCards({ cards }) {
   return (
-    <div
-      className="list-card max-h-[calc(100vh-14rem)] space-y-2 overflow-y-auto
-        [&::-webkit-scrollbar]:w-2
-        [&::-webkit-scrollbar-track]:rounded-full
-        [&::-webkit-scrollbar-track]:bg-gray-100
-        [&::-webkit-scrollbar-thumb]:rounded-full
-        [&::-webkit-scrollbar-thumb]:bg-gray-300
-        dark:[&::-webkit-scrollbar-track]:bg-neutral-500
-        dark:[&::-webkit-scrollbar-thumb]:bg-secondary"
+    <SortableContext
+      items={cards?.map((card) => card._id)}
+      strategy={verticalListSortingStrategy}
     >
-      <Card />
-      <Card nonvalue/>
-      <Card nonvalue/>
-      <Card nonvalue/>
-      <Card nonvalue/>
-    </div>
+      <div className="max-h-[calc(100vh-15rem)] list-card space-y-2 overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-500 dark:[&::-webkit-scrollbar-thumb]:bg-secondary">
+        {cards.map((card) => (
+          <Card key={card?._id} card={card} />
+        ))}
+      </div>
+    </SortableContext>
   );
 }
 

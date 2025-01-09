@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { BsMoonStars } from "react-icons/bs";
+import { useEffect, useState, useRef } from "react";
 import { CiCloudMoon, CiDesktop, CiSun } from "react-icons/ci";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { Tooltip } from "react-tooltip";
 
 function ModeSelect() {
   const [selectedMode, setSelectedMode] = useState("system");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
   useEffect(() => {
     const currentTheme = localStorage.getItem("theme");
     if (
       currentTheme === "dark" ||
-      (!currentTheme &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
+      (!currentTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)
     ) {
       document.documentElement.classList.add("dark");
     } else {
@@ -27,6 +28,8 @@ function ModeSelect() {
 
   const handleModeChange = (mode) => {
     setSelectedMode(mode);
+    setDropdownOpen(false);
+
     if (mode === "light") {
       document.documentElement.classList.remove("dark");
       localStorage.setItem("theme", "light");
@@ -42,6 +45,16 @@ function ModeSelect() {
       }
     }
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const modes = [
     {
@@ -62,13 +75,11 @@ function ModeSelect() {
   ];
 
   return (
-    <div className="relative inline-block">
+    <div className="relative inline-block" ref={dropdownRef}>
       <button
         id="theme"
-        className="flex items-center justify-center w-full appearance-none gap-1 border border-primary dark:border-secondary rounded-md p-1 lg:p-2"
-        onClick={() =>
-          document.getElementById("dropdown").classList.toggle("hidden")
-        }
+        className="flex items-center justify-center w-full appearance-none gap-1 border border-primary dark:border-secondary rounded-md p-1 lg:p-1.5"
+        onClick={() => setDropdownOpen((prev) => !prev)}
       >
         {modes.find((mode) => mode.value === selectedMode).icon}
         <MdOutlineKeyboardArrowDown size={20} />
@@ -76,24 +87,22 @@ function ModeSelect() {
       <Tooltip anchorSelect="#theme" clickable className="z-20">
         Theme
       </Tooltip>
-      <ul
-        id="dropdown"
-        className="absolute z-10 mt-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-secondary text-primary dark:text-secondary rounded-md shadow-lg hidden"
-      >
-        {modes.map((mode) => (
-          <li
-            key={mode.value}
-            className="flex items-center gap-1 px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-            onClick={() => {
-              handleModeChange(mode.value);
-              document.getElementById("dropdown").classList.add("hidden");
-            }}
-          >
-            {mode.icon}
-            {mode.label}
-          </li>
-        ))}
-      </ul>
+      {dropdownOpen && (
+        <ul
+          className="absolute z-10 mt-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-secondary text-primary dark:text-secondary rounded-md shadow-lg"
+        >
+          {modes.map((mode) => (
+            <li
+              key={mode.value}
+              className="flex items-center gap-1 px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+              onClick={() => handleModeChange(mode.value)}
+            >
+              {mode.icon}
+              {mode.label}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
