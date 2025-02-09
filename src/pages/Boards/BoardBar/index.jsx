@@ -11,7 +11,7 @@ import { data } from "~/data/data";
 
 function BoardBar({ board }) {
   const [isStarred, setIsStarred] = useState(data.board.starred);
-  const [currentVisibility, setCurrentVisibility] = useState(data.board.type);
+  const [currentVisibility, setCurrentVisibility] = useState(board?.type);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const dropdownRef = useRef(null);
@@ -58,7 +58,7 @@ function BoardBar({ board }) {
       label: "Workspace",
       icon: <PiUsersThreeLight size={20} />,
       description:
-        "All members of the Sprint-1 Workspace can see and edit this board.",
+        "Public boards are visible to anyone on the internet.",
     },
   ];
 
@@ -73,7 +73,7 @@ function BoardBar({ board }) {
           id="star"
           className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
         >
-          {isStarred ? (
+          {board?.starred ? (
             <FaRegStar className="hover:text-yellow-500" size={20} />
           ) : (
             <FaStar size={20} color="#ffd600" />

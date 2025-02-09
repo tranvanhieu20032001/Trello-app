@@ -15,7 +15,7 @@ function Card({ card }) {
     transition,
     isDragging,
   } = useSortable({
-    id: card._id,
+    id: card.id,
     data: { ...card },
   });
 

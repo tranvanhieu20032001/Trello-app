@@ -23,6 +23,8 @@ const ACTIVE_ITEM_TYPE = {
 };
 
 function BoardContent({ board }) {
+  console.log("boards",board);
+  
   const [orderColumn, setOrderColumn] = useState([]);
   const [boardHeight, setBoardHeight] = useState(0);
   const [activeId, setActiveId] = useState(null);
@@ -31,7 +33,8 @@ function BoardContent({ board }) {
   const [oldColumn, setOldColumn] = useState(null);
 
   useEffect(() => {
-    const columns = mapOrder(board?.columns, board?.columnOrderIds, "_id");
+    // const columns = mapOrder(board?.columns, board?.columnOrderIds, "id");
+    const columns = mapOrder(board?.columns, board?.columnOrder, "id");
     setOrderColumn(columns);
 
     // Tính toán chiều cao của BoardContent
@@ -53,7 +56,7 @@ function BoardContent({ board }) {
   ) => {
     setOrderColumn((prevColumns) => {
       const overCardIndex = overColumn?.cards?.findIndex(
-        (card) => card._id === overCardId
+        (card) => card.id === overCardId
       );
       // console.log("orderCardIndex", overCardIndex);
 
@@ -69,15 +72,15 @@ function BoardContent({ board }) {
           : overColumn?.cards?.length + 1;
       const nextColumns = cloneDeep(prevColumns);
       const nextActiveColumn = nextColumns.find(
-        (column) => column._id === activeColumn._id
+        (column) => column.id === activeColumn.id
       );
       const nextOverColumn = nextColumns.find(
-        (column) => column._id === overColumn._id
+        (column) => column.id === overColumn.id
       );
       if (nextActiveColumn) {
         //Xoa card o cai column active
         nextActiveColumn.cards = nextActiveColumn.cards.filter(
-          (card) => card._id !== activeCardId
+          (card) => card.id !== activeCardId
         );
         if (isEmpty(nextActiveColumn.cards)) {
           console.log("Het roi");
@@ -87,17 +90,17 @@ function BoardContent({ board }) {
 
         //cap nhat lai mang cardOrderIds
         nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(
-          (card) => card._id
+          (card) => card.id
         );
       }
       if (nextOverColumn) {
         nextOverColumn.cards = nextOverColumn.cards.filter(
-          (card) => card._id !== activeCardId
+          (card) => card.id !== activeCardId
         );
         // phai cap nhat lai du lieu chuan columnId sau khi keo tha giua 2 column khac nhau
         const rebuild_activeCardata = {
           ...activeCardata,
-          columnId: nextOverColumn._id,
+          columnId: nextOverColumn.id,
         };
         nextOverColumn.cards = nextOverColumn.cards.toSpliced(
           newCardIndex,
@@ -110,7 +113,7 @@ function BoardContent({ board }) {
         );
 
         nextOverColumn.cardOrderIds = nextOverColumn.cards.map(
-          (card) => card._id
+          (card) => card.id
         );
       }
       console.log("nextColumns", nextColumns);
@@ -153,7 +156,7 @@ function BoardContent({ board }) {
 
       // console.log("oldColumn", oldColumn);
       // console.log("over", overColumn);
-      if (oldColumn._id !== overColumn._id) {
+      if (oldColumn.id !== overColumn.id) {
         handleSetCardBetweenDifferentColumns(
           overColumn,
           overCardId,
@@ -165,10 +168,10 @@ function BoardContent({ board }) {
         );
       } else {
         const oldIndex = oldColumn?.cards?.findIndex(
-          (card) => card._id === activeCardId
+          (card) => card.id === activeCardId
         );
         const newIndex = overColumn?.cards?.findIndex(
-          (card) => card._id === over.id
+          (card) => card.id === over.id
         );
 
         const dndOrderedCard = arrayMove(oldColumn?.cards, oldIndex, newIndex);
@@ -178,10 +181,10 @@ function BoardContent({ board }) {
           const nextColumns = cloneDeep(preColumn);
 
           const targetColumn = nextColumns.find(
-            (column) => column._id === overColumn._id
+            (column) => column.id === overColumn.id
           );
           targetColumn.cards = dndOrderedCard;
-          targetColumn.cardOrderIds = dndOrderedCard.map((card) => card._id);
+          targetColumn.cardOrderIds = dndOrderedCard.map((card) => card.id);
           return nextColumns;
         });
       }
@@ -191,10 +194,10 @@ function BoardContent({ board }) {
     if (activeItemType === ACTIVE_ITEM_TYPE.COLOMN) {
       if (active.id !== over.id) {
         const oldIndex = orderColumn.findIndex(
-          (column) => column._id === active.id
+          (column) => column.id === active.id
         );
         const newIndex = orderColumn.findIndex(
-          (column) => column._id === over.id
+          (column) => column.id === over.id
         );
         setOrderColumn(arrayMove(orderColumn, oldIndex, newIndex));
       }
@@ -224,7 +227,7 @@ function BoardContent({ board }) {
 
     if (!activeColumn || !overColumn) return;
 
-    if (activeColumn._id !== overColumn._id) {
+    if (activeColumn.id !== overColumn.id) {
       handleSetCardBetweenDifferentColumns(
         overColumn,
         overCardId,
@@ -239,7 +242,7 @@ function BoardContent({ board }) {
 
   const checkColumnByCardId = (cardId) => {
     return orderColumn.find((column) =>
-      column.cards.map((card) => card._id)?.includes(cardId)
+      column.cards.map((card) => card.id)?.includes(cardId)
     );
   };
 
