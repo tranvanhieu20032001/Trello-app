@@ -5,6 +5,8 @@ import {
 import Card from "./Card/Card";
 
 function ListCards({ cards }) {
+  console.log('cards',cards);
+  
   return (
     <SortableContext
       items={cards?.map((card) => card._id)}
