@@ -1,27 +1,35 @@
 import Navbar from "../../components/NavBar";
 import BoardBar from "./BoardBar";
 import BoardContent from "./BoardContent";
-import { data } from "./../../data/data";
-import { useEffect, useState } from "react";
-import { fetchBoardById_API } from "~/apis";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { clearBoard, fetchBoardById } from "~/store/slices/boardSlice";
 
 function Board() {
-  const [board, setBoard] = useState(null);
+  const boardId = "eb12bad0-badb-4283-b924-d294ac640b4d";
+  const dispatch = useDispatch();
+  const { board, loading, error } = useSelector((state) => state.board);
 
   useEffect(() => {
-    const boardId = "0a81bc5f-42e6-4b2d-8729-78747328d8f7";
-    fetchBoardById_API(boardId).then((board) => {
-      setBoard(board.data);
-      console.log("Board", board);
-    });
+    if (boardId) {
+      dispatch(fetchBoardById(boardId));
+    }
+
+    return () => {
+      dispatch(clearBoard()); // Cleanup khi rời khỏi trang
+    };
   }, []);
+
+  if (loading) return <p>Loading board...</p>;
+  if (error) return <p>Error: {error}</p>;
+
   return (
     <>
       <Navbar />
       {board && (
         <>
-          <BoardBar board={board} />
-          <BoardContent board={board} />
+          <BoardBar board={board.data} />
+          <BoardContent board={board.data} />
         </>
       )}
     </>
