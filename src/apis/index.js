@@ -1,20 +1,28 @@
-import axios from "axios";
-import { API_ENDPOINT } from "~/utils/constants";
+import apiRequest from "./apiService";
 
-//********************  Boards *************************//
-// export const fetchBoardById_API = async (boardId) => {
-//   const response = await axios.get(`${API_ENDPOINT}/boards/${boardId}`);
-//   return response.data;
-// };
+// Workspace
+export const createWorkspace_API = (data) =>
+  apiRequest.post("/workspace", data);
+export const getWorkspaceByUser_API = () => apiRequest.get("/workspace");
 
-//********************  Columns *************************//
-export const createColumn_API = async (newColumnData) => {
-  const response = await axios.post(`${API_ENDPOINT}/columns`, newColumnData);
-  return response.data;
-};
+// Boards
+export const fetchBoardById_API = (boardId) =>
+  apiRequest.get(`/boards/${boardId}`);
 
-//********************  Cards *************************//
-export const createCard_API = async (newCardData) => {
-  const response = await axios.post(`${API_ENDPOINT}/cards`, newCardData);
-  return response.data;
-};
+// Columns
+export const createColumn_API = (newColumnData) =>
+  apiRequest.post("/columns", newColumnData);
+
+// Cards
+export const createCard_API = (newCardData) =>
+  apiRequest.post("/cards", newCardData);
+
+// User
+export const createUser_API = (newUserData) =>
+  apiRequest.post("/auth/register", newUserData, { withCredentials: false });
+
+export const login_API = (userData) =>
+  apiRequest.post("/auth/login", userData);
+
+export const logout_API = (userId) =>
+  apiRequest.post("/auth/logout", { userId });
