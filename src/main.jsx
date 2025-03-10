@@ -13,6 +13,10 @@ import { ToastContainer } from "react-toastify";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import GoogleCallBack from "./components/GoogleCallBack.jsx";
 import HomeSection from "./components/Home/Section/HomeSection.jsx";
+import InvitePage from "./pages/Workspace/InvitePage.jsx";
+import WorkSpace from "./pages/Workspace/WorkSpace.jsx";
+import MemberContent from "./components/Workspace/Content/MemberContent.jsx";
+import BoardsContent from "./components/Workspace/Content/BoardsContent.jsx";
 
 const router = createBrowserRouter([
   {
@@ -25,10 +29,25 @@ const router = createBrowserRouter([
           {
             path: "/",
             element: <Home />,
+            children: [{ path: "/", element: <HomeSection /> }],
+          },
+          {
+            path: "workspace/",
+            element: <WorkSpace />,
             children: [
-              { path: "/", element: <HomeSection /> },
-
+              {
+                path: ":id/",
+                element: <BoardsContent />,
+              },
+              {
+                path: ":id/members",
+                element: <MemberContent />,
+              },
             ],
+          },
+          {
+            path: "invite/:token",
+            element: <InvitePage />,
           },
         ],
       },

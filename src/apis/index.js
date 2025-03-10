@@ -1,9 +1,18 @@
+import { data } from "autoprefixer";
 import apiRequest from "./apiService";
 
 // Workspace
 export const createWorkspace_API = (data) =>
   apiRequest.post("/workspace", data);
 export const getWorkspaceByUser_API = () => apiRequest.get("/workspace");
+export const getWorkspaceById_API = (workspaceId) =>
+  apiRequest.get(`/workspace/${workspaceId}`);
+export const joinWorkspace = (data) => apiRequest.post(`/workspace/join`, data);
+export const searchUser = async (query) =>
+  apiRequest.get(`/workspace/search-user`, { params: { query } });
+
+export const updateWorkspaceName = (data) =>
+  apiRequest.post("/workspace/updateWorkspaceName", data);
 
 // Boards
 export const fetchBoardById_API = (boardId) =>
@@ -21,8 +30,13 @@ export const createCard_API = (newCardData) =>
 export const createUser_API = (newUserData) =>
   apiRequest.post("/auth/register", newUserData, { withCredentials: false });
 
-export const login_API = (userData) =>
-  apiRequest.post("/auth/login", userData);
+export const login_API = (userData) => apiRequest.post("/auth/login", userData);
 
 export const logout_API = (userId) =>
   apiRequest.post("/auth/logout", { userId });
+
+export const inviteMemberWorkspace_API = (WorkspaceId) =>
+  apiRequest.post(`/invite/${WorkspaceId}`, { WorkspaceId });
+
+export const verifyInviteLink = (token) =>
+  apiRequest.get(`/invite/${token}`, { token });

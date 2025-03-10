@@ -15,7 +15,7 @@ const refreshAccessToken = async () => {
   } catch (error) {
     localStorage.removeItem("accessToken");
     // window.location.href = "/login";
-    throw new Error("Session expired. Please login again.");
+    throw new Error(error);
   }
 };
 

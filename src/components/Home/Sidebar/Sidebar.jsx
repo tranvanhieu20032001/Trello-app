@@ -1,17 +1,28 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BiHomeAlt2 } from "react-icons/bi";
 import { MdDashboard, MdOutlineWorkspaces } from "react-icons/md";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { GrTemplate } from "react-icons/gr";
-import { IoIosAdd, IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import AddNewWorkspace from "../Modal/AddNewWorkspace";
+import {
+  IoIosAdd,
+  IoIosArrowDown,
+  IoIosArrowForward,
+  IoIosArrowUp,
+} from "react-icons/io";
 import { toast } from "react-toastify";
 import { createWorkspace_API, getWorkspaceByUser_API } from "~/apis";
+import { useSelector } from "react-redux";
+import AddNewMember from "~/components/Workspace/Modal/AddNewMember";
+import AddNewWorkspace from "~/components/Workspace/Modal/AddNewWorkspace";
 
 const Sidebar = () => {
+  const user = useSelector((state) => state.auth.user);
   const [openWorkspaces, setOpenWorkspaces] = useState({});
   const [isOpen, setIsOpen] = useState(false);
-  const [workspaces, setWorkspaces] = useState([]); // Khởi tạo là mảng rỗng
+  const [workspaces, setWorkspaces] = useState([]);
+  const [selectedWorkspace, setSelectedWorkspace] = useState(null);
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleWorkspace = (id) => {
     setOpenWorkspaces((prev) => ({
@@ -25,7 +36,6 @@ const Sidebar = () => {
       toast.error("Please enter workspace name");
       return;
     }
-    // Gọi API để tạo mới workspace
     const response = await createWorkspace_API({ title });
 
     if (response.data) {
@@ -35,12 +45,14 @@ const Sidebar = () => {
     setIsOpen(false);
   };
 
+  const openInviteModal = (workspaceId) => {
+    setSelectedWorkspace(workspaceId);
+    setIsInviteOpen(true);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await getWorkspaceByUser_API();
-
-      console.log("datra",response.data.data);
-      
       if (response.data) {
         setWorkspaces(response.data.data);
       }
@@ -122,14 +134,35 @@ const Sidebar = () => {
               {openWorkspaces[workspace.id] && (
                 <div className="mt-2 w-full bg-white z-10">
                   <ul className="py-2 text-sm text-gray-700">
-                    <li className="px-4 py-2 hover:bg-gray-200 hover:text-blue-600 cursor-pointer">
-                      My Workspace
+                    <li
+                      className="flex justify-between items-center px-4 hover:bg-gray-200 cursor-pointer group transition-all duration-200"
+                      onClick={() =>
+                        navigate(`workspace/${workspace.id}/members`)
+                      }
+                    >
+                      Members
+                      <div className="flex items-center">
+                        {user.id === workspace.ownerId ? (
+                          <span
+                            className="p-1.5 transition-all duration-200 group-hover:-translate-x-2 hover:text-blue-500"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openInviteModal(workspace.id);
+                            }}
+                          >
+                            <IoIosAdd size={20} />
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                        <span className="p-1.5 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 hover:text-blue-500">
+                          <IoIosArrowForward size={15} />
+                        </span>
+                      </div>
                     </li>
-                    <li className="px-4 py-2 hover:bg-gray-200 hover:text-blue-600 cursor-pointer">
-                      Team Projects
-                    </li>
-                    <li className="px-4 py-2 hover:bg-gray-200 hover:text-blue-600 cursor-pointer">
-                      Create New Workspace
+
+                    <li className="px-4 py-1.5 hover:bg-gray-200 hover:text-blue-600 cursor-pointer">
+                      Boards
                     </li>
                   </ul>
                 </div>
@@ -142,6 +175,11 @@ const Sidebar = () => {
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onAdd={handleAddWorkSpace}
+      />
+      <AddNewMember
+        isOpen={isInviteOpen}
+        onClose={() => setIsInviteOpen(false)}
+        workspaceId={selectedWorkspace}
       />
     </div>
   );
