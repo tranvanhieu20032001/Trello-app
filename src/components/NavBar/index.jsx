@@ -12,6 +12,7 @@ import { Tooltip } from "react-tooltip";
 import Profile from "./Menus/Profile";
 import Search from "./Menus/Search";
 import { MdOutlineArrowDropDown } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
@@ -45,9 +46,9 @@ function Navbar() {
         <div className="p-2 hover:bg-gray-700 rounded-full">
           <BiSolidGrid className="text-primary dark:text-secondary" size={20} />
         </div>
-        <span className="inline-flex items-center gap-1">
+        <Link to="/" className="inline-flex items-center gap-1">
           <FaTrello size={20} /> Trello
-        </span>
+        </Link>
         <Workspace />
         <div className="hidden lg:flex items-center gap-1">
           <Recent />

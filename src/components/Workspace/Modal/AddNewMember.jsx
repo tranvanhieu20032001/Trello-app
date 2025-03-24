@@ -18,8 +18,6 @@ const AddNewMember = ({ isOpen, onClose, workspaceId }) => {
       setSelectedUser(null);
     }
   }, [isOpen]);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleSearch = useCallback(
     debounce(async (value) => {
       if (value.length > 2) {
@@ -36,7 +34,7 @@ const AddNewMember = ({ isOpen, onClose, workspaceId }) => {
         setIsLoading(false);
       }
     }, 500),
-    []
+    [setUsers, setIsLoading]
   );
 
   const handleChange = (e) => {

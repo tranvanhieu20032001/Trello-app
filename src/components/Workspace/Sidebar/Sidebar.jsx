@@ -9,7 +9,7 @@ const Sidebar = () => {
     <div className="col-span-1 shadow-md h-screen bg-light dark:bg-dark text-primary dark:text-secondary">
       <div className="flex items-center gap-2 p-2 border-b">
         <div className="w-8 h-8 flex justify-center items-center bg-green-600 text-white rounded-md font-semibold text-lg">
-          T
+        {workspaceName.slice(0, 2).toUpperCase()}
         </div>
         <span className="text-sm">{workspaceName}</span>
       </div>

@@ -25,12 +25,12 @@ function ListColumns({ columns }) {
 
     const newColumnData = {
       title: newColumnTitle,
-      boardId: "eb12bad0-badb-4283-b924-d294ac640b4d",
+      boardId: "daf9f03b-5bcc-4b68-8c27-46650555449e",
     };
 
     try {
       await createColumn_API(newColumnData);
-      dispatch(fetchBoardById("eb12bad0-badb-4283-b924-d294ac640b4d"));
+      dispatch(fetchBoardById("daf9f03b-5bcc-4b68-8c27-46650555449e"));
       toast.success("Column added successfully!");
 
       setNewColumnTitle("");

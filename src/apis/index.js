@@ -8,11 +8,18 @@ export const getWorkspaceByUser_API = () => apiRequest.get("/workspace");
 export const getWorkspaceById_API = (workspaceId) =>
   apiRequest.get(`/workspace/${workspaceId}`);
 export const joinWorkspace = (data) => apiRequest.post(`/workspace/join`, data);
-export const searchUser = async (query) =>
-  apiRequest.get(`/workspace/search-user`, { params: { query } });
+
+export const searchUser = (query) =>
+  apiRequest.get(`/workspace/search/user`, { params: { query } });
 
 export const updateWorkspaceName = (data) =>
   apiRequest.post("/workspace/updateWorkspaceName", data);
+
+export const leaveWorkspace = (workspaceId) =>
+  apiRequest.patch(`/workspace/${workspaceId}/leave`);
+
+export const removeUserWorkspace = (workspaceId, data) =>
+  apiRequest.delete(`/workspace/${workspaceId}/remove`, { data });
 
 // Boards
 export const fetchBoardById_API = (boardId) =>

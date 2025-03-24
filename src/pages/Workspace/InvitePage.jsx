@@ -34,7 +34,7 @@ const InvitePage = () => {
     try {
       const response = await joinWorkspace(data);
       toast.success(response.data.message);
-      navigate(`/workspace/${workspaceId}`);
+      navigate(`/workspace/${workspaceId}/members`);
     } catch (error) {
       toast.error(error.response.data.message);
     }

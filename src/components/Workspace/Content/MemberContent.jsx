@@ -6,15 +6,19 @@ import { AiOutlineUserSwitch } from "react-icons/ai";
 import { IoIosLogOut } from "react-icons/io";
 import { useParams } from "react-router-dom";
 import { useWorkspace } from "~/context/WorkspaceContext";
-import nofund from "~/assets/nofund.svg"
+import nofund from "~/assets/nofund.svg";
 import {
   getWorkspaceById_API,
   inviteMemberWorkspace_API,
+  leaveWorkspace,
+  removeUserWorkspace,
   updateWorkspaceName,
 } from "~/apis";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import AddNewMember from "../Modal/AddNewMember";
+import { LiaTimesSolid } from "react-icons/lia";
+import useSocket from "~/utils/useSocket";
 
 const MemberContent = () => {
   const user = useSelector((state) => state.auth.user);
@@ -25,10 +29,13 @@ const MemberContent = () => {
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [workspaceData, setWorkspaceData] = useState(null);
   const [query, setQuery] = useState("");
+
+  useSocket(id);
+
   const filteredMembers = workspaceData?.members?.filter((member) =>
     member.user.username.toLowerCase().includes(query.toLowerCase())
   );
-  // Fetch workspace data
+
   useEffect(() => {
     const fetchWorkspace = async () => {
       try {
@@ -36,7 +43,7 @@ const MemberContent = () => {
         setWorkspaceData(response.data.data);
         setWorkspaceName(response.data.data.name);
         setTempName(response.data.data.name);
-        console.log("data", response.data.data);
+        // console.log("data", response.data.data);
       } catch (error) {
         toast.error("Failed to fetch workspace data.");
       }
@@ -69,6 +76,7 @@ const MemberContent = () => {
       }
     } catch (error) {
       toast.error("Error generating invite link.");
+      // console.error("Error generating invite link", error);
     }
   }, [id]);
 
@@ -77,18 +85,22 @@ const MemberContent = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 p-2">
           <div className="w-10 h-10 flex justify-center items-center bg-green-600 text-white rounded-md font-semibold text-lg">
-            T
+            {workspaceName.slice(0, 2).toUpperCase()}
           </div>
 
           {!editName ? (
             <>
               <span className="font-semibold">{workspaceName}</span>
-              <button
-                className="p-1.5 hover:bg-gray-200 rounded-sm"
-                onClick={() => setEditName(true)}
-              >
-                <CiEdit size={18} />
-              </button>
+              {user?.id === workspaceData?.ownerId ? (
+                <button
+                  className="p-1.5 hover:bg-gray-200 rounded-sm"
+                  onClick={() => setEditName(true)}
+                >
+                  <CiEdit size={18} />
+                </button>
+              ) : (
+                ""
+              )}
             </>
           ) : (
             <div className="flex items-center gap-2">
@@ -99,17 +111,23 @@ const MemberContent = () => {
                 onChange={(e) => setTempName(e.target.value)}
               />
               <button
-                className="p-1.5 text-xs bg-blue-500 text-white rounded-sm hover:bg-blue-600"
+                className="p-1.5 text-xs bg-blue-500 text-white rounded-sm hover:bg-primary"
                 onClick={handleSave}
               >
                 Save
+              </button>
+              <button
+                className="p-1.5 text-xs bg-gray-300 text-primary rounded-sm hover:bg-gray-400"
+                onClick={() => setEditName(false)}
+              >
+                Cancle
               </button>
             </div>
           )}
         </div>
 
         <button
-          className="text-[13px] gap-2 font-medium flex items-center px-2 py-1.5 bg-blue-500 text-white hover:bg-blue-600 rounded-sm"
+          className="text-[13px] gap-2 font-medium flex items-center px-2 py-1.5 bg-blue-500 text-white hover:bg-primary rounded-sm"
           onClick={() => setIsInviteOpen(true)}
         >
           <FaUserPlus size={15} />
@@ -122,17 +140,6 @@ const MemberContent = () => {
           workspaceId={id}
         />
       </div>
-
-      <hr className="my-4" />
-
-      {/* Members Section */}
-      <h1 className="font-semibold mb-2">
-        Workspace member ({workspaceData?.members?.length})
-      </h1>
-      <p className="text-sm">
-        Workspace members can view and join all Workspace visible boards and
-        create new boards in the Workspace.
-      </p>
 
       <hr className="my-4" />
 
@@ -149,6 +156,16 @@ const MemberContent = () => {
       </div>
 
       <hr className="my-4" />
+      {/* Members Section */}
+      <h1 className="font-semibold mb-2">
+        Workspace member ({workspaceData?.members?.length})
+      </h1>
+      <p className="text-sm">
+        Workspace members can view and join all Workspace visible boards and
+        create new boards in the Workspace.
+      </p>
+
+      <hr className="my-4" />
 
       {/* Members List */}
       <input
@@ -158,19 +175,23 @@ const MemberContent = () => {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
-      <div className="search-result mt-4">
+      <div className="search-result mt-4 max-h-[30rem] overflow-auto px-2">
         {filteredMembers?.length > 0 ? (
           filteredMembers.map((member, index) => (
             <MemberItem
               key={index}
               member={member.user}
               ownerId={workspaceData.ownerId}
+              setWorkspaceData={setWorkspaceData}
             />
           ))
         ) : (
           <div className="text-gray-500 text-center py-10">
             <img className="w-20 mx-auto" src={nofund} alt="" />
-            <p>Uh oh, there's no one here by that name. Should there be? Invite them now!</p>
+            <p>
+              Uh oh, there is no one here by that name. Should there be? Invite
+              them now!
+            </p>
           </div>
         )}
       </div>
@@ -179,7 +200,36 @@ const MemberContent = () => {
 };
 
 // Member Item Component
-const MemberItem = ({ member, ownerId }) => {
+const MemberItem = ({ member, ownerId, setWorkspaceData }) => {
+  const user = useSelector((state) => state.auth.user);
+  const { id } = useParams();
+  // console.log("user", user.id);
+  const handleLeaveWorkspace = async (workspaceId) => {
+    try {
+      const response = await leaveWorkspace(workspaceId);
+      toast.success(response.data.message);
+      const updatedResponse = await getWorkspaceById_API(workspaceId);
+      setWorkspaceData(updatedResponse.data.data);
+    } catch (error) {
+      toast.error("Failed to leave workspace.");
+    }
+  };
+
+  const handleRemoveWorkspace = async (workspaceId, memberId) => {
+    try {
+      const response = await removeUserWorkspace(workspaceId, {
+        ownerId,
+        userId: memberId,
+      });
+      toast.success(response.data.message);
+      const updatedResponse = await getWorkspaceById_API(workspaceId);
+      setWorkspaceData(updatedResponse.data.data);
+    } catch (error) {
+      toast.error("Failed to remove user.");
+      console.error("Lỗi khi xóa workspace:", error);
+    }
+  };
+
   return (
     <>
       <div className="member-search flex items-center gap-3">
@@ -195,22 +245,32 @@ const MemberItem = ({ member, ownerId }) => {
           <span className="text-sm">{member?.email}</span>
         </div>
         <div className="details-board flex gap-4 items-center justify-end w-full">
-          <span className="text-sm bg-slate-300 px-2 py-1 rounded-sm">
-            View boards{" "}
+          <button className="text-sm bg-slate-300 px-2 py-1 rounded-sm">
+            View boards
             {member?.boards?.length > 0 && (
               <span>({member.boards.length})</span>
             )}
-          </span>
-          <span className="text-sm bg-slate-300 px-2 py-1 rounded-sm flex items-center gap-1">
-            <AiOutlineUserSwitch />{" "}
+          </button>
+          <button className="text-sm bg-slate-300 px-2 py-1 rounded-sm flex items-center gap-1">
+            <AiOutlineUserSwitch />
             {member?.id === ownerId ? "Admin" : "Member"}
-          </span>
-          {member?.id === ownerId ? (
-            ""
-          ) : (
-            <span className="text-sm bg-slate-300 px-2 py-1 rounded-sm flex items-center gap-1">
+          </button>
+          {member?.id === user?.id ? (
+            <button
+              onClick={() => handleLeaveWorkspace(id)}
+              className="text-sm bg-slate-300 px-2 py-1 rounded-sm flex items-center gap-1"
+            >
               Leave <IoIosLogOut />
-            </span>
+            </button>
+          ) : user?.id === ownerId ? (
+            <button
+              onClick={() => handleRemoveWorkspace(id, member?.id)}
+              className="text-sm bg-slate-300 px-2 py-1 rounded-sm flex items-center gap-1"
+            >
+              Remove <LiaTimesSolid />
+            </button>
+          ) : (
+            ""
           )}
         </div>
       </div>

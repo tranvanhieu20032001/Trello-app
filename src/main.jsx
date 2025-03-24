@@ -17,6 +17,7 @@ import InvitePage from "./pages/Workspace/InvitePage.jsx";
 import WorkSpace from "./pages/Workspace/WorkSpace.jsx";
 import MemberContent from "./components/Workspace/Content/MemberContent.jsx";
 import BoardsContent from "./components/Workspace/Content/BoardsContent.jsx";
+import Board from "./pages/Boards/index.jsx";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
                 element: <MemberContent />,
               },
             ],
+          },
+          {
+            path: "board/:id",
+            element: <Board />,
           },
           {
             path: "invite/:token",
