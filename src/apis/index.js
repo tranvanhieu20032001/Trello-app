@@ -24,6 +24,9 @@ export const removeUserWorkspace = (workspaceId, data) =>
 // Boards
 export const fetchBoardById_API = (boardId) =>
   apiRequest.get(`/boards/${boardId}`);
+export const createBoard_API = (data) =>
+  apiRequest.post("/boards", data);
+
 
 // Columns
 export const createColumn_API = (newColumnData) =>

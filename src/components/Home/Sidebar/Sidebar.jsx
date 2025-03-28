@@ -161,8 +161,16 @@ const Sidebar = () => {
                       </div>
                     </li>
 
-                    <li className="px-4 py-1.5 hover:bg-gray-200 hover:text-blue-600 cursor-pointer">
+                    <li
+                      onClick={() => navigate(`workspace/${workspace.id}`)}
+                      className="flex justify-between items-center px-4 hover:bg-gray-200 cursor-pointer group transition-all duration-200"
+                    >
                       Boards
+                      <div className="flex items-center">
+                        <span className="p-1.5 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 hover:text-blue-500">
+                          <IoIosArrowForward size={15} />
+                        </span>
+                      </div>
                     </li>
                   </ul>
                 </div>

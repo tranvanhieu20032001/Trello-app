@@ -16,8 +16,6 @@ function Profile() {
   const [isOpen, setIsOpen] = useState(false);
   const user = useSelector((state) => state.auth.user);
 
-  console.log("user", user);
-
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -55,10 +53,10 @@ function Profile() {
         onClick={() => setIsOpen(!isOpen)}
       >
         {user?.avatar ? (
-          <img className="w-6 h-6 rounded-full" src={user?.avatar} alt="" />
+          <img className="w-7 h-7 rounded-full" src={user?.avatar} alt="" />
         ) : (
-          <div className="w-6 h-6 rounded-full border flex items-center justify-center text-xs bg-blue-500">
-            {user?.username.slice(0, 2)}
+          <div className="w-7 h-7 rounded-full border flex items-center justify-center text-xs bg-blue-500 text-white">
+            {user?.username.slice(0, 2).toUpperCase()}
           </div>
         )}
         <MdOutlineArrowDropDown className="hidden lg:block" size={20} />

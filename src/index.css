@@ -5,6 +5,10 @@
   font-family: 'Poppins', sans-serif !important;
 }
 
+.dark body{
+  background-color: #b8d0de;
+}
+
 body{
   height: 100vh;
   overflow-y: hidden;

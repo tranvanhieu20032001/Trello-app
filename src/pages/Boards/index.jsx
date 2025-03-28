@@ -1,4 +1,4 @@
-import Navbar from "../../components/NavBar";
+import { useParams } from "react-router-dom";
 import BoardBar from "./BoardBar";
 import BoardContent from "./BoardContent";
 import { useEffect } from "react";
@@ -6,27 +6,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearBoard, fetchBoardById } from "~/store/slices/boardSlice";
 
 function Board() {
-  const boardId = "daf9f03b-5bcc-4b68-8c27-46650555449e";
+  const { boardId } = useParams();
   const dispatch = useDispatch();
-  const { board, loading, error } = useSelector((state) => state.board);
+  const { board } = useSelector((state) => state.board);
 
   useEffect(() => {
     if (boardId) {
       dispatch(fetchBoardById(boardId));
     }
-
     return () => {
-      dispatch(clearBoard()); // Cleanup khi rời khỏi trang
+      dispatch(clearBoard());
     };
-  }, []);
+  }, [boardId, dispatch]);
 
-  if (loading) return <p>Loading board...</p>;
-  if (error) return <p>Error: {error}</p>;
+  const backgroundImage = board?.data?.background ? `url('${board.data.background}')` : "none";
 
   return (
-    <div className="bg-[url('assets/bg.jpg')] bg-cover h-screen max-h-screen block overflow-y-hidden">
+    <div
+      className="bg-cover h-screen max-h-screen block overflow-y-hidden"
+      style={{ backgroundImage }}
+    >
       <div className="bg-black bg-opacity-5 h-full dark:bg-opacity-50">
-        {/* <Navbar /> */}
         {board && (
           <>
             <BoardBar board={board.data} />
@@ -39,3 +39,4 @@ function Board() {
 }
 
 export default Board;
+

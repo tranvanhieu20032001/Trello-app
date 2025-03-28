@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { createCard_API } from "~/apis";
 import { useDispatch } from "react-redux";
 import { fetchBoardById } from "~/store/slices/boardSlice";
+import { useParams } from "react-router-dom";
 
 function Column({ column }) {
   console.log("column", column);
@@ -40,6 +41,7 @@ function Column({ column }) {
   const [addNewCard, setAddNewCard] = useState(false);
   const [newCardTitle, setNewCardTitle] = useState("");
   const dispatch = useDispatch();
+  const { boardId } = useParams();
 
   const handleAddNewCard = async () => {
     if (!newCardTitle) {
@@ -49,12 +51,12 @@ function Column({ column }) {
 
     const newCardData = {
       title: newCardTitle,
-      boardId: "eb12bad0-badb-4283-b924-d294ac640b4d",
-      columnId: "57a58cbf-62c8-49d1-9502-6baaa0b72884",
+      boardId: boardId,
+      columnId: column.id,
     };
     try {
       await createCard_API(newCardData);
-      dispatch(fetchBoardById("eb12bad0-badb-4283-b924-d294ac640b4d"));
+      dispatch(fetchBoardById(boardId));
       toast.success("Card added successfully!");
       setAddNewCard(false);
       setNewCardTitle("");

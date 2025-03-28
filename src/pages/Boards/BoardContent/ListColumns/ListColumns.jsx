@@ -10,9 +10,11 @@ import { toast } from "react-toastify";
 import { createColumn_API } from "~/apis";
 import { fetchBoardById } from "~/store/slices/boardSlice";
 import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
 
 function ListColumns({ columns }) {
   console.log("column", columns);
+  const { boardId } = useParams();
   const dispatch = useDispatch();
   const [addNewColumn, setAddNewColumn] = useState(false);
   const [newColumnTitle, setNewColumnTitle] = useState("");
@@ -25,12 +27,12 @@ function ListColumns({ columns }) {
 
     const newColumnData = {
       title: newColumnTitle,
-      boardId: "daf9f03b-5bcc-4b68-8c27-46650555449e",
+      boardId: boardId,
     };
 
     try {
       await createColumn_API(newColumnData);
-      dispatch(fetchBoardById("daf9f03b-5bcc-4b68-8c27-46650555449e"));
+      dispatch(fetchBoardById(boardId));
       toast.success("Column added successfully!");
 
       setNewColumnTitle("");
