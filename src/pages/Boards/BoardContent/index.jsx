@@ -23,8 +23,7 @@ const ACTIVE_ITEM_TYPE = {
 };
 
 function BoardContent({ board }) {
-  console.log("boards",board);
-  
+  console.log("boards column",board.columns);
   const [orderColumn, setOrderColumn] = useState([]);
   const [boardHeight, setBoardHeight] = useState(0);
   const [activeId, setActiveId] = useState(null);
@@ -34,7 +33,7 @@ function BoardContent({ board }) {
 
   useEffect(() => {
     // const columns = mapOrder(board?.columns, board?.columnOrderIds, "id");
-    const columns = mapOrder(board?.columns, board?.columnOrder, "id");
+    const columns = mapOrder(board?.columns, board?.columnOrderIds, "id");
     setOrderColumn(columns);
 
     // Tính toán chiều cao của BoardContent

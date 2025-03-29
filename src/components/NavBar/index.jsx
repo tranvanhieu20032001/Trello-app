@@ -12,6 +12,8 @@ import { Tooltip } from "react-tooltip";
 import Profile from "./Menus/Profile";
 import Search from "./Menus/Search";
 import { MdOutlineArrowDropDown } from "react-icons/md";
+import { Link } from "react-router-dom";
+import Create from "./Menus/Create";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
@@ -40,14 +42,17 @@ function Navbar() {
   }, []);
 
   return (
-    <div id="navbar" className="relative flex flex-col lg:flex-row justify-between gap-2 px-4 py-2 bg-light dark:bg-dark text-primary dark:text-secondary text-xs md:text-sm shadow-md">
+    <div
+      id="navbar"
+      className="relative flex flex-col lg:flex-row justify-between gap-2 px-4 py-2 bg-light dark:bg-dark text-primary dark:text-secondary text-xs md:text-sm shadow-md"
+    >
       <div className="flex items-center gap-1 justify-between">
         <div className="p-2 hover:bg-gray-700 rounded-full">
           <BiSolidGrid className="text-primary dark:text-secondary" size={20} />
         </div>
-        <span className="inline-flex items-center gap-1">
+        <Link to="/" className="inline-flex items-center gap-1">
           <FaTrello size={20} /> Trello
-        </span>
+        </Link>
         <Workspace />
         <div className="hidden lg:flex items-center gap-1">
           <Recent />
@@ -72,9 +77,7 @@ function Navbar() {
             </div>
           )}
         </div>
-        <button className="flex items-center gap-2 py-1 px-2 lg:px-3 lg:py-2 rounded-md bg-primary dark:bg-gray-700 text-white">
-          Create
-        </button>
+        <Create />
       </div>
       <div className="flex items-center gap-2 justify-between">
         <Search />

@@ -8,6 +8,11 @@ import ListCards from "./ListCards/ListCards";
 import mapOrder from "~/utils/sort";
 import { useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
+import { toast } from "react-toastify";
+import { createCard_API } from "~/apis";
+import { useDispatch } from "react-redux";
+import { fetchBoardById } from "~/store/slices/boardSlice";
+import { useParams } from "react-router-dom";
 
 function Column({ column }) {
   console.log("column", column);
@@ -31,10 +36,36 @@ function Column({ column }) {
     height: "100%",
   };
 
-  const cards = mapOrder(column?.cards, column?.cardOrder, "id");
+  const cards = mapOrder(column?.cards, column?.cardOrderIds, "id");
 
   const [addNewCard, setAddNewCard] = useState(false);
   const [newCardTitle, setNewCardTitle] = useState("");
+  const dispatch = useDispatch();
+  const { boardId } = useParams();
+
+  const handleAddNewCard = async () => {
+    if (!newCardTitle) {
+      toast.error("Please enter card title");
+      return;
+    }
+
+    const newCardData = {
+      title: newCardTitle,
+      boardId: boardId,
+      columnId: column.id,
+    };
+    try {
+      await createCard_API(newCardData);
+      dispatch(fetchBoardById(boardId));
+      toast.success("Card added successfully!");
+      setAddNewCard(false);
+      setNewCardTitle("");
+    } catch (error) {
+      toast.error("Failed to add card", error);
+    }
+    setNewCardTitle("");
+    setAddNewCard(false);
+  };
 
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
@@ -78,7 +109,7 @@ function Column({ column }) {
           <div className="">
             <input
               type="text"
-              className="w-full py-1 px-2 rounded-sm text-[15px] border-none focus:outline-[0.5px] focus:outline-blue-600"
+              className="w-full py-1 px-2 rounded-sm text-primary text-[15px] border-none focus:outline-[0.5px] focus:outline-blue-600"
               placeholder="Enter list title..."
               value={newCardTitle}
               onChange={(e) => setNewCardTitle(e.target.value)}
@@ -86,12 +117,7 @@ function Column({ column }) {
             <div className="flex justify-between mt-2 text-xs">
               <button
                 className="px-2 py-1 bg-blue-600 text-white rounded-sm"
-                onClick={() => {
-                  // Xử lý thêm Card ở đây
-                  console.log("New Card:", newCardTitle);
-                  setNewCardTitle("");
-                  setAddNewCard(false);
-                }}
+                onClick={handleAddNewCard}
               >
                 Add List
               </button>

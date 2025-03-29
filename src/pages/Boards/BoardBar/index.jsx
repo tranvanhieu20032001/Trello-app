@@ -73,7 +73,7 @@ function BoardBar({ board }) {
           id="star"
           className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
         >
-          {board?.starred ? (
+          {!board?.starred ? (
             <FaRegStar className="hover:text-yellow-500" size={20} />
           ) : (
             <FaStar size={20} color="#ffd600" />

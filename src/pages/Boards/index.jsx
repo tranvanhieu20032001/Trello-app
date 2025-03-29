@@ -1,31 +1,42 @@
-import Navbar from "../../components/NavBar";
+import { useParams } from "react-router-dom";
 import BoardBar from "./BoardBar";
 import BoardContent from "./BoardContent";
-import { data } from "./../../data/data";
-import { useEffect, useState } from "react";
-import { fetchBoardById_API } from "~/apis";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { clearBoard, fetchBoardById } from "~/store/slices/boardSlice";
 
 function Board() {
-  const [board, setBoard] = useState(null);
+  const { boardId } = useParams();
+  const dispatch = useDispatch();
+  const { board } = useSelector((state) => state.board);
 
   useEffect(() => {
-    const boardId = "0a81bc5f-42e6-4b2d-8729-78747328d8f7";
-    fetchBoardById_API(boardId).then((board) => {
-      setBoard(board.data);
-      console.log("Board", board);
-    });
-  }, []);
+    if (boardId) {
+      dispatch(fetchBoardById(boardId));
+    }
+    return () => {
+      dispatch(clearBoard());
+    };
+  }, [boardId, dispatch]);
+
+  const backgroundImage = board?.data?.background ? `url('${board.data.background}')` : "none";
+
   return (
-    <>
-      <Navbar />
-      {board && (
-        <>
-          <BoardBar board={board} />
-          <BoardContent board={board} />
-        </>
-      )}
-    </>
+    <div
+      className="bg-cover h-screen max-h-screen block overflow-y-hidden"
+      style={{ backgroundImage }}
+    >
+      <div className="bg-black bg-opacity-5 h-full dark:bg-opacity-50">
+        {board && (
+          <>
+            <BoardBar board={board.data} />
+            <BoardContent board={board.data} />
+          </>
+        )}
+      </div>
+    </div>
   );
 }
 
 export default Board;
+
