@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaTrello } from "react-icons/fa6";
 import InputComponent from "~/components/Input/InputComponent";
 import { createUser_API } from "~/apis";
 import { toast } from "react-toastify";
 import { PiWarningCircleLight } from "react-icons/pi";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +22,7 @@ const Register = () => {
   });
 
   const [notification, setNotification] = useState(null);
+  const user = useSelector((state) => state.auth.user);
 
   const handleChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -73,6 +76,13 @@ const Register = () => {
       setNotification(null)
     }
   };
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   return (
     <div className="w-full h-screen bg-[url('assets/register.jpg')] lg:bg-[url('assets/login.png')] bg-cover">

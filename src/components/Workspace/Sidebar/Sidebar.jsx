@@ -7,31 +7,36 @@ import astronaut from "~/assets/astronaut.png";
 import CreateBoardModal from "~/components/Boards/CreateBoardModal";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { PiDotsThreeBold } from "react-icons/pi";
 import { FaRegStar, FaStar } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
+import { Tooltip } from "react-tooltip";
+import ConfirmAction from "../Modal/ConfirmAction";
+import { useBoardActions } from "~/utils/hooks/useBoardActions";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(null);
   const { id } = useParams();
   const { workspaceName, workspaceData } = useWorkspace();
+  console.log("đâsdasd", workspaceData?.boards );
+
   const user = useSelector((state) => state.auth.user);
-  const userBoards =
-    workspaceData?.members
-      ?.find((m) => m.userId === user.id)
-      ?.user?.boards.filter((a) => a.workspaceId === id) || [];
+  const boards = workspaceData?.members?.find((m) => m.userId === user.id)?.user
+    ?.boards;
+
+  const { handleCloseBoard } = useBoardActions();
 
   return (
     <div>
-      <div className="flex items-center gap-2 p-2 border-b">
-        <div className="w-8 h-8 flex justify-center items-center bg-green-600 text-white rounded-md font-semibold text-sm">
+      <div className="flex items-center gap-2 border-b h-14">
+        <div className="w-8 h-8 m-2 flex justify-center items-center bg-green-600 text-white rounded-md font-semibold text-sm">
           {workspaceName.slice(0, 1).toUpperCase()}
         </div>
         <span className="text-sm">{workspaceName}</span>
       </div>
       <div className="">
         <NavLink
-          to={`/workspace/${id}`}
+          to={`/workspace/${id || workspaceData?.id}`}
           end
           className={({ isActive }) =>
             `flex items-center gap-2 py-1.5 px-4 my-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 ${
@@ -43,7 +48,7 @@ const Sidebar = () => {
           Boards
         </NavLink>
         <NavLink
-          to={`/workspace/${id}/members`}
+          to={`/workspace/${id || workspaceData?.id}/members`}
           className={({ isActive }) =>
             `flex items-center gap-2 py-1.5 px-4 my-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 ${
               isActive ? "bg-gray-200 dark:bg-gray-700" : ""
@@ -70,41 +75,77 @@ const Sidebar = () => {
         </h1>
 
         <div className="w-full">
-          {userBoards.length > 0 ? (
-            userBoards.map((board) => (
-              <Link
-                to={`/board/${board.id}`}
-                key={board.id}
-                className="flex gap-2 items-center w-full group p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700"
-              >
-                <img
-                  src={board?.background}
-                  alt=""
-                  className="w-9 h-6 object-cover object-center rounded-sm"
-                />
-                <div className="flex items-center justify-between flex-1">
-                  <span className="text-sm capitalize">{board.title}</span>
-                  <div className="items-center gap-2 hidden group-hover:flex">
-                    <span className="inline-block p-1 rounded-sm hover:text-yellow-500">
-                      {board?.starred ? (
-                        <FaStar size={15} color="#ffd600" />
-                      ) : (
-                        <FaRegStar size={15} />
-                      )}
-                    </span>
-                    <span className="hover:text-red-500">
-                      <IoClose size={20} />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))
+          {boards?.some((board) => board?.status) ? (
+            boards?.map(
+              (board, index) =>
+                board?.status && (
+                  <Link
+                    to={`/board/${board.id}`}
+                    key={board.id}
+                    className="flex gap-2 items-center w-full group p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 relative"
+                  >
+                    <img
+                      src={board?.background}
+                      alt=""
+                      className="w-9 h-6 object-cover object-center rounded-sm"
+                    />
+                    <div className="flex items-center justify-between flex-1">
+                      <span className="text-sm capitalize">{board.title}</span>
+                      <div className="items-center gap-2 hidden group-hover:flex">
+                        <span className="inline-block p-1 rounded-sm hover:text-yellow-500">
+                          {board?.starred ? (
+                            <FaStar size={15} color="#ffd600" />
+                          ) : (
+                            <FaRegStar size={15} />
+                          )}
+                        </span>
+                        <span
+                          id="closeboard"
+                          className="hover:text-red-500"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setActiveIndex(index);
+                          }}
+                        >
+                          <IoClose size={20} />
+                        </span>
+                        <Tooltip
+                          anchorSelect="#closeboard"
+                          data-tooltip-place="left"
+                          clickable
+                          className="z-10"
+                        >
+                          Close board
+                        </Tooltip>
+                      </div>
+                      <ConfirmAction
+                        isOpen={activeIndex === index}
+                        onClose={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setActiveIndex(null);
+                        }}
+                        onConfirm={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleCloseBoard(board.id, board.workspaceId);
+                          setActiveIndex(null);
+                        }}
+                        title="Close Board"
+                        message="Are you sure you want to close this board?"
+                        position="left-0 top-full"
+                      />
+                    </div>
+                  </Link>
+                )
+            )
           ) : (
             <div className="px-3 text-sm space-y-3">
               <div className="flex items-center justify-center">
                 <img src={astronaut} alt="" className="h-28" />
               </div>
-              <p className="">
+              <p>
                 You don’t have any boards in this Workspace yet. Boards you
                 create or join will show up here.
               </p>

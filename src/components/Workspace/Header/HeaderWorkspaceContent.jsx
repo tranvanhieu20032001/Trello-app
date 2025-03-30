@@ -56,7 +56,7 @@ const HeaderWorkspaceContent = () => {
               onChange={(e) => setTempName(e.target.value)}
             />
             <button
-              className="text-xs gap-2 font-medium flex items-center px-2 py-1.5 bg-blue-500 text-white hover:bg-primary border border-blue-700 rounded-sm"
+              className="text-xs gap-2 font-medium flex items-center px-2 py-1.5 bg-blue-600 text-white hover:bg-primary border border-blue-700 rounded-sm"
               onClick={handleSave}
             >
               Save
@@ -72,7 +72,7 @@ const HeaderWorkspaceContent = () => {
       </div>
 
       <button
-        className="text-[13px] gap-2 font-medium flex items-center px-2 py-1.5 bg-blue-500 text-white hover:bg-primary border border-blue-700 rounded-sm"
+        className="text-[13px] gap-2 font-medium flex items-center px-2 py-1.5 bg-blue-600 text-white hover:bg-primary border border-blue-700 rounded-sm"
         onClick={() => setIsInviteOpen(true)}
       >
         <FaUserPlus size={15} />

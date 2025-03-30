@@ -28,12 +28,21 @@ const visibility = [
   { value: "workspace", label: "Workspace" },
 ];
 
-const CreateBoardModal = ({ isOpen, onClose, position = "top-full left-0" }) => {
+const CreateBoardModal = ({
+  isOpen,
+  onClose,
+  position = "top-full left-0",
+}) => {
   const [selectedBg, setSelectedBg] = useState(backgroundImage[0]);
   const [workspaces, setWorkspaces] = useState([]);
-  const [selectedWorkspace, setSelectedWorkspace] = useState({ id: "", name: "" });
+  const [selectedWorkspace, setSelectedWorkspace] = useState({
+    id: "",
+    name: "",
+  });
   const [boardTitle, setBoardTitle] = useState("");
-  const [selectedVisibility, setSelectedVisibility] = useState(visibility[1].label);
+  const [selectedVisibility, setSelectedVisibility] = useState(
+    visibility[1].label
+  );
   const [isWorkspaceOpen, setIsWorkspaceOpen] = useState(false);
   const [isVisibilityOpen, setIsVisibilityOpen] = useState(false);
 
@@ -49,7 +58,9 @@ const CreateBoardModal = ({ isOpen, onClose, position = "top-full left-0" }) => 
         const response = await getWorkspaceByUser_API();
         if (response?.data?.data) {
           setWorkspaces(response.data.data);
-          setSelectedWorkspace(response.data.data[0] || { id: "", name: "No workspace available" });
+          setSelectedWorkspace(
+            response.data.data[0] || { id: "", name: "No workspace available" }
+          );
         } else {
           setWorkspaces([]);
         }
@@ -87,10 +98,16 @@ const CreateBoardModal = ({ isOpen, onClose, position = "top-full left-0" }) => 
         type: visibility.find((v) => v.label === selectedVisibility)?.value,
       };
 
-      const response = await createBoard_API(boardData);
-      toast.success(response.data.message);
-      navigate(`/board/${response.data.data.id}`);
-      onClose();
+      try {
+        const response = await createBoard_API(boardData);
+        toast.success(response.data.message);
+        navigate(`/board/${response.data.data.id}`);
+      } catch (error) {
+        toast.error(error.response.data.message);
+      } finally {
+        setBoardTitle("")
+        onClose();
+      }
     }
   };
 
@@ -118,9 +135,15 @@ const CreateBoardModal = ({ isOpen, onClose, position = "top-full left-0" }) => 
           <button
             key={index}
             className={`w-12 h-12 rounded-md border ${
-              selectedBg === bg ? "border-blue-500 ring-1 ring-blue-500" : "border-gray-300"
+              selectedBg === bg
+                ? "border-blue-500 ring-1 ring-blue-500"
+                : "border-gray-300"
             } hover:ring-2 ring-blue-500`}
-            style={{ backgroundImage: `url(${bg})`, backgroundSize: "cover", backgroundPosition: "center" }}
+            style={{
+              backgroundImage: `url(${bg})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
             onClick={() => setSelectedBg(bg)}
           />
         ))}
@@ -134,7 +157,9 @@ const CreateBoardModal = ({ isOpen, onClose, position = "top-full left-0" }) => 
         onChange={(e) => setBoardTitle(e.target.value)}
         className="p-1.5 rounded-md block w-full border border-gray-200"
       />
-      {!boardTitle && <span className="text-sm text-red-500">👋 Board title is required</span>}
+      {!boardTitle && (
+        <span className="text-sm text-red-500">👋 Board title is required</span>
+      )}
 
       {/* Chọn Workspace */}
       <h2 className="pt-4 pb-1 text-sm font-semibold">Workspace</h2>
@@ -194,7 +219,9 @@ const CreateBoardModal = ({ isOpen, onClose, position = "top-full left-0" }) => 
         disabled={!boardTitle}
         onClick={handleCreateBoard}
         className={`my-3 w-full flex items-center justify-center px-2 py-1.5 text-white border rounded-md ${
-          boardTitle ? "bg-blue-500 hover:bg-primary" : "bg-gray-400 opacity-50 cursor-not-allowed"
+          boardTitle
+            ? "bg-blue-600 hover:bg-primary"
+            : "bg-gray-400 opacity-50 cursor-not-allowed"
         }`}
       >
         <IoAdd size={20} />

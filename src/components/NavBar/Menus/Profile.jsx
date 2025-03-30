@@ -55,7 +55,7 @@ function Profile() {
         {user?.avatar ? (
           <img className="w-7 h-7 rounded-full" src={user?.avatar} alt="" />
         ) : (
-          <div className="w-7 h-7 rounded-full border flex items-center justify-center text-xs bg-blue-500 text-white">
+          <div className="w-7 h-7 rounded-full border flex items-center justify-center text-xs bg-blue-600 text-white">
             {user?.username.slice(0, 2).toUpperCase()}
           </div>
         )}

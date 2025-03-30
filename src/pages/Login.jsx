@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaTrello } from "react-icons/fa6";
 import InputComponent from "~/components/Input/InputComponent";
 import GoogleLogo from "../assets/Google.svg";
 import { login_API } from "~/apis";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "~/store/slices/authSlice";
 import { API_ENDPOINT } from "~/utils/constants";
 
@@ -14,10 +14,11 @@ const Login = () => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const user = useSelector((state) => state.auth.user);
 
   const handleChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" })); // Xóa lỗi khi có thay đổi
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSubmit = async (e) => {
@@ -55,7 +56,6 @@ const Login = () => {
       }, 1000);
     } catch (error) {
       console.log("error", error);
-      
       toast.error(error.response.data.message);
     }
   };
@@ -63,6 +63,12 @@ const Login = () => {
   const handleLoginGoogle = async () => {
     window.location.href = `${API_ENDPOINT}/auth/google/login`;
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   return (
     <div className="w-full h-screen bg-[url('assets/register.jpg')] lg:bg-[url('assets/login.png')] bg-cover">

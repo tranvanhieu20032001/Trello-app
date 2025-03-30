@@ -18,6 +18,7 @@ import WorkSpace from "./pages/Workspace/WorkSpace.jsx";
 import MemberContent from "./components/Workspace/Content/MemberContent.jsx";
 import BoardsContent from "./components/Workspace/Content/BoardsContent.jsx";
 import Board from "./pages/Boards/index.jsx";
+import BoardWrapper from "./pages/Boards/BoardWrapper.jsx";
 
 const router = createBrowserRouter([
   {
@@ -47,8 +48,14 @@ const router = createBrowserRouter([
             ],
           },
           {
-            path: "board/:boardId",
-            element: <Board />,
+            path: "board/",
+            element: <BoardWrapper />,
+            children:[
+              {
+                path: ":boardId",
+                element: <Board />,
+              },
+            ]
           },
           {
             path: "invite/:token",

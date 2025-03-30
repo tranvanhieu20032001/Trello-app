@@ -1,15 +1,17 @@
 import { useState, useEffect, useCallback } from "react";
 import { BiLink } from "react-icons/bi";
 import { toast } from "react-toastify";
-import { inviteMemberWorkspace_API, joinWorkspace, searchUser } from "~/apis";
+import { joinWorkspace, searchUser } from "~/apis";
 import { debounce } from "lodash";
 import LoaderSearch from "~/components/Loader/LoaderSearch";
+import { useWorkspaceActions } from "~/utils/hooks/useWorkspaceActions";
 
 const AddNewMember = ({ isOpen, onClose, workspaceId }) => {
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { handleCopyLink } = useWorkspaceActions();
 
   useEffect(() => {
     if (!isOpen) {
@@ -48,20 +50,6 @@ const AddNewMember = ({ isOpen, onClose, workspaceId }) => {
     } else {
       setUsers([]);
       setIsLoading(false);
-    }
-  };
-
-  const handleCopyLink = async () => {
-    try {
-      const response = await inviteMemberWorkspace_API(workspaceId);
-      if (response?.data?.link) {
-        navigator.clipboard.writeText(response.data.link);
-        toast.success("Invite link copied!");
-      } else {
-        toast.error("Failed to generate invite link!");
-      }
-    } catch (error) {
-      toast.error("Error generating invite link.");
     }
   };
 
@@ -130,7 +118,7 @@ const AddNewMember = ({ isOpen, onClose, workspaceId }) => {
                       alt="avatar"
                     />
                   ) : (
-                    <div className="w-5 h-5 bg-blue-500 rounded-full text-xs flex items-center justify-center text-white">
+                    <div className="w-5 h-5 bg-blue-600 rounded-full text-xs flex items-center justify-center text-white">
                       {user.username.slice(0, 2)}
                     </div>
                   )}
@@ -149,7 +137,7 @@ const AddNewMember = ({ isOpen, onClose, workspaceId }) => {
           <span>Invite someone to this Workspace with a link:</span>
           <button
             className="flex items-center px-2 py-1 text-gray-900 bg-gray-300 rounded-sm hover:text-blue-500 text-xs"
-            onClick={handleCopyLink}
+            onClick={() => handleCopyLink(workspaceId)}
           >
             <BiLink size={15} /> Copy link
           </button>

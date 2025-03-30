@@ -4,11 +4,20 @@ import BoardContent from "./BoardContent";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearBoard, fetchBoardById } from "~/store/slices/boardSlice";
+import { useWorkspace } from "~/context/WorkspaceContext";
 
 function Board() {
   const { boardId } = useParams();
+
   const dispatch = useDispatch();
+  const { fetchWorkspaceData } = useWorkspace();
   const { board } = useSelector((state) => state.board);
+
+  console.log("boardsdasdas", board);
+
+  useEffect(() => {
+    fetchWorkspaceData(board?.data.workspaceId);
+  }, [board?.data.workspaceId, fetchWorkspaceData]);
 
   useEffect(() => {
     if (boardId) {
@@ -19,7 +28,9 @@ function Board() {
     };
   }, [boardId, dispatch]);
 
-  const backgroundImage = board?.data?.background ? `url('${board.data.background}')` : "none";
+  const backgroundImage = board?.data?.background
+    ? `url('${board.data.background}')`
+    : "none";
 
   return (
     <div
@@ -30,7 +41,7 @@ function Board() {
         {board && (
           <>
             <BoardBar board={board.data} />
-            <BoardContent board={board.data} />
+            {board?.data?.status && <BoardContent board={board.data} />}
           </>
         )}
       </div>
@@ -39,4 +50,3 @@ function Board() {
 }
 
 export default Board;
-

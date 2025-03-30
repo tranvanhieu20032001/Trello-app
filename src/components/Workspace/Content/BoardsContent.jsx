@@ -11,6 +11,7 @@ import { FaRegStar, FaStar } from "react-icons/fa6";
 import nofund from "~/assets/nofund.svg";
 import CreateBoardModal from "~/components/Boards/CreateBoardModal";
 import { IoClose } from "react-icons/io5";
+import ViewBoardClose from "../Modal/ViewBoardClose";
 
 const BoardsContent = () => {
   const { workspaceData } = useWorkspace();
@@ -21,14 +22,15 @@ const BoardsContent = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // State lưu từ khóa tìm kiếm
   const dropdownRef = useRef(null);
+  console.log("workspaceData", workspaceData);
 
-  const userBoards =
-    workspaceData?.members
-      ?.find((m) => m.userId === user.id)
-      ?.user?.boards.filter((a) => a.workspaceId === id) || [];
+  const userBoardsOpen = workspaceData?.boards.filter((wpb) => wpb.status);
+  const userBoardsClose = workspaceData?.boards.filter((wpb) => !wpb.status);
+  console.log("userBoardsClose", userBoardsClose);
+  
 
   // Sắp xếp boards theo sortOrder
-  const sortedBoards = [...userBoards].sort((a, b) => {
+  const sortedBoards = [...userBoardsOpen].sort((a, b) => {
     if (sortOrder === "a-z") return a.title.localeCompare(b.title);
     if (sortOrder === "z-a") return b.title.localeCompare(a.title);
     if (sortOrder === "newest")
@@ -38,12 +40,10 @@ const BoardsContent = () => {
     return 0;
   });
 
-  // Lọc danh sách boards theo từ khóa tìm kiếm
   const filteredBoards = sortedBoards.filter((board) =>
     board.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Xử lý đóng dropdown khi click bên ngoài
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -94,7 +94,6 @@ const BoardsContent = () => {
           )}
         </div>
 
-        {/* Search Input */}
         <div>
           <input
             className="w-60 border text-sm px-2 py-1.5 border-gray-300 rounded-md bg-white focus:outline-none focus:border-blue-500"
@@ -107,51 +106,66 @@ const BoardsContent = () => {
       </div>
 
       {filteredBoards.length > 0 ? (
-        <div className="grid grid-cols-4 gap-4 mt-4">
-          {filteredBoards.map((board) => (
-            <Link to={`/board/${board.id}`}
-              key={board.id}
-              className="p-1 border rounded-md shadow-md w-56 h-28 relative text-white capitalize overflow-hidden hover:border-blue-500 group"
+        <>
+          <div className="grid grid-cols-4 gap-4 mt-4">
+            {filteredBoards.map((board) => (
+              <Link
+                to={`/board/${board.id}`}
+                key={board.id}
+                className="p-1 border rounded-md shadow-md w-56 h-28 relative text-white capitalize overflow-hidden hover:border-blue-500 group"
+              >
+                <img
+                  src={board?.background}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+                <span className="absolute top-2 left-2 text-sm font-medium">
+                  {board?.title}
+                </span>
+                <span className="absolute bottom-2 left-2">
+                  {board?.type === "private" ? (
+                    <CiLock size={20} />
+                  ) : board?.type === "public" ? (
+                    <MdOutlinePublic size={20} />
+                  ) : (
+                    <PiUsersThreeLight size={20} />
+                  )}
+                </span>
+                <span className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:text-red-500">
+                  <IoClose size={20} />
+                </span>
+                <span className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:text-yellow-500">
+                  {board?.starred ? (
+                    <FaStar size={15} color="#ffd600" />
+                  ) : (
+                    <FaRegStar size={15} />
+                  )}
+                </span>
+              </Link>
+            ))}
+            <div
+              className="p-1 border rounded-md shadow-md w-56 h-28 relative text-primary flex items-center justify-center cursor-pointer capitalize group bg-slate-200 hover:border-blue-500  group"
+              onClick={() => setIsOpen(true)}
             >
-              <img
-                src={board?.background}
-                alt=""
-                className="w-full h-full object-cover"
+              <span className="flex items-center gap-2 text-sm group-hover:scale-105 group-hover:text-blue-500">
+                <IoIosAdd size={20} /> Create new board
+              </span>
+              <CreateBoardModal
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                position="top-0"
               />
-              <span className="absolute top-2 left-2 text-sm font-medium">
-                {board?.title}
-              </span>
-              <span className="absolute bottom-2 left-2">
-                {board?.type === "private" ? (
-                  <CiLock size={20} />
-                ) : board?.type === "public" ? (
-                  <MdOutlinePublic size={20} />
-                ) : (
-                  <PiUsersThreeLight size={20} />
-                )}
-              </span>
-              <span className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:text-red-500">
-                <IoClose size={20} />
-              </span>
-              <span className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:text-yellow-500">
-                {board?.starred ? <FaStar size={15} color="#ffd600" />:<FaRegStar size={15} />}
-              </span>
-            </Link>
-          ))}
-          <div
-            className="p-1 border rounded-md shadow-md w-56 h-28 relative text-primary flex items-center justify-center cursor-pointer capitalize group bg-slate-200 hover:border-blue-500  group"
-            onClick={() => setIsOpen(true)}
-          >
-            <span className="flex items-center gap-2 text-sm group-hover:scale-105 group-hover:text-blue-500">
-              <IoIosAdd size={20} /> Create new board
-            </span>
-            <CreateBoardModal
-              isOpen={isOpen}
-              onClose={() => setIsOpen(false)}
-              position="top-0"
-            />
+            </div>
           </div>
-        </div>
+          {userBoardsClose && (
+            <>
+              <button className="my-4 text-[13px] gap-2 font-medium flex items-center px-2 py-1.5 bg-blue-600 text-white hover:bg-primary border border-blue-700 rounded-sm">
+                View closed boards
+              </button>
+              <ViewBoardClose dataBoard={userBoardsClose} />
+            </>
+          )}
+        </>
       ) : (
         <div className="text-gray-500 text-center py-10">
           <img className="w-20 mx-auto" src={nofund} alt="" />

@@ -5,14 +5,18 @@ import { FaGoogleDrive, FaRegStar, FaStar } from "react-icons/fa6";
 import { IoIosFlash } from "react-icons/io";
 import { IoCheckmarkOutline, IoPersonAddOutline } from "react-icons/io5";
 import { MdFilterList, MdOutlinePublic } from "react-icons/md";
-import { PiUsersThreeLight } from "react-icons/pi";
+import { PiUsersThreeLight, PiWarningCircleLight } from "react-icons/pi";
 import { Tooltip } from "react-tooltip";
+import ConfirmAction from "~/components/Workspace/Modal/ConfirmAction";
 import { data } from "~/data/data";
+import { useBoardActions } from "~/utils/hooks/useBoardActions";
 
 function BoardBar({ board }) {
   const [isStarred, setIsStarred] = useState(data.board.starred);
   const [currentVisibility, setCurrentVisibility] = useState(board?.type);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+  const { handleReOpenBoard } = useBoardActions();
 
   const dropdownRef = useRef(null);
 
@@ -57,13 +61,15 @@ function BoardBar({ board }) {
       value: "workspace",
       label: "Workspace",
       icon: <PiUsersThreeLight size={20} />,
-      description:
-        "Public boards are visible to anyone on the internet.",
+      description: "Public boards are visible to anyone on the internet.",
     },
   ];
 
   return (
-    <div id="boardbar" className="text-primary dark:text-secondary bg-white bg-opacity-15 px-4 py-2 flex justify-between text-xs md:text-sm flex-col lg:flex-row">
+    <div
+      id="boardbar"
+      className="h-14 text-primary dark:text-secondary bg-white bg-opacity-15 px-4 py-2 flex justify-between text-xs md:text-sm flex-col lg:flex-row"
+    >
       <div className="flex items-center gap-4 justify-between lg:justify-start">
         <h1 className="font-semibold p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
           {board?.title}
@@ -101,13 +107,6 @@ function BoardBar({ board }) {
               (option) => option.value === currentVisibility
             ).icon
           }
-          <span className="hidden lg:inline-block">
-            {
-              visibilityOptions.find(
-                (option) => option.value === currentVisibility
-              ).label
-            }
-          </span>
           {isDropdownOpen && (
             <ul className="absolute z-10 mt-2 top-full -right-20 lg:-left-1 min-w-72 lg:min-w-96 bg-white dark:bg-gray-800 border border-gray-300 dark:border-secondary">
               {visibilityOptions.map((option) => (
@@ -141,50 +140,80 @@ function BoardBar({ board }) {
         >
           Change visibility
         </Tooltip>
-        <span
-          id="gg-drive"
-          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center gap-1"
-        >
-          <FaGoogleDrive size={20} />{" "}
-          <span className="hidden lg:inline-block">Add to Google Drive</span>
-        </span>
-        <Tooltip
-          anchorSelect="#gg-drive"
-          clickable
-          className="z-10"
-          place="bottom"
-        >
-          Add to Google Drive
-        </Tooltip>
-        <span
-          id="automation"
-          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center gap-1"
-        >
-          <IoIosFlash size={20} />{" "}
-          <span className="hidden lg:inline-block">Automation</span>
-        </span>
-        <Tooltip
-          anchorSelect="#automation"
-          clickable
-          className="z-10"
-          place="bottom"
-        >
-          Automation
-        </Tooltip>
+        {board.status && (
+          <>
+            <span
+              id="gg-drive"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center gap-1"
+            >
+              <FaGoogleDrive size={20} />{" "}
+              <span className="hidden lg:inline-block">
+                Add to Google Drive
+              </span>
+            </span>
+            <Tooltip
+              anchorSelect="#gg-drive"
+              clickable
+              className="z-10"
+              place="bottom"
+            >
+              Add to Google Drive
+            </Tooltip>
+            <span
+              id="automation"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center gap-1"
+            >
+              <IoIosFlash size={20} />{" "}
+              <span className="hidden lg:inline-block">Automation</span>
+            </span>
+            <Tooltip
+              anchorSelect="#automation"
+              clickable
+              className="z-10"
+              place="bottom"
+            >
+              Automation
+            </Tooltip>
 
-        <span
-          id="filter"
-          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center gap-1"
-        >
-          <MdFilterList size={20} />
-          <span className="hidden lg:inline-block">Filter</span>
-        </span>
-        <Tooltip anchorSelect="#filter" className="z-10" place="bottom">
-          Filter <span className="px-2 py-1 bg-slate-600">F</span>
-        </Tooltip>
+            <span
+              id="filter"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center gap-1"
+            >
+              <MdFilterList size={20} />
+              <span className="hidden lg:inline-block">Filter</span>
+            </span>
+            <Tooltip anchorSelect="#filter" className="z-10" place="bottom">
+              Filter <span className="px-2 py-1 bg-slate-600">F</span>
+            </Tooltip>
+          </>
+        )}
       </div>
+      {!board.status && (
+        <p className="flex items-center font-medium gap-2 relative">
+          <PiWarningCircleLight size={23} color="#3b82f6" />
+          This board is closed. Reopen the board to make changes.{" "}
+          <span
+            className="hover:text-blue-500 cursor-pointer"
+            onClick={() => setIsLeaveModalOpen(true)}
+          >
+            Reopen board
+          </span>
+          <ConfirmAction
+            isOpen={isLeaveModalOpen}
+            onClose={(e) => {
+              setIsLeaveModalOpen(false);
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            onConfirm={() => handleReOpenBoard(board.id)}
+            title="Reopen Board"
+            message="Are you sure you want to leave this workspace?"
+            position="top-full right-0"
+          />
+        </p>
+      )}
       <hr className="my-2 block lg:hidden" />
-      <div className="flex justify-end">
+      <div className="flex items-center justify-end">
         <div className="relative -ml-[3px] lg:-ml-[5px]">
           <img
             id="hieu"
@@ -200,9 +229,9 @@ function BoardBar({ board }) {
           >
             Hieu
           </Tooltip>
-          <span className="absolute bottom-0 right-0" id="admin">
+          {/* <span className="absolute bottom-0 right-0" id="admin">
             <BsBookmarkStarFill />
-          </span>
+          </span> */}
           <Tooltip
             anchorSelect="#admin"
             clickable
@@ -227,9 +256,9 @@ function BoardBar({ board }) {
           >
             Hieu
           </Tooltip>
-          <span className="absolute bottom-0 right-0" id="admin">
+          {/* <span className="absolute bottom-0 right-0" id="admin">
             <BsBookmarkStarFill />
-          </span>
+          </span> */}
           <Tooltip
             anchorSelect="#admin"
             clickable
@@ -289,7 +318,7 @@ function BoardBar({ board }) {
         </div>
         <span
           id="invite"
-          className="text-sm ml-6 py-1 px-2 lg:py-1 lg:px-3 rounded-md bg-primary dark:bg-gray-700 cursor-pointer text-white flex items-center gap-1"
+          className="text-sm h-8 ml-6 px-2 lg:px-3 rounded-md bg-primary dark:bg-gray-700 cursor-pointer text-white flex items-center gap-1"
         >
           <IoPersonAddOutline size={15} /> Invite
         </span>

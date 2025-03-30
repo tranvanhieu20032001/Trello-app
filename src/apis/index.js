@@ -24,8 +24,18 @@ export const removeUserWorkspace = (workspaceId, data) =>
 // Boards
 export const fetchBoardById_API = (boardId) =>
   apiRequest.get(`/boards/${boardId}`);
+
 export const createBoard_API = (data) =>
   apiRequest.post("/boards", data);
+
+export const closeBoard_API = (boardId) =>
+  apiRequest.patch(`/boards/${boardId}/close`);
+
+export const reOpenBoard_API = (boardId) =>
+  apiRequest.patch(`/boards/${boardId}/reopen`);
+
+export const toggleStarred_API = (boardId) =>
+  apiRequest.patch(`/boards/${boardId}/stared`);
 
 
 // Columns
