@@ -16,9 +16,9 @@ import HomeSection from "./components/Home/Section/HomeSection.jsx";
 import InvitePage from "./pages/Workspace/InvitePage.jsx";
 import WorkSpace from "./pages/Workspace/WorkSpace.jsx";
 import MemberContent from "./components/Workspace/Content/MemberContent.jsx";
-import BoardsContent from "./components/Workspace/Content/BoardsContent.jsx";
 import Board from "./pages/Boards/index.jsx";
 import BoardWrapper from "./pages/Boards/BoardWrapper.jsx";
+import BoardsContent from "./components/Workspace/Content/BoardsContent.jsx";
 
 const router = createBrowserRouter([
   {

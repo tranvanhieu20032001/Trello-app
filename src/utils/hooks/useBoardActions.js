@@ -2,12 +2,11 @@ import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { closeBoard_API, reOpenBoard_API, toggleStarred_API } from "~/apis";
-import { useWorkspace } from "~/context/WorkspaceContext";
 import { fetchBoardById } from "~/store/slices/boardSlice";
 import { startLoading, stopLoading } from "~/store/slices/loadingSlice";
+import { fetchWorkspaceData } from "~/store/slices/workSpaceSlice";
 
 export const useBoardActions = () => {
-  const { fetchWorkspaceData } = useWorkspace();
   const dispatch = useDispatch();
 
   const handleCloseBoard = useCallback(
@@ -18,8 +17,8 @@ export const useBoardActions = () => {
 
       try {
         const response = await closeBoard_API(boardId);
-        await fetchWorkspaceData(workspaceId);
-        dispatch(fetchBoardById(boardId));
+        dispatch(fetchWorkspaceData(workspaceId));
+        dispatch(fetchBoardById(boardId)); 
 
         toast.success(response.data.message);
       } catch (error) {
@@ -30,7 +29,7 @@ export const useBoardActions = () => {
         }, 800);
       }
     },
-    [dispatch, fetchWorkspaceData]
+    [dispatch]
   );
 
   const handleReOpenBoard = useCallback(
@@ -41,8 +40,10 @@ export const useBoardActions = () => {
 
       try {
         const response = await reOpenBoard_API(boardId);
-        await fetchWorkspaceData(workspaceId);
-        dispatch(fetchBoardById(boardId));
+        
+        dispatch(fetchWorkspaceData(workspaceId)); // Cập nhật workspace
+        console.log("reopen");
+        dispatch(fetchBoardById(boardId)); // Cập nhật lại board
 
         toast.success(response.data.message);
       } catch (error) {
@@ -53,23 +54,24 @@ export const useBoardActions = () => {
         }, 800);
       }
     },
-    [dispatch, fetchWorkspaceData]
+    [dispatch]
   );
 
   const handleToggleStarred = useCallback(
     async (boardId, workspaceId) => {
       if (!boardId) return toast.error("Invalid board ID");
+
       try {
         const response = await toggleStarred_API(boardId);
-        await fetchWorkspaceData(workspaceId);
-        dispatch(fetchBoardById(boardId));
+        dispatch(fetchWorkspaceData(workspaceId)); // Cập nhật workspace
+        dispatch(fetchBoardById(boardId)); // Cập nhật lại board
 
         toast.success(response.data.message);
       } catch (error) {
         toast.error("Failed to handle board");
       }
     },
-    [dispatch, fetchWorkspaceData]
+    [dispatch]
   );
 
   const getBoardsWithUserStarred = (boards, userId) => {
@@ -83,7 +85,6 @@ export const useBoardActions = () => {
       };
     });
   };
-  
 
   return { handleCloseBoard, handleReOpenBoard, handleToggleStarred, getBoardsWithUserStarred };
 };

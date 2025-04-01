@@ -2,14 +2,13 @@ import { CiUser, CiViewBoard } from "react-icons/ci";
 import { IoIosAdd, IoIosArrowRoundForward } from "react-icons/io";
 import { MdDashboard } from "react-icons/md";
 import { Link, NavLink, useParams } from "react-router-dom";
-import { useWorkspace } from "~/context/WorkspaceContext";
-import astronaut from "~/assets/astronaut.png";
-import CreateBoardModal from "~/components/Boards/CreateBoardModal";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { FaRegStar, FaStar } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import { Tooltip } from "react-tooltip";
+import astronaut from "~/assets/astronaut.png";
+import CreateBoardModal from "~/components/Boards/CreateBoardModal";
 import ConfirmAction from "../Modal/ConfirmAction";
 import { useBoardActions } from "~/utils/hooks/useBoardActions";
 
@@ -17,12 +16,17 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
   const { id } = useParams();
-  const { workspaceName, workspaceData } = useWorkspace();
-  console.log("đâsdasd", workspaceData?.boards );
 
   const user = useSelector((state) => state.auth.user);
-  const boards = workspaceData?.members?.find((m) => m.userId === user.id)?.user
-    ?.boards;
+  const workspaceData = useSelector((state) => state.workspace.workspaceData);
+  const workspaceName = workspaceData?.name || "Workspace";
+  console.log("workspaceData", workspaceData);
+
+  const boards = workspaceData?.boards?.filter(
+    (board) =>
+      workspaceData.members.some((member) => member.userId === user.id) &&
+      board.status
+  );
 
   const { handleCloseBoard } = useBoardActions();
 
@@ -34,7 +38,7 @@ const Sidebar = () => {
         </div>
         <span className="text-sm">{workspaceName}</span>
       </div>
-      <div className="">
+      <div>
         <NavLink
           to={`/workspace/${id || workspaceData?.id}`}
           end
@@ -67,7 +71,7 @@ const Sidebar = () => {
             Your Boards
           </span>
           <span
-            className="p-1 rounded-sm hover:bg-gray-200"
+            className="p-1 rounded-sm hover:bg-gray-200 cursor-pointer"
             onClick={() => setIsOpen(true)}
           >
             <IoIosAdd size={20} />
@@ -75,71 +79,68 @@ const Sidebar = () => {
         </h1>
 
         <div className="w-full">
-          {boards?.some((board) => board?.status) ? (
-            boards?.map(
-              (board, index) =>
-                board?.status && (
-                  <Link
-                    to={`/board/${board.id}`}
-                    key={board.id}
-                    className="flex gap-2 items-center w-full group p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 relative"
-                  >
-                    <img
-                      src={board?.background}
-                      alt=""
-                      className="w-9 h-6 object-cover object-center rounded-sm"
-                    />
-                    <div className="flex items-center justify-between flex-1">
-                      <span className="text-sm capitalize">{board.title}</span>
-                      <div className="items-center gap-2 hidden group-hover:flex">
-                        <span className="inline-block p-1 rounded-sm hover:text-yellow-500">
-                          {board?.starred ? (
-                            <FaStar size={15} color="#ffd600" />
-                          ) : (
-                            <FaRegStar size={15} />
-                          )}
-                        </span>
-                        <span
-                          id="closeboard"
-                          className="hover:text-red-500"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setActiveIndex(index);
-                          }}
-                        >
-                          <IoClose size={20} />
-                        </span>
-                        <Tooltip
-                          anchorSelect="#closeboard"
-                          data-tooltip-place="left"
-                          clickable
-                          className="z-10"
-                        >
-                          Close board
-                        </Tooltip>
-                      </div>
-                      <ConfirmAction
-                        isOpen={activeIndex === index}
-                        onClose={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          setActiveIndex(null);
-                        }}
-                        onConfirm={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleCloseBoard(board.id, board.workspaceId);
-                          setActiveIndex(null);
-                        }}
-                        title="Close Board"
-                        message="Are you sure you want to close this board?"
-                        position="left-0 top-full"
-                      />
-                    </div>
-                  </Link>
-                )
-            )
+          {boards?.length ? (
+            boards.map((board, index) => (
+              <Link
+                to={`/board/${board.id}`}
+                key={board.id}
+                className="flex gap-2 items-center w-full group p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 relative"
+              >
+                <img
+                  src={board?.background}
+                  alt=""
+                  className="w-9 h-6 object-cover object-center rounded-sm"
+                />
+                <div className="flex items-center justify-between flex-1">
+                  <span className="text-sm capitalize">{board.title}</span>
+                  <div className="items-center gap-2 hidden group-hover:flex">
+                    <span className="inline-block p-1 rounded-sm hover:text-yellow-500">
+                      {board?.starred ? (
+                        <FaStar size={15} color="#ffd600" />
+                      ) : (
+                        <FaRegStar size={15} />
+                      )}
+                    </span>
+                    <span
+                      id={`closeboard-${board.id}`}
+                      className="hover:text-red-500 cursor-pointer"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setActiveIndex(index);
+                      }}
+                    >
+                      <IoClose size={20} />
+                    </span>
+                    <Tooltip
+                      anchorSelect={`#closeboard-${board.id}`}
+                      data-tooltip-place="left"
+                      clickable
+                      className="z-10"
+                    >
+                      Close board
+                    </Tooltip>
+                  </div>
+                  <ConfirmAction
+                    isOpen={activeIndex === index}
+                    onClose={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setActiveIndex(null);
+                    }}
+                    onConfirm={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleCloseBoard(board.id, board.workspaceId);
+                      setActiveIndex(null);
+                    }}
+                    title="Close Board"
+                    message="Are you sure you want to close this board?"
+                    position="left-0 top-full"
+                  />
+                </div>
+              </Link>
+            ))
           ) : (
             <div className="px-3 text-sm space-y-3">
               <div className="flex items-center justify-center">

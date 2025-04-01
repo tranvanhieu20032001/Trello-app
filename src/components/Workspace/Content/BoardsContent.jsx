@@ -1,4 +1,3 @@
-import { useWorkspace } from "~/context/WorkspaceContext";
 import HeaderWorkspaceContent from "../Header/HeaderWorkspaceContent";
 import { useSelector } from "react-redux";
 import { useState, useRef, useEffect } from "react";
@@ -14,20 +13,17 @@ import { IoClose } from "react-icons/io5";
 import ViewBoardClose from "../Modal/ViewBoardClose";
 
 const BoardsContent = () => {
-  const { workspaceData } = useWorkspace();
+  const workspaceData = useSelector((state) => state.workspace.workspaceData);
   const [isOpen, setIsOpen] = useState(false);
   const { id } = useParams();
   const user = useSelector((state) => state.auth.user);
   const [sortOrder, setSortOrder] = useState("a-z");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(""); // State lưu từ khóa tìm kiếm
+  const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef(null);
-  console.log("workspaceData", workspaceData);
 
   const userBoardsOpen = workspaceData?.boards.filter((wpb) => wpb.status);
   const userBoardsClose = workspaceData?.boards.filter((wpb) => !wpb.status);
-  console.log("userBoardsClose", userBoardsClose);
-  
 
   // Sắp xếp boards theo sortOrder
   const sortedBoards = [...userBoardsOpen].sort((a, b) => {

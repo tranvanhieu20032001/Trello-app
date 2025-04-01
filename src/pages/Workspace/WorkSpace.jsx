@@ -1,20 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { useSelector } from "react-redux";
-import { Outlet } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Outlet, useParams } from "react-router-dom";
 import NofoundPage from "~/components/Workspace/Content/NofoundPage";
 import GuestSidebar from "~/components/Workspace/Sidebar/GuestSidebar";
 import Sidebar from "~/components/Workspace/Sidebar/Sidebar";
-import { useWorkspace } from "~/context/workspaceContext";
+import { fetchWorkspaceData } from "~/store/slices/workSpaceSlice";
 
 const WorkSpace = () => {
-  const { workspaceData } = useWorkspace();
+  const { id } = useParams();
   const user = useSelector((state) => state.auth.user);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const dispatch = useDispatch();
+  const workspaceData = useSelector((state) => state.workspace.workspaceData);
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchWorkspaceData(id));
+    }
+  }, [id, dispatch]);
+  
+  console.log("workspaceData:", workspaceData);
 
   const isMember = workspaceData?.members?.some(
     (member) => member.userId === user.id
   );
+
   return (
     <div
       className={`${
@@ -32,9 +42,7 @@ const WorkSpace = () => {
           ) : (
             <GuestSidebar />
           )
-        ) : (
-          ""
-        )}
+        ) : null}
         <button
           className="absolute -right-0 top-2 p-1.5 rounded-full shadow-md hover:bg-gray-200"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}

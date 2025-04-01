@@ -3,7 +3,7 @@ import { BiLink } from "react-icons/bi";
 import { AiOutlineUserSwitch } from "react-icons/ai";
 import { IoIosLogOut } from "react-icons/io";
 import { useParams } from "react-router-dom";
-import { useWorkspace } from "~/context/WorkspaceContext";
+// import { useWorkspace } from "~/context/WorkspaceContext";
 import nofund from "~/assets/nofund.svg";
 import { useSelector } from "react-redux";
 import { LiaTimesSolid } from "react-icons/lia";
@@ -14,7 +14,7 @@ import { useWorkspaceActions } from "~/utils/hooks/useWorkspaceActions";
 const MemberContent = () => {
   const { handleCopyLink } = useWorkspaceActions();
   const { id } = useParams();
-  const { workspaceData } = useWorkspace();
+  const workspaceData = useSelector((state) => state.workspace.workspaceData);
   const [query, setQuery] = useState("");
 
   const filteredMembers = workspaceData?.members?.filter((member) =>

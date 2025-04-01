@@ -1,7 +1,5 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";;
 import { fetchBoardById_API } from "~/apis";
-import { API_ENDPOINT } from "~/utils/constants";
 
 export const fetchBoardById = createAsyncThunk(
   "board/fetchBoardById",

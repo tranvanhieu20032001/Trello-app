@@ -5,10 +5,12 @@ import {
   leaveWorkspace,
   removeUserWorkspace,
 } from "~/apis";
-import { useWorkspace } from "~/context/WorkspaceContext";
+import { useDispatch } from "react-redux";
+import { fetchWorkspaceData } from "~/store/slices/workSpaceSlice";
 
 export const useWorkspaceActions = () => {
-  const { fetchWorkspaceData } = useWorkspace();
+  const dispatch = useDispatch();
+
   const handleCopyLink = useCallback(async (id) => {
     if (!id) return toast.error("Invalid workspace ID");
 
@@ -32,26 +34,27 @@ export const useWorkspaceActions = () => {
       try {
         const response = await leaveWorkspace(id);
         toast.success(response.data.message);
-        await fetchWorkspaceData(id);
+        dispatch(fetchWorkspaceData(id)); // Cập nhật lại workspace
       } catch (error) {
         toast.error("Failed to leave workspace.");
       }
     },
-    [fetchWorkspaceData]
+    [dispatch]
   );
 
   const handleRemoveWorkspace = useCallback(
     async (id, ownerId, userId) => {
       if (!id || !ownerId || !userId) return toast.error("Invalid data");
+
       try {
         const response = await removeUserWorkspace(id, { ownerId, userId });
         toast.success(response.data.message);
-        await fetchWorkspaceData(id);
+        dispatch(fetchWorkspaceData(id)); // Cập nhật lại workspace
       } catch (error) {
         toast.error("Failed to remove user.");
       }
     },
-    [fetchWorkspaceData]
+    [dispatch]
   );
 
   return { handleCopyLink, handleLeaveWorkspace, handleRemoveWorkspace };

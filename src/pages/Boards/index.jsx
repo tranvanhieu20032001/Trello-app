@@ -4,20 +4,13 @@ import BoardContent from "./BoardContent";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearBoard, fetchBoardById } from "~/store/slices/boardSlice";
-import { useWorkspace } from "~/context/WorkspaceContext";
+import { fetchWorkspaceData } from "~/store/slices/workSpaceSlice";
 
 function Board() {
   const { boardId } = useParams();
-
   const dispatch = useDispatch();
-  const { fetchWorkspaceData } = useWorkspace();
-  const { board } = useSelector((state) => state.board);
-
-  console.log("boardsdasdas", board);
-
-  useEffect(() => {
-    fetchWorkspaceData(board?.data.workspaceId);
-  }, [board?.data.workspaceId, fetchWorkspaceData]);
+  const boardState = useSelector((state) => state.board);
+  const board = boardState?.board; // Tránh lỗi undefined
 
   useEffect(() => {
     if (boardId) {
@@ -27,6 +20,11 @@ function Board() {
       dispatch(clearBoard());
     };
   }, [boardId, dispatch]);
+  useEffect(() => {
+    if (board?.data?.workspaceId) {
+      dispatch(fetchWorkspaceData(board.data.workspaceId));
+    }
+  }, [board?.data?.workspaceId, dispatch]);
 
   const backgroundImage = board?.data?.background
     ? `url('${board.data.background}')`

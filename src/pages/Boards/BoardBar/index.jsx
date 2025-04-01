@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { BsBookmarkStarFill } from "react-icons/bs";
 import { CiLock } from "react-icons/ci";
 import { FaGoogleDrive, FaRegStar, FaStar } from "react-icons/fa6";
 import { IoIosFlash } from "react-icons/io";
@@ -189,7 +188,7 @@ function BoardBar({ board }) {
         )}
       </div>
       {!board.status && (
-        <p className="flex items-center font-medium gap-2 relative">
+        <div className="flex items-center font-medium gap-2 relative">
           <PiWarningCircleLight size={23} color="#3b82f6" />
           This board is closed. Reopen the board to make changes.{" "}
           <span
@@ -205,12 +204,12 @@ function BoardBar({ board }) {
               e.preventDefault();
               e.stopPropagation();
             }}
-            onConfirm={() => handleReOpenBoard(board.id)}
+            onConfirm={() => handleReOpenBoard(board?.id, board?.workspaceId)}
             title="Reopen Board"
             message="Are you sure you want to leave this workspace?"
             position="top-full right-0"
           />
-        </p>
+        </div>
       )}
       <hr className="my-2 block lg:hidden" />
       <div className="flex items-center justify-end">

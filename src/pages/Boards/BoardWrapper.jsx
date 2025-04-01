@@ -1,20 +1,26 @@
-import React, { useState } from 'react'
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import { useSelector } from 'react-redux';
-import { Outlet } from 'react-router-dom';
-import NofoundPage from '~/components/Workspace/Content/NofoundPage';
-import GuestSidebar from '~/components/Workspace/Sidebar/GuestSidebar';
-import Sidebar from '~/components/Workspace/Sidebar/Sidebar';
-import { useWorkspace } from '~/context/WorkspaceContext';
+import React, { useState } from "react";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { useSelector } from "react-redux";
+import { Outlet } from "react-router-dom";
+import NofoundPage from "~/components/Workspace/Content/NofoundPage";
+import GuestSidebar from "~/components/Workspace/Sidebar/GuestSidebar";
+import Sidebar from "~/components/Workspace/Sidebar/Sidebar";
 
 const BoardWrapper = () => {
-  const { workspaceData } = useWorkspace();
-  console.log("workspaceData", workspaceData);
-  
+  const workspaceData = useSelector((state) => state.workspace.workspaceData);
   const user = useSelector((state) => state.auth.user);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const isMember = true
+  // const isMember = workspaceData?.members?.some(
+  //   (member) => member.userId === user.id
+  // );
+  // console.log(
+  //   "workspaceData",
+  //   workspaceData?.members.some((wp) => wp.userId === user.id)
+  // );
+
+  const isMember = true;
+
   return (
     <div
       className={`${
@@ -32,9 +38,7 @@ const BoardWrapper = () => {
           ) : (
             <GuestSidebar />
           )
-        ) : (
-          ""
-        )}
+        ) : null}
         <button
           className="absolute -right-0 top-2 p-1.5 rounded-full shadow-md hover:bg-gray-200"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -53,6 +57,6 @@ const BoardWrapper = () => {
       </div>
     </div>
   );
-}
+};
 
-export default BoardWrapper
+export default BoardWrapper;
