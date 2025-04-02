@@ -5,12 +5,15 @@ import { joinWorkspace, searchUser } from "~/apis";
 import { debounce } from "lodash";
 import LoaderSearch from "~/components/Loader/LoaderSearch";
 import { useWorkspaceActions } from "~/utils/hooks/useWorkspaceActions";
+import { fetchWorkspaceData } from "~/store/slices/workSpaceSlice";
+import { useDispatch } from "react-redux";
 
 const AddNewMember = ({ isOpen, onClose, workspaceId }) => {
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
   const { handleCopyLink } = useWorkspaceActions();
 
   useEffect(() => {
@@ -66,6 +69,7 @@ const AddNewMember = ({ isOpen, onClose, workspaceId }) => {
         workspaceId,
         userId: selectedUser.id,
       });
+      dispatch(fetchWorkspaceData(workspaceId));
       toast.success(response.data.message);
       onClose();
     } catch (error) {

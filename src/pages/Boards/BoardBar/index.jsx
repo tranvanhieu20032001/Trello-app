@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { BsBookmarkStarFill } from "react-icons/bs";
 import { CiLock } from "react-icons/ci";
 import { FaGoogleDrive, FaRegStar, FaStar } from "react-icons/fa6";
 import { IoIosFlash } from "react-icons/io";
@@ -6,7 +7,8 @@ import { IoCheckmarkOutline, IoPersonAddOutline } from "react-icons/io5";
 import { MdFilterList, MdOutlinePublic } from "react-icons/md";
 import { PiUsersThreeLight, PiWarningCircleLight } from "react-icons/pi";
 import { Tooltip } from "react-tooltip";
-import ConfirmAction from "~/components/Workspace/Modal/ConfirmAction";
+import ConfirmAction from "~/components/Modal/ConfirmAction";
+import InviteMemberToBoard from "~/components/Modal/InviteMemberToBoard";
 import { data } from "~/data/data";
 import { useBoardActions } from "~/utils/hooks/useBoardActions";
 
@@ -15,7 +17,10 @@ function BoardBar({ board }) {
   const [currentVisibility, setCurrentVisibility] = useState(board?.type);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
   const { handleReOpenBoard } = useBoardActions();
+
+  console.log("board", board);
 
   const dropdownRef = useRef(null);
 
@@ -213,111 +218,85 @@ function BoardBar({ board }) {
       )}
       <hr className="my-2 block lg:hidden" />
       <div className="flex items-center justify-end">
-        <div className="relative -ml-[3px] lg:-ml-[5px]">
-          <img
-            id="hieu"
-            className="w-6 h-6 lg:w-7 lg:h-7 rounded-full border"
-            src="https://png.pngtree.com/png-vector/20240819/ourlarge/pngtree-cartoon-astronaut-avatar-png-image_13315942.png"
-            alt=""
-          />
-          <Tooltip
-            anchorSelect="#hieu"
-            clickable
-            className="z-10"
-            place="bottom"
-          >
-            Hieu
-          </Tooltip>
-          {/* <span className="absolute bottom-0 right-0" id="admin">
-            <BsBookmarkStarFill />
-          </span> */}
-          <Tooltip
-            anchorSelect="#admin"
-            clickable
-            className="z-10"
-            place="bottom"
-          >
-            This member is an admin of this board
-          </Tooltip>
-        </div>
-        <div className="relative -ml-[3px] lg:-ml-[5px]">
-          <img
-            id="hieu"
-            className="w-6 h-6 lg:w-7 lg:h-7 rounded-full border"
-            src="https://png.pngtree.com/png-vector/20240819/ourlarge/pngtree-cartoon-astronaut-avatar-png-image_13315942.png"
-            alt=""
-          />
-          <Tooltip
-            anchorSelect="#hieu"
-            clickable
-            className="z-10"
-            place="bottom"
-          >
-            Hieu
-          </Tooltip>
-          {/* <span className="absolute bottom-0 right-0" id="admin">
-            <BsBookmarkStarFill />
-          </span> */}
-          <Tooltip
-            anchorSelect="#admin"
-            clickable
-            className="z-10"
-            place="bottom"
-          >
-            This member is an admin of this board
-          </Tooltip>
-        </div>
-        <div className="relative -ml-[3px] lg:-ml-[5px]">
-          <img
-            id="hieu"
-            className="w-6 h-6 lg:w-7 lg:h-7 rounded-full border"
-            src="https://png.pngtree.com/png-vector/20240819/ourlarge/pngtree-cartoon-astronaut-avatar-png-image_13315942.png"
-            alt=""
-          />
-          <Tooltip
-            anchorSelect="#hieu"
-            clickable
-            className="z-10"
-            place="bottom"
-          >
-            Hieu
-          </Tooltip>
-        </div>
-        <div className="relative -ml-[3px] lg:-ml-[5px]">
-          <img
-            id="hieu"
-            className="w-6 h-6 lg:w-7 lg:h-7 rounded-full border"
-            src="https://png.pngtree.com/png-vector/20240819/ourlarge/pngtree-cartoon-astronaut-avatar-png-image_13315942.png"
-            alt=""
-          />
-          <Tooltip
-            anchorSelect="#hieu"
-            clickable
-            className="z-10"
-            place="bottom"
-          >
-            Hieu
-          </Tooltip>
-        </div>
-        <div className="relative -ml-[3px] lg:-ml-[5px]">
-          <span
-            id="more"
-            className="flex justify-center items-center w-6 h-6 lg:w-7 lg:h-7 rounded-full border bg-gray-700 text-xs"
-          >
-            +6
-          </span>
-          <Tooltip
-            anchorSelect="#more"
-            clickable
-            className="z-10"
-            place="bottom"
-          >
-            More
-          </Tooltip>
-        </div>
+        {board?.BoardMembers.slice(0, 5).map((member, index) => (
+          <div key={member?.id} className="relative -ml-[3px] lg:-ml-[5px]">
+            {member?.user?.avatar ? (
+              <img
+                data-tooltip-id={`img-${index}`}
+                className="w-6 h-6 lg:w-7 lg:h-7 rounded-full border"
+                src={member?.user?.avatar}
+                alt=""
+              />
+            ) : (
+              <span className="flex items-center justify-center capitalize bg-primary text-white text-sm w-6 h-6 lg:w-7 lg:h-7 rounded-full border">
+                {member?.user?.username.slice(0, 2)}
+              </span>
+            )}
+            <Tooltip
+              id={`img-${index}`}
+              clickable
+              className="z-10"
+              place="bottom"
+            >
+              {member?.user?.username}
+            </Tooltip>
+            {member?.user?.id === board?.ownerId && (
+              <span className="absolute bottom-0 right-0" id="admin">
+                <BsBookmarkStarFill />
+              </span>
+            )}
+            <Tooltip
+              anchorSelect="#admin"
+              clickable
+              className="z-10"
+              place="bottom"
+            >
+              This member is an admin of this board
+            </Tooltip>
+          </div>
+        ))}
+        {board?.BoardMembers.length > 5 && (
+          <div className="relative -ml-[3px] lg:-ml-[5px]">
+            <span
+              id="more"
+              className="flex justify-center items-center w-6 h-6 lg:w-7 lg:h-7 rounded-full border bg-gray-400 cursor-pointer text-white text-xs"
+            >
+              +{board?.BoardMembers.length - 5}
+            </span>
+            <Tooltip
+              anchorSelect="#more"
+              clickable
+              className="z-10"
+              place="bottom"
+            >
+              {board?.BoardMembers.slice(5).map((member) => (
+                <>
+                  <div
+                    key={member.user.id}
+                    className="flex items-center gap-1 mb-3"
+                  >
+                    {member?.user?.avatar ? (
+                      <img
+                        className="w-5 h-5 lg:w-6 lg:h-6 rounded-full border"
+                        src={member?.user?.avatar}
+                        alt=""
+                      />
+                    ) : (
+                      <span className="flex items-center justify-center capitalize bg-primary text-white text-xs w-5 h-5 lg:w-6 lg:h-6 rounded-full border">
+                        {member?.user?.username.slice(0, 2)}
+                      </span>
+                    )}
+                    {member.user.username}
+                  </div>
+                </>
+              ))}
+            </Tooltip>
+          </div>
+        )}
         <span
           id="invite"
           className="text-sm h-8 ml-6 px-2 lg:px-3 rounded-md bg-primary dark:bg-gray-700 cursor-pointer text-white flex items-center gap-1"
+          onClick={() => setIsInviteOpen(true)}
         >
           <IoPersonAddOutline size={15} /> Invite
         </span>
@@ -330,6 +309,7 @@ function BoardBar({ board }) {
           Invite
         </Tooltip>
       </div>
+      <InviteMemberToBoard isOpen={isInviteOpen} onClose={() => setIsInviteOpen(false)} boardId={board.id} />
     </div>
   );
 }

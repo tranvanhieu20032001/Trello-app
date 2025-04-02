@@ -7,6 +7,7 @@ export const createWorkspace_API = (data) =>
 export const getWorkspaceByUser_API = () => apiRequest.get("/workspace");
 export const getWorkspaceById_API = (workspaceId) =>
   apiRequest.get(`/workspace/${workspaceId}`);
+
 export const joinWorkspace = (data) => apiRequest.post(`/workspace/join`, data);
 
 export const searchUser = (query) =>
@@ -25,8 +26,7 @@ export const removeUserWorkspace = (workspaceId, data) =>
 export const fetchBoardById_API = (boardId) =>
   apiRequest.get(`/boards/${boardId}`);
 
-export const createBoard_API = (data) =>
-  apiRequest.post("/boards", data);
+export const createBoard_API = (data) => apiRequest.post("/boards", data);
 
 export const closeBoard_API = (boardId) =>
   apiRequest.patch(`/boards/${boardId}/close`);
@@ -37,6 +37,7 @@ export const reOpenBoard_API = (boardId) =>
 export const toggleStarred_API = (boardId) =>
   apiRequest.patch(`/boards/${boardId}/stared`);
 
+export const joinBoard = (data) => apiRequest.post(`/boards/join`, data);
 
 // Columns
 export const createColumn_API = (newColumnData) =>
@@ -56,7 +57,9 @@ export const logout_API = (userId) =>
   apiRequest.post("/auth/logout", { userId });
 
 export const inviteMemberWorkspace_API = (WorkspaceId) =>
-  apiRequest.post(`/invite/${WorkspaceId}`, { WorkspaceId });
+  apiRequest.post(`/invite/wp/${WorkspaceId}`, { WorkspaceId });
+export const inviteMemberBoard_API = (boardId) =>
+  apiRequest.post(`/invite/b/${boardId}`, { boardId });
 
 export const verifyInviteLink = (token) =>
   apiRequest.get(`/invite/${token}`, { token });

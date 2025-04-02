@@ -8,7 +8,7 @@ import nofund from "~/assets/nofund.svg";
 import { useSelector } from "react-redux";
 import { LiaTimesSolid } from "react-icons/lia";
 import HeaderWorkspaceContent from "../Header/HeaderWorkspaceContent";
-import ConfirmAction from "../Modal/ConfirmAction";
+import ConfirmAction from "../../Modal/ConfirmAction";
 import { useWorkspaceActions } from "~/utils/hooks/useWorkspaceActions";
 
 const MemberContent = () => {
@@ -91,6 +91,8 @@ const MemberItem = ({ member, ownerId }) => {
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false);
   const [selectedMemberId, setSelectedMemberId] = useState(null);
+  console.log("member", member);
+  
 
   return (
     <>
@@ -103,7 +105,12 @@ const MemberItem = ({ member, ownerId }) => {
           </div>
         )}
         <div>
-          <h3 className="font-medium">{member?.username}</h3>
+          <h3 className="font-medium flex gap-4 items-center">
+            {member?.username}
+            <span className={`flex text-[10px] gap-1 items-center px-1 py-0.5 rounded-md ${member?.id === ownerId ? "bg-red-200 text-red-800" : "bg-blue-200 text-blue-800"}`}>
+              {member?.id === ownerId ? "Admin" : "Member"}
+            </span>
+          </h3>
           <span className="text-sm">{member?.email}</span>
         </div>
         <div className="details-board flex gap-4 items-center justify-end w-full">
@@ -112,10 +119,6 @@ const MemberItem = ({ member, ownerId }) => {
             {member?.boards?.length > 0 && (
               <span>({member.boards.length})</span>
             )}
-          </button>
-          <button className="text-sm bg-blue-600 text-white hover:bg-primary border border-blue-700 px-2 py-1 rounded-sm flex items-center gap-1">
-            <AiOutlineUserSwitch />
-            {member?.id === ownerId ? "Admin" : "Member"}
           </button>
           {member?.id === user?.id ? (
             <button
@@ -143,7 +146,7 @@ const MemberItem = ({ member, ownerId }) => {
             e.preventDefault();
             e.stopPropagation();
           }}
-          onConfirm={(e) => handleLeaveWorkspace(e, id)}
+          onConfirm={() => handleLeaveWorkspace(id)}
           title="Leave Workspace"
           message="Are you sure you want to leave this workspace?"
         />

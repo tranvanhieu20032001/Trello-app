@@ -10,15 +10,15 @@ import { FaRegStar, FaStar } from "react-icons/fa6";
 import nofund from "~/assets/nofund.svg";
 import CreateBoardModal from "~/components/Boards/CreateBoardModal";
 import { IoClose } from "react-icons/io5";
-import ViewBoardClose from "../Modal/ViewBoardClose";
+import ViewBoardClose from "../../Modal/ViewBoardClose";
 
 const BoardsContent = () => {
   const workspaceData = useSelector((state) => state.workspace.workspaceData);
   const [isOpen, setIsOpen] = useState(false);
-  const { id } = useParams();
-  const user = useSelector((state) => state.auth.user);
   const [sortOrder, setSortOrder] = useState("a-z");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const [isViewBoardCloseOpen, setIsViewBoardCloseOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef(null);
 
@@ -153,12 +153,20 @@ const BoardsContent = () => {
               />
             </div>
           </div>
-          {userBoardsClose && (
+          {userBoardsClose && userBoardsClose.length > 0 && (
             <>
-              <button className="my-4 text-[13px] gap-2 font-medium flex items-center px-2 py-1.5 bg-blue-600 text-white hover:bg-primary border border-blue-700 rounded-sm">
+              <button
+                className="my-4 text-[13px] gap-2 font-medium flex items-center px-2 py-1.5 bg-blue-600 text-white hover:bg-primary border border-blue-700 rounded-sm"
+                onClick={() => setIsViewBoardCloseOpen(true)}
+              >
                 View closed boards
               </button>
-              <ViewBoardClose dataBoard={userBoardsClose} />
+              {isViewBoardCloseOpen && (
+                <ViewBoardClose
+                  dataBoard={userBoardsClose}
+                  onClose={() => setIsViewBoardCloseOpen(false)}
+                />
+              )}
             </>
           )}
         </>

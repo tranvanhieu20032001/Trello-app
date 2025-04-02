@@ -3,7 +3,7 @@ import { CiEdit } from "react-icons/ci";
 import { FaUserPlus } from "react-icons/fa6";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import AddNewMember from "../Modal/AddNewMember";
+import AddNewMember from "../../Modal/AddNewMember";
 import { updateWorkspaceName } from "~/apis";
 import { toast } from "react-toastify";
 import { setWorkspaceName } from "~/store/slices/workSpaceSlice";
@@ -12,8 +12,8 @@ const HeaderWorkspaceContent = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const user = useSelector((state) => state.auth.user);
-  const workspaceData = useSelector((state) => state.workspace.workspace);
-  const workspaceName = workspaceData?.name || "Untitled"; // Mặc định nếu không có dữ liệu
+  const workspaceData = useSelector((state) => state.workspace.workspaceData);
+  const workspaceName = workspaceData?.name || "Untitled";
 
   const [editName, setEditName] = useState(false);
   const [tempName, setTempName] = useState(workspaceName);

@@ -1,13 +1,34 @@
 import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { closeBoard_API, reOpenBoard_API, toggleStarred_API } from "~/apis";
+import {
+  closeBoard_API,
+  inviteMemberBoard_API,
+  reOpenBoard_API,
+  toggleStarred_API,
+} from "~/apis";
 import { fetchBoardById } from "~/store/slices/boardSlice";
 import { startLoading, stopLoading } from "~/store/slices/loadingSlice";
 import { fetchWorkspaceData } from "~/store/slices/workSpaceSlice";
 
 export const useBoardActions = () => {
   const dispatch = useDispatch();
+
+  const handleCopyLink = useCallback(async (id) => {
+    if (!id) return toast.error("Invalid workspace ID");
+
+    try {
+      const response = await inviteMemberBoard_API(id);
+      if (response?.data?.link) {
+        navigator.clipboard.writeText(response.data.link);
+        toast.success("Invite link copied!");
+      } else {
+        toast.error("Failed to generate invite link!");
+      }
+    } catch (error) {
+      toast.error("Error generating invite link.");
+    }
+  }, []);
 
   const handleCloseBoard = useCallback(
     async (boardId, workspaceId) => {
@@ -18,7 +39,7 @@ export const useBoardActions = () => {
       try {
         const response = await closeBoard_API(boardId);
         dispatch(fetchWorkspaceData(workspaceId));
-        dispatch(fetchBoardById(boardId)); 
+        dispatch(fetchBoardById(boardId));
 
         toast.success(response.data.message);
       } catch (error) {
@@ -40,10 +61,8 @@ export const useBoardActions = () => {
 
       try {
         const response = await reOpenBoard_API(boardId);
-        
-        dispatch(fetchWorkspaceData(workspaceId)); // Cập nhật workspace
-        console.log("reopen");
-        dispatch(fetchBoardById(boardId)); // Cập nhật lại board
+        dispatch(fetchWorkspaceData(workspaceId));
+        dispatch(fetchBoardById(boardId));
 
         toast.success(response.data.message);
       } catch (error) {
@@ -81,10 +100,16 @@ export const useBoardActions = () => {
       );
       return {
         ...board,
-        starred: userPreference ? userPreference.starred : false, // Nếu không có thì mặc định là false
+        starred: userPreference ? userPreference.starred : false
       };
     });
   };
 
-  return { handleCloseBoard, handleReOpenBoard, handleToggleStarred, getBoardsWithUserStarred };
+  return {
+    handleCopyLink,
+    handleCloseBoard,
+    handleReOpenBoard,
+    handleToggleStarred,
+    getBoardsWithUserStarred,
+  };
 };

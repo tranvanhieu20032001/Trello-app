@@ -9,7 +9,7 @@ import { IoClose } from "react-icons/io5";
 import { Tooltip } from "react-tooltip";
 import astronaut from "~/assets/astronaut.png";
 import CreateBoardModal from "~/components/Boards/CreateBoardModal";
-import ConfirmAction from "../Modal/ConfirmAction";
+import ConfirmAction from "../../Modal/ConfirmAction";
 import { useBoardActions } from "~/utils/hooks/useBoardActions";
 
 const Sidebar = () => {
@@ -20,13 +20,15 @@ const Sidebar = () => {
   const user = useSelector((state) => state.auth.user);
   const workspaceData = useSelector((state) => state.workspace.workspaceData);
   const workspaceName = workspaceData?.name || "Workspace";
-  console.log("workspaceData", workspaceData);
+  // console.log("user", user);
 
   const boards = workspaceData?.boards?.filter(
     (board) =>
       workspaceData.members.some((member) => member.userId === user.id) &&
-      board.status
+      board.status &&
+      board.BoardMembers.some((boardmember) => boardmember.userId === user?.id)
   );
+  // console.log("boards", boards);
 
   const { handleCloseBoard } = useBoardActions();
 
@@ -101,38 +103,42 @@ const Sidebar = () => {
                         <FaRegStar size={15} />
                       )}
                     </span>
-                    <span
-                      id={`closeboard-${board.id}`}
-                      className="hover:text-red-500 cursor-pointer"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setActiveIndex(index);
-                      }}
-                    >
-                      <IoClose size={20} />
-                    </span>
-                    <Tooltip
-                      anchorSelect={`#closeboard-${board.id}`}
-                      data-tooltip-place="left"
-                      clickable
-                      className="z-10"
-                    >
-                      Close board
-                    </Tooltip>
+                    {board?.ownerId === user.id && (
+                      <>
+                        <span
+                          data-tooltip-id={`closeboard-${board.id}`}
+                          className="hover:text-red-500 cursor-pointer"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setActiveIndex(index);
+                          }}
+                        >
+                          <IoClose size={20} />
+                        </span>
+                        <Tooltip
+                          id={`closeboard-${board.id}`}
+                          place="bottom"
+                          clickable
+                          className="z-10"
+                        >
+                          Close board
+                        </Tooltip>
+                      </>
+                    )}
                   </div>
                   <ConfirmAction
                     isOpen={activeIndex === index}
                     onClose={(e) => {
+                      setActiveIndex(null);
                       e.preventDefault();
                       e.stopPropagation();
-                      setActiveIndex(null);
                     }}
                     onConfirm={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
                       handleCloseBoard(board.id, board.workspaceId);
                       setActiveIndex(null);
+                      e.preventDefault();
+                      e.stopPropagation();
                     }}
                     title="Close Board"
                     message="Are you sure you want to close this board?"
