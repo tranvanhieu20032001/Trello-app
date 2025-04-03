@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import {
   closeBoard_API,
   inviteMemberBoard_API,
+  leaveBoard,
+  removeUserboard,
   reOpenBoard_API,
   toggleStarred_API,
 } from "~/apis";
@@ -100,16 +102,55 @@ export const useBoardActions = () => {
       );
       return {
         ...board,
-        starred: userPreference ? userPreference.starred : false
+        starred: userPreference ? userPreference.starred : false,
       };
     });
   };
+  const handleLeaveBoard = useCallback(
+    async (id) => {
+      if (!id) return toast.error("Invalid board ID");
 
+      try {
+        dispatch(startLoading());
+        const response = await leaveBoard(id);
+        toast.success(response.data.message);
+        dispatch(fetchBoardById(id));
+      } catch (error) {
+        toast.error("Failed to leave workspace.");
+      } finally {
+        setTimeout(() => {
+          dispatch(stopLoading());
+        }, 800);
+      }
+    },
+    [dispatch]
+  );
+
+  const handleRemoveMemberFromBoard = useCallback(
+    async (boardId, ownerId, userId) => {
+      if (!boardId || !ownerId || !userId) return toast.error("Invalid data");
+      try {
+        dispatch(startLoading());
+        const response = await removeUserboard(boardId, { ownerId, userId });
+        toast.success(response.data.message);
+        dispatch(fetchBoardById(boardId));
+      } catch (error) {
+        toast.error("Failed to remove user.");
+      } finally {
+        setTimeout(() => {
+          dispatch(stopLoading());
+        }, 800);
+      }
+    },
+    [dispatch]
+  );
   return {
     handleCopyLink,
     handleCloseBoard,
     handleReOpenBoard,
     handleToggleStarred,
     getBoardsWithUserStarred,
+    handleRemoveMemberFromBoard,
+    handleLeaveBoard,
   };
 };

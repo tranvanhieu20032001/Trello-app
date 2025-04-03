@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { BiLink } from "react-icons/bi";
-import { AiOutlineUserSwitch } from "react-icons/ai";
 import { IoIosLogOut } from "react-icons/io";
 import { useParams } from "react-router-dom";
-// import { useWorkspace } from "~/context/WorkspaceContext";
 import nofund from "~/assets/nofund.svg";
 import { useSelector } from "react-redux";
 import { LiaTimesSolid } from "react-icons/lia";

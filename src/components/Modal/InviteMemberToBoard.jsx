@@ -11,6 +11,7 @@ import { IoIosLogOut } from "react-icons/io";
 import { Tooltip } from "react-tooltip";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useBoardActions } from "~/utils/hooks/useBoardActions";
+import ConfirmAction from "./ConfirmAction";
 
 const InviteMemberToBoard = ({ isOpen, onClose, boardId }) => {
   const [query, setQuery] = useState("");
@@ -22,7 +23,11 @@ const InviteMemberToBoard = ({ isOpen, onClose, boardId }) => {
   const { board } = useSelector((state) => state.board);
   const members = board?.data?.BoardMembers;
   const user = useSelector((state) => state.auth.user);
+  const [activeIndex, setActiveIndex] = useState(null);
+  const [activeIndex2, setActiveIndex2] = useState(null);
   const { handleCopyLink } = useBoardActions();
+  const { handleRemoveMemberFromBoard, handleLeaveBoard } =
+    useBoardActions();
   console.log("board", board?.data);
 
   useEffect(() => {
@@ -215,6 +220,7 @@ const InviteMemberToBoard = ({ isOpen, onClose, boardId }) => {
                     <button
                       data-tooltip-id="leave"
                       className="text-sm text-red-500 hover:shadow-sm hover:bg-white p-1 rounded-full flex items-center gap-1"
+                      onClick={() => setActiveIndex2(index)}
                     >
                       <IoIosLogOut size={18} />
                       <Tooltip id="leave" place="bottom" clickable>
@@ -225,6 +231,7 @@ const InviteMemberToBoard = ({ isOpen, onClose, boardId }) => {
                     <button
                       data-tooltip-id="remove"
                       className="text-sm text-red-500 hover:shadow-sm hover:bg-white p-1 rounded-full flex items-center gap-1"
+                      onClick={() => setActiveIndex(index)}
                     >
                       <AiOutlineDelete size={18} />
                       <Tooltip id="remove" place="bottom" clickable>
@@ -235,33 +242,35 @@ const InviteMemberToBoard = ({ isOpen, onClose, boardId }) => {
                     ""
                   )}
                 </div>
-                {/* <ConfirmAction
-                isOpen={isLeaveModalOpen}
-                onClose={(e) => {
-                  setIsLeaveModalOpen(false);
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                onConfirm={() => handleLeaveWorkspace(id)}
-                title="Leave Workspace"
-                message="Are you sure you want to leave this workspace?"
-              />
-
-              <ConfirmAction
-                isOpen={isRemoveModalOpen}
-                onClose={(e) => {
-                  setIsRemoveModalOpen(false);
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                onConfirm={() =>
-                  handleRemoveWorkspace(id, ownerId, selectedMemberId)
-                }
-                title="Remove Member"
-                message="Are you sure you want to remove this member?"
-              /> */}
               </div>
             ))}
+
+            <ConfirmAction
+              isOpen={activeIndex !== null}
+              onClose={() => setActiveIndex(null)}
+              onConfirm={() =>
+                handleRemoveMemberFromBoard(
+                  boardId,
+                  board.data.ownerId,
+                  members[activeIndex]?.user?.id
+                )
+              }
+              title="Remove Member"
+              message={`Are you sure you want to remove <strong>${members[activeIndex]?.user?.username}</strong> from <strong>${board?.data?.title}</strong>?`}
+              position="top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/2"
+            />
+
+            <ConfirmAction
+              isOpen={activeIndex2 !== null}
+              onClose={() => setActiveIndex2(null)}
+              onConfirm={() => {
+                handleLeaveBoard(boardId);
+                setActiveIndex2(null);
+              }}
+              title="Leave Board"
+              message={`Are you sure you want to leave <strong>${board?.data?.title}</strong>?`}
+              position="top-1/2 right-1/2 transform -translate-y-1/2 translate-x-1/2"
+            />
           </div>
         </div>
       </div>

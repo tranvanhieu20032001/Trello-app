@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "~/store/slices/authSlice";
 import { API_ENDPOINT } from "~/utils/constants";
+import { startLoading, stopLoading } from "~/store/slices/loadingSlice";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -46,10 +47,14 @@ const Login = () => {
     }
 
     try {
+      dispatch(startLoading());
       const response = await login_API(formData);
       toast.success(response.message);
       dispatch(
-        setUser({ user: response.data.user, accessToken: response.data.accessToken })
+        setUser({
+          user: response.data.user,
+          accessToken: response.data.accessToken,
+        })
       );
       setTimeout(() => {
         navigate("/");
@@ -57,6 +62,8 @@ const Login = () => {
     } catch (error) {
       console.log("error", error);
       toast.error(error.response.data.message);
+    } finally {
+      dispatch(stopLoading());
     }
   };
 

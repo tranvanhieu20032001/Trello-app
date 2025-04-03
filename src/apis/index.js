@@ -39,6 +39,13 @@ export const toggleStarred_API = (boardId) =>
 
 export const joinBoard = (data) => apiRequest.post(`/boards/join`, data);
 
+export const leaveBoard = (boardId) =>
+  apiRequest.patch(`/boards/${boardId}/leave`);
+
+export const removeUserboard = (boardId, data) =>
+  apiRequest.delete(`/boards/${boardId}/remove`, { data });
+
+
 // Columns
 export const createColumn_API = (newColumnData) =>
   apiRequest.post("/columns", newColumnData);

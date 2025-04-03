@@ -28,7 +28,7 @@ const ConfirmAction = ({ isOpen, onClose, onConfirm, title, message, position = 
         className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-gray-400 shadow-sm w-96"
       >
         <h2 className="text-lg font-semibold">{title}</h2>
-        <p className="mt-2 text-sm font-normal">{message}</p>
+        <p className="mt-2 text-sm font-normal" dangerouslySetInnerHTML={{ __html: message }} />
         <div className="mt-4 flex justify-end gap-3">
           <button
             onClick={onClose}
