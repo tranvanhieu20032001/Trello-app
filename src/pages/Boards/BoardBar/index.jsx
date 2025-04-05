@@ -1,73 +1,31 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { BsBookmarkStarFill } from "react-icons/bs";
-import { CiLock } from "react-icons/ci";
 import { FaGoogleDrive, FaRegStar, FaStar } from "react-icons/fa6";
 import { IoIosFlash } from "react-icons/io";
-import { IoCheckmarkOutline, IoPersonAddOutline } from "react-icons/io5";
-import { MdFilterList, MdOutlinePublic } from "react-icons/md";
-import { PiUsersThreeLight, PiWarningCircleLight } from "react-icons/pi";
+import { IoPersonAddOutline } from "react-icons/io5";
+import { MdFilterList } from "react-icons/md";
 import { Tooltip } from "react-tooltip";
 import ConfirmAction from "~/components/Modal/ConfirmAction";
 import InviteMemberToBoard from "~/components/Modal/InviteMemberToBoard";
 import { data } from "~/data/data";
 import { useBoardActions } from "~/utils/hooks/useBoardActions";
+import Visibility from "./sections/Visibility";
+import { PiWarningCircleLight } from "react-icons/pi";
+import TitleBoard from "./sections/TitleBoard";
+import Starred from "./sections/Starred";
 
 function BoardBar({ board }) {
   const [isStarred, setIsStarred] = useState(data.board.starred);
-  const [currentVisibility, setCurrentVisibility] = useState(board?.type);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const { handleReOpenBoard } = useBoardActions();
 
   console.log("board", board);
 
-  const dropdownRef = useRef(null);
-
   const handleToggleStar = () => {
     setIsStarred(!isStarred);
   };
-
-  const handleVisibilityChange = (visibility) => {
-    setCurrentVisibility(visibility);
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const visibilityOptions = [
-    {
-      value: "private",
-      label: "Private",
-      icon: <CiLock size={20} />,
-      description:
-        "Only board members can see this board. Workspace admins can close the board or remove members.",
-    },
-    {
-      value: "public",
-      label: "Public",
-      icon: <MdOutlinePublic size={20} />,
-      description:
-        "All members of the Sprint-1 Workspace can see and edit this board.",
-    },
-    {
-      value: "workspace",
-      label: "Workspace",
-      icon: <PiUsersThreeLight size={20} />,
-      description: "Public boards are visible to anyone on the internet.",
-    },
-  ];
 
   return (
     <div
@@ -75,75 +33,8 @@ function BoardBar({ board }) {
       className="h-14 text-primary dark:text-secondary bg-white bg-opacity-15 px-4 py-2 flex justify-between text-xs md:text-sm flex-col lg:flex-row"
     >
       <div className="flex items-center gap-4 justify-between lg:justify-start">
-        <h1 className="font-semibold p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md">
-          {board?.title}
-        </h1>
-        <span
-          onClick={handleToggleStar}
-          id="star"
-          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
-        >
-          {!board?.starred ? (
-            <FaRegStar className="hover:text-yellow-500" size={20} />
-          ) : (
-            <FaStar size={20} color="#ffd600" />
-          )}
-        </span>
-        <Tooltip
-          anchorSelect="#star"
-          clickable
-          className="z-10"
-          place="bottom-start"
-        >
-          Click to star or unstar this board. Starred boards show up at the top
-          of your boards list.
-        </Tooltip>
-        <span
-          onClick={toggleDropdown}
-          ref={dropdownRef}
-          id="visibility"
-          className={`p-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-1 relative rounded-md border ${
-            isDropdownOpen ? "border-primary" : "border-transparent"
-          }`}
-        >
-          {
-            visibilityOptions.find(
-              (option) => option.value === currentVisibility
-            ).icon
-          }
-          {isDropdownOpen && (
-            <ul className="absolute z-10 mt-2 top-full -right-20 lg:-left-1 min-w-72 lg:min-w-96 bg-white dark:bg-gray-800 border border-gray-300 dark:border-secondary">
-              {visibilityOptions.map((option) => (
-                <li
-                  onClick={() => handleVisibilityChange(option.value)}
-                  key={option.value}
-                  className="px-4 py-2 space-y-1 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
-                >
-                  <span className="flex items-center gap-1">
-                    {option.icon}
-                    <span className="text-xs lg:text-[14px]">
-                      {option.label}
-                    </span>
-                    {option.value === currentVisibility ? (
-                      <IoCheckmarkOutline size={20} />
-                    ) : (
-                      ""
-                    )}
-                  </span>
-                  <p className="text-xs">{option.description}</p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </span>
-        <Tooltip
-          anchorSelect="#visibility"
-          clickable
-          className="z-10"
-          place="bottom"
-        >
-          Change visibility
-        </Tooltip>
+        <TitleBoard data={board} />
+       <Starred data={board}/>
         {board.status && (
           <>
             <span
@@ -195,7 +86,7 @@ function BoardBar({ board }) {
       {!board.status && (
         <div className="flex items-center font-medium gap-2 relative">
           <PiWarningCircleLight size={23} color="#3b82f6" />
-          This board is closed. Reopen the board to make changes.{" "}
+          This board is closed. Reopen the board to make changes.
           <span
             className="hover:text-blue-500 cursor-pointer"
             onClick={() => setIsLeaveModalOpen(true)}
@@ -219,7 +110,7 @@ function BoardBar({ board }) {
       <hr className="my-2 block lg:hidden" />
       <div className="flex items-center justify-end">
         {board?.BoardMembers.slice(0, 5).map((member, index) => (
-          <div key={member?.id} className="relative -ml-[3px] lg:-ml-[5px]">
+          <div key={index} className="relative -ml-[3px] lg:-ml-[5px]">
             {member?.user?.avatar ? (
               <img
                 data-tooltip-id={`img-${index}`}
@@ -309,7 +200,11 @@ function BoardBar({ board }) {
           Invite
         </Tooltip>
       </div>
-      <InviteMemberToBoard isOpen={isInviteOpen} onClose={() => setIsInviteOpen(false)} boardId={board.id} />
+      <InviteMemberToBoard
+        isOpen={isInviteOpen}
+        onClose={() => setIsInviteOpen(false)}
+        boardId={board.id}
+      />
     </div>
   );
 }

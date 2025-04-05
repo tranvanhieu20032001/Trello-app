@@ -20,9 +20,9 @@ function App() {
     <>
       <ToastContainer position="top-right" autoClose={3000} />
       {isLoading && <Loader />}
-        <main>
-          <Outlet />
-        </main>
+      <main className="relative overflow-hidden h-full">
+        <Outlet />
+      </main>
     </>
   );
 }

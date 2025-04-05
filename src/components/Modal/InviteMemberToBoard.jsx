@@ -28,7 +28,7 @@ const InviteMemberToBoard = ({ isOpen, onClose, boardId }) => {
   const { handleCopyLink } = useBoardActions();
   const { handleRemoveMemberFromBoard, handleLeaveBoard } =
     useBoardActions();
-  console.log("board", board?.data);
+  // console.log("board", board?.data);
 
   useEffect(() => {
     const handleClickOutside = (event) => {

@@ -18,8 +18,8 @@ const WorkSpace = () => {
       dispatch(fetchWorkspaceData(id));
     }
   }, [id, dispatch]);
-  
-  console.log("workspaceData:", workspaceData);
+
+  // console.log("workspaceData:", workspaceData);
 
   const isMember = workspaceData?.members?.some(
     (member) => member.userId === user.id
@@ -27,14 +27,12 @@ const WorkSpace = () => {
 
   return (
     <div
-      className={`${
-        !isSidebarOpen ? "flex w-full" : "grid grid-cols-5 lg:grid-cols-7"
-      } mx-auto text-primary`}
+      className="flex w-screen mx-auto text-primary h-screen"
     >
       <div
         className={`${
-          !isSidebarOpen ? "w-8" : "col-span-1"
-        } relative col-span-1 shadow-md h-screen bg-light dark:bg-dark text-primary dark:text-secondary`}
+          !isSidebarOpen ? "w-8" : "w-72"
+        } relative flex flex-col flex-grow shadow-md h-full bg-light dark:bg-dark text-primary dark:text-secondary`}
       >
         {isSidebarOpen ? (
           isMember ? (
@@ -55,7 +53,7 @@ const WorkSpace = () => {
         </button>
       </div>
       <div
-        className={`${!isSidebarOpen ? "w-full" : "col-span-4 lg:col-span-6"}`}
+        className="w-full"
       >
         {isMember ? <Outlet /> : <NofoundPage />}
       </div>

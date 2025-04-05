@@ -35,7 +35,7 @@ export const reOpenBoard_API = (boardId) =>
   apiRequest.patch(`/boards/${boardId}/reopen`);
 
 export const toggleStarred_API = (boardId) =>
-  apiRequest.patch(`/boards/${boardId}/stared`);
+  apiRequest.patch(`/boards/${boardId}/starred`);
 
 export const joinBoard = (data) => apiRequest.post(`/boards/join`, data);
 
@@ -45,6 +45,11 @@ export const leaveBoard = (boardId) =>
 export const removeUserboard = (boardId, data) =>
   apiRequest.delete(`/boards/${boardId}/remove`, { data });
 
+export const visibilityChange_API = (boardId, visibility) =>
+  apiRequest.patch(`/boards/${boardId}/visibility`, { visibility });
+
+export const renameBoard_API = (boardId, newname) =>
+  apiRequest.patch(`/boards/${boardId}/rename`, { newname });
 
 // Columns
 export const createColumn_API = (newColumnData) =>
