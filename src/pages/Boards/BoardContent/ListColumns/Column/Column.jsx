@@ -15,7 +15,7 @@ import { fetchBoardById } from "~/store/slices/boardSlice";
 import { useParams } from "react-router-dom";
 
 function Column({ column }) {
-  console.log("column", column);
+  // console.log("column", column);
 
   const {
     attributes,

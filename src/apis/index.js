@@ -51,9 +51,15 @@ export const visibilityChange_API = (boardId, visibility) =>
 export const renameBoard_API = (boardId, newname) =>
   apiRequest.patch(`/boards/${boardId}/rename`, { newname });
 
+export const updateColumnOrder_API = (boardId, data) =>
+  apiRequest.put(`/boards/${boardId}/column/order`, data);
+
 // Columns
 export const createColumn_API = (newColumnData) =>
   apiRequest.post("/columns", newColumnData);
+
+export const updateCardOrderInColumn_API = (columnId, data) =>
+  apiRequest.put(`/columns/${columnId}/card/order`, data);
 
 // Cards
 export const createCard_API = (newCardData) =>

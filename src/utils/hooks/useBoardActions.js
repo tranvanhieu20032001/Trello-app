@@ -8,6 +8,8 @@ import {
   removeUserboard,
   reOpenBoard_API,
   toggleStarred_API,
+  updateCardOrderInColumn_API,
+  updateColumnOrder_API,
 } from "~/apis";
 import { fetchBoardById } from "~/store/slices/boardSlice";
 import { startLoading, stopLoading } from "~/store/slices/loadingSlice";
@@ -144,6 +146,37 @@ export const useBoardActions = () => {
     },
     [dispatch]
   );
+
+  const handleMoveColumn = useCallback(
+    async (boardId, orderColums) => {
+      const orderColumnIds = orderColums.map((column) => column.id);
+      if (!boardId || orderColumnIds.length === 0) {
+        toast.error("Invalid column data");
+        return;
+      }
+      try {
+        await updateColumnOrder_API(boardId, {
+          columnOrderIds: orderColumnIds,
+        });
+      } catch (error) {
+        toast.error("Failed to update column order");
+        console.error(error);
+      }
+    },
+    [dispatch]
+  );
+
+  const handleMoveCardInColumnn = useCallback(
+    async (columnId, cardOrderIds) => {
+      try {
+        await updateCardOrderInColumn_API(columnId, { cardOrderIds });
+      } catch (error) {
+        toast.error("Failed to update card order");
+        console.error(error);
+      }
+    },
+    [dispatch]
+  );
   return {
     handleCopyLink,
     handleCloseBoard,
@@ -152,5 +185,7 @@ export const useBoardActions = () => {
     getBoardsWithUserStarred,
     handleRemoveMemberFromBoard,
     handleLeaveBoard,
+    handleMoveColumn,
+    handleMoveCardInColumnn,
   };
 };

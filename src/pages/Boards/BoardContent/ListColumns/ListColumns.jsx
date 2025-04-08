@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
 function ListColumns({ columns }) {
-  console.log("column", columns);
+  // console.log("column", columns);
   const { boardId } = useParams();
   const dispatch = useDispatch();
   const [addNewColumn, setAddNewColumn] = useState(false);

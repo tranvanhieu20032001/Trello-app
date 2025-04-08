@@ -5,7 +5,7 @@ import {
 import Card from "./Card/Card";
 
 function ListCards({ cards }) {
-  console.log('cards',cards);
+  // console.log('cards',cards);
   
   return (
     <SortableContext

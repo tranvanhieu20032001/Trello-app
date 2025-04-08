@@ -16,7 +16,7 @@ function Board() {
   const visibility = board?.type;
   const workspaceData = useSelector((state) => state.workspace.workspaceData);
   const user = useSelector((state) => state.auth.user);
-  console.log("board", board);
+  // console.log("board", board);
   
 
   useEffect(() => {
@@ -47,11 +47,6 @@ function Board() {
     visibility === "public" ||
     (visibility === "private" && isMemberBoard) ||
     (visibility === "workspace" && isMemberWorkspace);
-
-
-  console.log("permissionAccess", permissionAccess);
-  console.log("visibility", visibility);
-  
   const backgroundImage = board?.background
     ? `url('${board.background}')`
     : "none";

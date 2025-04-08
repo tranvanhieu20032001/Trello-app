@@ -16,6 +16,7 @@ import Column from "./ListColumns/Column/Column";
 import Card from "./ListColumns/Column/ListCards/Card/Card";
 import { cloneDeep, isEmpty } from "lodash";
 import { generatePlaceholderCard } from "~/utils/formatters";
+import { useBoardActions } from "~/utils/hooks/useBoardActions";
 
 const ACTIVE_ITEM_TYPE = {
   COLOMN: "ACTIVE_COLUMN",
@@ -23,13 +24,14 @@ const ACTIVE_ITEM_TYPE = {
 };
 
 function BoardContent({ board }) {
-  console.log("boards column",board.columns);
+  // console.log("boards column", board.columns);
   const [orderColumn, setOrderColumn] = useState([]);
   const [boardHeight, setBoardHeight] = useState(0);
   const [activeId, setActiveId] = useState(null);
   const [activeItemType, setActiveItemType] = useState(null);
   const [activeItemData, setActiveItemData] = useState(null);
   const [oldColumn, setOldColumn] = useState(null);
+  const { handleMoveColumn, handleMoveCardInColumnn } = useBoardActions();
 
   useEffect(() => {
     // const columns = mapOrder(board?.columns, board?.columnOrderIds, "id");
@@ -175,7 +177,7 @@ function BoardContent({ board }) {
 
         const dndOrderedCard = arrayMove(oldColumn?.cards, oldIndex, newIndex);
         // console.log("dndOrderedCard", dndOrderedCard);
-
+        const dndOrderedCardIds = dndOrderedCard.map((card) => card.id);
         setOrderColumn((preColumn) => {
           const nextColumns = cloneDeep(preColumn);
 
@@ -183,9 +185,13 @@ function BoardContent({ board }) {
             (column) => column.id === overColumn.id
           );
           targetColumn.cards = dndOrderedCard;
-          targetColumn.cardOrderIds = dndOrderedCard.map((card) => card.id);
+          targetColumn.cardOrderIds = dndOrderedCardIds;
           return nextColumns;
         });
+
+        handleMoveCardInColumnn( oldColumn?.id, dndOrderedCardIds);
+        console.log("dndOrderedCardIds", dndOrderedCardIds);
+        
       }
     }
 
@@ -198,6 +204,8 @@ function BoardContent({ board }) {
         const newIndex = orderColumn.findIndex(
           (column) => column.id === over.id
         );
+
+        handleMoveColumn(board.id, arrayMove(orderColumn, oldIndex, newIndex));
         setOrderColumn(arrayMove(orderColumn, oldIndex, newIndex));
       }
     }

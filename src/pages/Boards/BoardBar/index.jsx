@@ -21,11 +21,7 @@ function BoardBar({ board }) {
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const { handleReOpenBoard } = useBoardActions();
 
-  console.log("board", board);
-
-  const handleToggleStar = () => {
-    setIsStarred(!isStarred);
-  };
+  // console.log("board", board);
 
   return (
     <div
