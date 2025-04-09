@@ -8,6 +8,7 @@ import {
   removeUserboard,
   reOpenBoard_API,
   toggleStarred_API,
+  updateCardOrderDifferentColumn_API,
   updateCardOrderInColumn_API,
   updateColumnOrder_API,
 } from "~/apis";
@@ -177,6 +178,27 @@ export const useBoardActions = () => {
     },
     [dispatch]
   );
+
+  const handleMoveCardToDifferentColumnn = useCallback(
+    async (activeCardId, oldColumnId, newColumnId, columnData) => {
+      const cardOrderIdsNewColumn = columnData.find(
+        (column) => column.id === newColumnId
+      ).cardOrderIds;
+      const cardOrderIdsOldColumn = columnData.find(
+        (column) => column.id === oldColumnId
+      ).cardOrderIds;
+      const data = {
+        activeCardId,
+        oldColumnId,
+        newColumnId,
+        cardOrderIdsOldColumn,
+        cardOrderIdsNewColumn,
+      };
+      await updateCardOrderDifferentColumn_API(data);
+    },
+    [dispatch]
+  );
+
   return {
     handleCopyLink,
     handleCloseBoard,
@@ -187,5 +209,6 @@ export const useBoardActions = () => {
     handleLeaveBoard,
     handleMoveColumn,
     handleMoveCardInColumnn,
+    handleMoveCardToDifferentColumnn,
   };
 };

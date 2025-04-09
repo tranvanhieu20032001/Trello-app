@@ -31,7 +31,11 @@ function BoardContent({ board }) {
   const [activeItemType, setActiveItemType] = useState(null);
   const [activeItemData, setActiveItemData] = useState(null);
   const [oldColumn, setOldColumn] = useState(null);
-  const { handleMoveColumn, handleMoveCardInColumnn } = useBoardActions();
+  const {
+    handleMoveColumn,
+    handleMoveCardInColumnn,
+    handleMoveCardToDifferentColumnn,
+  } = useBoardActions();
 
   useEffect(() => {
     // const columns = mapOrder(board?.columns, board?.columnOrderIds, "id");
@@ -53,7 +57,8 @@ function BoardContent({ board }) {
     over,
     activeColumn,
     activeCardId,
-    activeCardata
+    activeCardata,
+    trigger
   ) => {
     setOrderColumn((prevColumns) => {
       const overCardIndex = overColumn?.cards?.findIndex(
@@ -117,7 +122,14 @@ function BoardContent({ board }) {
           (card) => card.id
         );
       }
-      console.log("nextColumns", nextColumns);
+      if (trigger === "handleDragEnd") {
+        handleMoveCardToDifferentColumnn(
+          activeCardId,
+          oldColumn?.id,
+          nextOverColumn?.id,
+          nextColumns
+        );
+      }
 
       return nextColumns;
     });
@@ -165,7 +177,8 @@ function BoardContent({ board }) {
           over,
           activeColumn,
           activeCardId,
-          activeCardata
+          activeCardata,
+          "handleDragEnd"
         );
       } else {
         const oldIndex = oldColumn?.cards?.findIndex(
@@ -189,9 +202,8 @@ function BoardContent({ board }) {
           return nextColumns;
         });
 
-        handleMoveCardInColumnn( oldColumn?.id, dndOrderedCardIds);
+        handleMoveCardInColumnn(oldColumn?.id, dndOrderedCardIds);
         console.log("dndOrderedCardIds", dndOrderedCardIds);
-        
       }
     }
 
@@ -242,7 +254,8 @@ function BoardContent({ board }) {
         over,
         activeColumn,
         activeCardId,
-        activeCardata
+        activeCardata,
+        "handleDragOver"
       );
     }
   };

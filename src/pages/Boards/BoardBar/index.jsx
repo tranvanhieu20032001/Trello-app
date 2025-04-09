@@ -26,7 +26,7 @@ function BoardBar({ board }) {
   return (
     <div
       id="boardbar"
-      className="h-14 text-primary dark:text-secondary bg-white bg-opacity-15 px-4 py-2 flex justify-between text-xs md:text-sm flex-col lg:flex-row"
+      className="h-14 text-white dark:text-secondary bg-white bg-opacity-15 px-4 py-2 flex justify-between text-xs md:text-sm flex-col lg:flex-row"
     >
       <div className="flex items-center gap-4 justify-between lg:justify-start">
         <TitleBoard data={board} />

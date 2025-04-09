@@ -61,6 +61,10 @@ export const createColumn_API = (newColumnData) =>
 export const updateCardOrderInColumn_API = (columnId, data) =>
   apiRequest.put(`/columns/${columnId}/card/order`, data);
 
+export const updateCardOrderDifferentColumn_API = (data) =>
+  apiRequest.put(`/columns/card/order`, data);
+
+
 // Cards
 export const createCard_API = (newCardData) =>
   apiRequest.post("/cards", newCardData);
