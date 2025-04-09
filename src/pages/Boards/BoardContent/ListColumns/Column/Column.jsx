@@ -78,7 +78,7 @@ function Column({ column }) {
           <BsThreeDots size={20} />
         </div>
 
-        <ListCards cards={cards} />
+        <ListCards cards={cards} column={column}/>
         {!addNewCard ? (
           <div className="flex items-center justify-between">
             <span

@@ -89,8 +89,6 @@ function BoardContent({ board }) {
           (card) => card.id !== activeCardId
         );
         if (isEmpty(nextActiveColumn.cards)) {
-          console.log("Het roi");
-
           nextActiveColumn.cards = [generatePlaceholderCard(nextActiveColumn)];
         }
 
