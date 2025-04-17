@@ -12,10 +12,7 @@ const Starred = ({ data }) => {
   const { boardId } = useParams();
   const dispatch = useDispatch();
 
-  const userPref = data?.UserBoardPreference?.find(
-    (pref) => pref.userId === user?.id
-  );
-
+  const userPref = data?.UserBoardPreference?.[0]
   const [starred, setStarred] = useState(userPref?.starred || false);
 
   const handleToggleStarred = async () => {
@@ -32,7 +29,7 @@ const Starred = ({ data }) => {
     <>
       <span
         id="star"
-        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
+        className="p-2 hover:bg-gray-600 rounded-md"
         onClick={handleToggleStarred}
       >
         {!starred ? (

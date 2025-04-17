@@ -88,7 +88,7 @@ const Visibility = () => {
       <button
         onClick={toggleDropdown}
         id="visibility"
-        className={`p-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-1 rounded-md border ${
+        className={`p-2 hover:bg-gray-600 flex items-center gap-1 rounded-md border ${
           isDropdownOpen ? "border-primary" : "border-transparent"
         }`}
       >

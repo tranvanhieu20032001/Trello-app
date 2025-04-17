@@ -64,7 +64,7 @@ const TitleBoard = ({ data }) => {
     <div ref={inputRef}>
       {!edit ? (
         <h1
-          className="titleboard font-semibold p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
+          className="titleboard font-semibold p-2 hover:bg-gray-600 rounded-md"
           onClick={user?.id === data?.ownerId ? () => setEdit(true) : undefined}
         >
           {newTitle}

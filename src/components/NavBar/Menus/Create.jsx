@@ -1,5 +1,5 @@
 import { useState } from "react";
-import CreateBoardModal from "~/components/Boards/CreateBoardModal";
+import CreateBoardModal from "~/components/Modal/CreateBoardModal";
 
 const Create = () => {
   const [isOpen, setIsOpen] = useState(false);

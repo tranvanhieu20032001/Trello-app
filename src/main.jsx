@@ -19,6 +19,7 @@ import Board from "./pages/Boards/index.jsx";
 import BoardWrapper from "./pages/Boards/BoardWrapper.jsx";
 import BoardsContent from "./components/Workspace/Content/BoardsContent.jsx";
 import InvitePage from "./pages/InvitePage.jsx";
+import ImageUnSplash from "./components/ImageUnSplash.jsx";
 
 const router = createBrowserRouter([
   {
@@ -70,6 +71,7 @@ const router = createBrowserRouter([
       { path: "callback", element: <GoogleCallBack /> },
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
+      { path: "images", element: <ImageUnSplash /> },
       { path: "*", element: <NotFound /> },
     ],
   },

@@ -13,8 +13,8 @@ function Board() {
   const { boardId } = useParams();
   const dispatch = useDispatch();
 
-  const boardState = useSelector((state) => state.board);
-  const board = boardState?.board?.data;
+  const boardData = useSelector((state) => state.board);
+  const board = boardData?.board?.data;
   const visibility = board?.type;
   const workspaceData = useSelector((state) => state.workspace.workspaceData);
   const user = useSelector((state) => state.auth.user);

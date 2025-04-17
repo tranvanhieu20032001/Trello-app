@@ -49,7 +49,7 @@ export const visibilityChange_API = (boardId, visibility) =>
   apiRequest.patch(`/boards/${boardId}/visibility`, { visibility });
 
 export const renameBoard_API = (boardId, newname) =>
-  apiRequest.patch(`/boards/${boardId}/rename`, { newname });
+  apiRequest.put(`/boards/${boardId}/rename`, { newname });
 
 export const updateColumnOrder_API = (boardId, data) =>
   apiRequest.put(`/boards/${boardId}/column/order`, data);
@@ -64,10 +64,24 @@ export const updateCardOrderInColumn_API = (columnId, data) =>
 export const updateCardOrderDifferentColumn_API = (data) =>
   apiRequest.put(`/columns/card/order`, data);
 
+export const renameList_API = (columnId, newname) =>
+  apiRequest.put(`/columns/${columnId}/rename`, { newname });
 
 // Cards
 export const createCard_API = (newCardData) =>
   apiRequest.post("/cards", newCardData);
+
+export const moveCard_API = (data) => apiRequest.put("/cards/move", data);
+
+export const uploadCoverImage_API = (cardId, filename) =>
+  apiRequest.put(`/cards/${cardId}/cover`, { filename });
+
+//Upload
+export const uploadFile_API = (formData) => {
+  return apiRequest.post(`/upload/cover`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};
 
 // User
 export const createUser_API = (newUserData) =>

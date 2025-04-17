@@ -8,7 +8,7 @@ import { MdOutlinePublic } from "react-icons/md";
 import { PiUsersThreeLight } from "react-icons/pi";
 import { FaRegStar, FaStar } from "react-icons/fa6";
 import nofund from "~/assets/nofund.svg";
-import CreateBoardModal from "~/components/Boards/CreateBoardModal";
+import CreateBoardModal from "~/components/Modal/CreateBoardModal";
 import { IoClose } from "react-icons/io5";
 import ViewBoardClose from "../../Modal/ViewBoardClose";
 

@@ -8,7 +8,7 @@ import { FaRegStar, FaStar } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import { Tooltip } from "react-tooltip";
 import astronaut from "~/assets/astronaut.png";
-import CreateBoardModal from "~/components/Boards/CreateBoardModal";
+import CreateBoardModal from "~/components/Modal/CreateBoardModal";
 import ConfirmAction from "../../Modal/ConfirmAction";
 import { useBoardActions } from "~/utils/hooks/useBoardActions";
 import lock from "~/assets/lock.svg";
