@@ -1,7 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useRef, useState } from "react";
-import { BiEdit } from "react-icons/bi";
+import { BiSolidEditAlt } from "react-icons/bi";
 import { BsClockHistory } from "react-icons/bs";
 import { LiaCommentSolid } from "react-icons/lia";
 import { PiPaperclipLight } from "react-icons/pi";
@@ -20,7 +20,7 @@ function Card({ card }) {
   const [cardRect, setCardRect] = useState(null);
 
   const handleClick = (e) => {
-    e.stopPropagation()
+    e.stopPropagation();
     const rect = cardRef.current.getBoundingClientRect();
     setCardRect(rect);
     setModalOpen(true);
@@ -67,16 +67,16 @@ function Card({ card }) {
       >
         <div ref={cardRef}>
           <button
-            className="absolute top-2 text-black rounded-full right-3 bg-gray-200 p-1 hidden group-hover:block"
+            className="absolute top-1.5 text-black rounded-full right-3 bg-gray-200 p-1.5 hidden group-hover:flex items-center justify-center"
             onClick={(e) => handleClick(e)}
           >
-            <BiEdit />
+            <BiSolidEditAlt />
           </button>
           {card?.cover && (
             <img
               src={card?.cover}
               alt="Cover"
-              className="h-auto rounded-t-md object-cover"
+              className="h-40 w-full rounded-t-md object-cover"
             />
           )}
 
@@ -146,6 +146,10 @@ function Card({ card }) {
           onClose={() => {
             setModalOpen(false);
             dispatch(closeModal());
+          }}
+          onOpenDetails={() => {
+            setModalOpen(false);
+            setModalDetailsOpen(true);
           }}
         />
       )}

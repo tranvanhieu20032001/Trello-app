@@ -11,7 +11,7 @@ const CoverCardImg = ({ card }) => {
           <img
             src={card?.cover}
             alt="Cover"
-            className="h-48 rounded-md object-cover"
+            className="h-44 w-80 rounded-md object-cover"
           />
         )}
 

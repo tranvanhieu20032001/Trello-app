@@ -24,7 +24,6 @@ const ACTIVE_ITEM_TYPE = {
 };
 
 function BoardContent({ board }) {
-  // console.log("boards column", board.columns);
   const [orderColumn, setOrderColumn] = useState([]);
   const [boardHeight, setBoardHeight] = useState(0);
   const [activeId, setActiveId] = useState(null);

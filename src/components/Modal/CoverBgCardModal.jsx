@@ -8,6 +8,7 @@ import { BE_URL } from "~/utils/constants";
 import { useDispatch } from "react-redux";
 import { fetchBoardById } from "~/store/slices/boardSlice";
 import loading from "~/assets/loading.svg";
+import { LiaTimesSolid } from "react-icons/lia";
 
 const collections = [
   { id: "1424240", name: "Animals" },
@@ -160,7 +161,7 @@ const CoverBgCardModal = ({
         className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
         onClick={onClose}
       >
-        ✕
+        <LiaTimesSolid size={20} className="cursor-pointer" />
       </button>
 
       {cover && (

@@ -1,21 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { BsActivity, BsTextLeft } from "react-icons/bs";
-import { IoIosArrowDown } from "react-icons/io";
 import { IoCloseOutline } from "react-icons/io5";
 import { MdOutlineAttachFile, MdOutlineLabel } from "react-icons/md";
 import { GoCommentDiscussion } from "react-icons/go";
 import { useSelector } from "react-redux";
-import { CiCalendarDate, CiCircleCheck } from "react-icons/ci";
+import { CiCalendarDate, CiCircleCheck, CiImageOn } from "react-icons/ci";
 import { AiOutlineUser, AiOutlineUserAdd } from "react-icons/ai";
 import TitleCard from "../Cards/CardModal/TitleCard";
-import LoaderSearch from "../Loader/LoaderSearch";
 import Loading from "../Loader/Loading";
 import CoverCardImg from "../Cards/CardModal/CoverCardImg";
+import CoverBgCardModal from "./CoverBgCardModal";
+import LabelModal from "./LabelModal";
+import LabelsCard from "../Cards/CardModal/LabelsCard";
 
 const CardDetailsModal = ({ card, onClose }) => {
   const user = useSelector((state) => state.auth.user);
   const boardData = useSelector((state) => state.board?.board?.data);
   const [isLoading, setIsLoading] = useState(true);
+  const [modalState, setModalState] = useState({
+    cover: false,
+    label: false,
+  });
+
+  const handleModalToggle = (type) => {
+    setModalState({
+      cover: type === "cover",
+      label: type === "label",
+    });
+  };
 
   useEffect(() => {
     if (card && boardData?.columns) {
@@ -39,10 +51,11 @@ const CardDetailsModal = ({ card, onClose }) => {
               <IoCloseOutline size={24} />
             </button>
 
-            <CoverCardImg card={card}/>
+            <CoverCardImg card={card} />
             <div className="grid grid-cols-4 gap-5">
               <div className="col-span-3 space-y-5">
                 <TitleCard card={card} boards={boardData} />
+                <LabelsCard card={card} />
                 <div className="space-y-2">
                   <span className="font-medium text-base flex items-center gap-2">
                     <BsTextLeft size={20} />
@@ -99,7 +112,7 @@ const CardDetailsModal = ({ card, onClose }) => {
                   </div>
                 </div>
               </div>
-              <div className="col-span-1 space-y-5">
+              <div className="col-span-1 space-y-5 relative">
                 <div className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300">
                   <AiOutlineUserAdd size={18} />
                   Join
@@ -108,7 +121,19 @@ const CardDetailsModal = ({ card, onClose }) => {
                   <AiOutlineUser size={18} />
                   Members
                 </div>
-                <div className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300">
+                {!card?.cover && (
+                  <div
+                    className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300 relative"
+                    onClick={() => handleModalToggle("cover")}
+                  >
+                    <CiImageOn size={18} />
+                    Change cover
+                  </div>
+                )}
+                <div
+                  className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300"
+                  onClick={() => handleModalToggle("label")}
+                >
                   <MdOutlineLabel size={18} />
                   Labels
                 </div>
@@ -124,6 +149,25 @@ const CardDetailsModal = ({ card, onClose }) => {
                   <MdOutlineAttachFile size={18} />
                   Attachments
                 </div>
+                {modalState.cover && (
+                  <CoverBgCardModal
+                    card={card}
+                    isOpen
+                    onClose={() =>
+                      setModalState({ cover: false, label: false })
+                    }
+                  />
+                )}
+                {modalState.label && (
+                  <LabelModal
+                    card={card}
+                    board={boardData}
+                    isOpen
+                    onClose={() =>
+                      setModalState({ cover: false, label: false })
+                    }
+                  />
+                )}
               </div>
             </div>
           </div>

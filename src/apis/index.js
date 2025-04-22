@@ -83,6 +83,17 @@ export const uploadFile_API = (formData) => {
   });
 };
 
+//Labels
+export const createLabel_API = (data) => apiRequest.post("/labels", data);
+export const removeLabel_API = (labelId) =>
+  apiRequest.delete(`/labels/${labelId}`);
+
+export const updateLabel_API = (labelId, data) =>
+  apiRequest.put(`/labels/${labelId}`, data);
+
+export const toggleLabel_API = (data) =>
+  apiRequest.post("/labels/toggle", data);
+
 // User
 export const createUser_API = (newUserData) =>
   apiRequest.post("/auth/register", newUserData, { withCredentials: false });
