@@ -116,8 +116,8 @@ export const useBoardActions = () => {
       try {
         dispatch(startLoading());
         const response = await leaveBoard(id);
-        toast.success(response.data.message);
-        dispatch(fetchBoardById(id));
+        // toast.success(response.data.message);
+        // dispatch(fetchBoardById(id));
       } catch (error) {
         toast.error("Failed to leave workspace.");
       } finally {
@@ -135,8 +135,8 @@ export const useBoardActions = () => {
       try {
         dispatch(startLoading());
         const response = await removeUserboard(boardId, { ownerId, userId });
-        toast.success(response.data.message);
-        dispatch(fetchBoardById(boardId));
+        // toast.success(response.data.message);
+        // dispatch(fetchBoardById(boardId));
       } catch (error) {
         toast.error("Failed to remove user.");
       } finally {

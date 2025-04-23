@@ -33,8 +33,8 @@ export const useWorkspaceActions = () => {
 
       try {
         const response = await leaveWorkspace(id);
-        toast.success(response.data.message);
-        dispatch(fetchWorkspaceData(id)); // Cập nhật lại workspace
+        // toast.success(response.data.message);
+        // dispatch(fetchWorkspaceData(id)); // Cập nhật lại workspace
       } catch (error) {
         toast.error("Failed to leave workspace.");
       }
@@ -48,8 +48,8 @@ export const useWorkspaceActions = () => {
 
       try {
         const response = await removeUserWorkspace(id, { ownerId, userId });
-        toast.success(response.data.message);
-        dispatch(fetchWorkspaceData(id)); // Cập nhật lại workspace
+        // toast.success(response.data.message);
+        // dispatch(fetchWorkspaceData(id)); // Cập nhật lại workspace
       } catch (error) {
         toast.error("Failed to remove user.");
       }

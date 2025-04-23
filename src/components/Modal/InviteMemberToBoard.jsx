@@ -87,8 +87,6 @@ const InviteMemberToBoard = ({ isOpen, onClose, boardId }) => {
         boardId,
         userId: selectedUser.id,
       });
-      dispatch(fetchBoardById(boardId));
-      toast.success(response.data.message);
     } catch (error) {
       toast.error(error.response.data.message);
     } finally {
@@ -111,7 +109,7 @@ const InviteMemberToBoard = ({ isOpen, onClose, boardId }) => {
   return (
     <div className="fixed inset-0 flex items-start justify-center bg-black/50 z-50 pt-[10vh]">
       <div
-        className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-lg relative"
+        className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-lg relative text-primary"
         ref={modalRef}
       >
         <button

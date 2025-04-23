@@ -8,6 +8,8 @@ import { fetchWorkspaceData } from "~/store/slices/workSpaceSlice";
 import NofoundPage from "~/components/Workspace/Content/NofoundPage";
 import { cloneDeep, isEmpty } from "lodash";
 import { generatePlaceholderCard } from "~/utils/formatters";
+import { toast } from "react-toastify";
+import socket from "~/utils/socket";
 
 function Board() {
   const { boardId } = useParams();
@@ -47,6 +49,37 @@ function Board() {
       setLocalBoard(clonedBoard);
     }
   }, [board]);
+
+  useEffect(() => {
+    if (!boardId) return;
+
+    socket.emit("joinBoard", boardId);
+
+    const handleNewMember = (username) => {
+      toast.success(`${username} has been added to the board!`);
+      dispatch(fetchBoardById(boardId));
+    };
+
+    const handleRemoveMember = (username) => {
+      toast.success(`${username} has been removed from the board.`);
+      dispatch(fetchBoardById(boardId));
+    };
+
+    const handleLeaveMember = (username) => {
+      toast.success(`${username} has left the board.`);
+      dispatch(fetchBoardById(boardId));
+    };
+
+    socket.on("new-member", handleNewMember);
+    socket.on("remove-member", handleRemoveMember);
+    socket.on("leave-member", handleLeaveMember);
+
+    return () => {
+      socket.off("new-member", handleNewMember);
+      socket.off("remove-member", handleRemoveMember);
+      socket.off("leave-member", handleLeaveMember);
+    };
+  }, [boardId]);
 
   const isMemberWorkspace = useMemo(
     () => workspaceData?.members?.some((m) => m.userId === user?.id),

@@ -38,11 +38,9 @@ const InvitePage = () => {
     try {
       if (workspaceId) {
         await joinWorkspace({ workspaceId, userId });
-        toast.success("Joined workspace successfully!");
         navigate(`/workspace/${workspaceId}/members`);
       } else if (boardId) {
         await joinBoard({ boardId, userId });
-        toast.success("Joined board successfully!");
         navigate(`/board/${boardId}`);
       }
     } catch (error) {
