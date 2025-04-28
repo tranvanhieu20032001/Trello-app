@@ -1,12 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
-import { useDispatch } from "react-redux";
-import { moveCard_API } from "~/apis";
-import { fetchBoardById } from "~/store/slices/boardSlice";
+import { dateComplete_API, moveCard_API } from "~/apis";
 
 const TitleCard = ({ card, boards }) => {
   const dropdownRef = useRef(null);
-  const dispatch = useDispatch();
+  const [isComplete, setIsComplete] = useState(null);
   const [columnTitle, setColumnTitle] = useState(
     boards?.columns.find((c) => c.id === card.columnId).title
   );
@@ -20,12 +18,12 @@ const TitleCard = ({ card, boards }) => {
     setIsOpen(false);
     setAction(column?.id !== card.columnId);
   };
+  
 
   const handleMove = async () => {
     if (!columnId || columnId === card.columnId) return;
     try {
       await moveCard_API({ cardId: card.id, columnId });
-      dispatch(fetchBoardById(boards?.id));
       setAction(false);
     } catch (error) {
       console.error("Failed to move card:", error);
@@ -48,9 +46,25 @@ const TitleCard = ({ card, boards }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    setIsComplete(card?.isComplete);
+  }, [card?.isComplete]);
+
+  const handleDateComplete = async () => {
+    const newStatus = !isComplete;
+    setIsComplete(newStatus);
+    await dateComplete_API(card?.id, newStatus);
+  };
+
   return (
     <div className="text-sm py-2 flex items-center gap-2">
-      <input data-tooltip-id={`complete-${card?.id}`} type="checkbox" />
+      <input
+        data-tooltip-id={`complete-${card?.id}`}
+        type="checkbox"
+        checked={isComplete}
+        className="w-5 h-5"
+        onChange={handleDateComplete}
+      />
       <span className="font-medium text-base">{card?.title}</span> in list{" "}
       <div className="relative w-44 text-sm" ref={dropdownRef}>
         <button

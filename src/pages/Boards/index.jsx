@@ -94,7 +94,8 @@ function Board() {
   const permissionAccess =
     visibility === "public" ||
     (visibility === "private" && isMemberBoard) ||
-    (visibility === "workspace" && isMemberWorkspace);
+    (visibility === "workspace" && isMemberWorkspace) ||
+    (visibility === "workspace" && isMemberBoard);
 
   const backgroundImage = board?.background
     ? `url('${board.background}')`

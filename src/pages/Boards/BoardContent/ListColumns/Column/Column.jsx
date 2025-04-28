@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchBoardById } from "~/store/slices/boardSlice";
 import { useParams } from "react-router-dom";
 import ListActions from "~/components/Modal/ListActions";
+import socket from "~/utils/socket";
 
 function Column({ column }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,6 +22,17 @@ function Column({ column }) {
   const [newTitle, setNewTitle] = useState(column?.title);
   const inputRef = useRef(null);
   const isModalOpen = useSelector((state) => state.modal.isModalOpen);
+
+  useEffect(() => {
+    if (!column?.id) return;
+    const handleFetchBoard = () => dispatch(fetchBoardById(column?.id));
+    socket.emit("joinColumn", column?.id);
+    socket.on("notifyBoard", handleFetchBoard);
+    return () => {
+      socket.off("notifyBoard", handleFetchBoard);
+    };
+  }, [column?.id]);
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (inputRef.current && !inputRef.current.contains(e.target)) {
@@ -129,7 +141,7 @@ function Column({ column }) {
     <div ref={setNodeRef} style={style} {...attributes}>
       <div
         {...listeners}
-        className="column w-72 px-3 py-3 bg-gray-100 dark:bg-gray-800 rounded-md space-y-2 text-primary dark:text-secondary text-xs md:text-sm"
+        className="column w-[17rem] px-3 py-3 bg-gray-100 dark:bg-gray-800 rounded-md space-y-2 text-primary dark:text-secondary text-xs md:text-sm"
       >
         <div
           className="flex items-center justify-between relative"

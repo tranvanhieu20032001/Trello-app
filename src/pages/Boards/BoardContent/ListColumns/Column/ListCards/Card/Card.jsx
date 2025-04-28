@@ -1,6 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BiSolidEditAlt } from "react-icons/bi";
 import { BsClockHistory } from "react-icons/bs";
 import { LiaCommentSolid } from "react-icons/lia";
@@ -10,10 +10,21 @@ import { Tooltip } from "react-tooltip";
 import CardActionsModal from "~/components/Modal/CardActionsModal";
 import CardDetailsModal from "~/components/Modal/CardDetailsModal";
 import users from "~/data/user";
+import { fetchBoardById } from "~/store/slices/boardSlice";
 import { closeModal, openModal } from "~/store/slices/modalSlice";
+import socket from "~/utils/socket";
 
 function Card({ card }) {
   const dispatch = useDispatch();
+  useEffect(() => {
+    if (!card?.id) return;
+    const handleFetchBoard = () => dispatch(fetchBoardById(card.boardId));
+    socket.emit("joinCard", card?.id);
+    socket.on("notify", handleFetchBoard);
+    return () => {
+      socket.off("notify", handleFetchBoard);
+    };
+  }, [card?.id]);
   const cardRef = useRef();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalDetailsOpen, setModalDetailsOpen] = useState(false);

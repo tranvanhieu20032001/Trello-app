@@ -15,13 +15,11 @@ import TitleBoard from "./sections/TitleBoard";
 import Starred from "./sections/Starred";
 
 function BoardBar({ board }) {
-  const [isStarred, setIsStarred] = useState(data.board.starred);
-
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const { handleReOpenBoard } = useBoardActions();
 
-  // console.log("board", board);
+  console.log("board", board?.BoardMembers);
 
   return (
     <div
@@ -30,7 +28,7 @@ function BoardBar({ board }) {
     >
       <div className="flex items-center gap-4 justify-between lg:justify-start">
         <TitleBoard data={board} />
-       <Starred data={board}/>
+        <Starred data={board} />
         {board.status && (
           <>
             <span

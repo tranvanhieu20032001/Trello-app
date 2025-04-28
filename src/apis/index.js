@@ -76,6 +76,38 @@ export const moveCard_API = (data) => apiRequest.put("/cards/move", data);
 export const uploadCoverImage_API = (cardId, filename) =>
   apiRequest.put(`/cards/${cardId}/cover`, { filename });
 
+export const createChecklist_API = (cardId, title) =>
+  apiRequest.post(`/cards/${cardId}/checklist`, { title });
+
+export const addChecklistItem_API = (checkListId, text) =>
+  apiRequest.post("/cards/checklist/add", { checkListId, text });
+
+export const toggleChecklistItem_API = (itemId) =>
+  apiRequest.put("/cards/checklist/toggle", { itemId });
+
+export const removeCheckList_API = (checkListId) =>
+  apiRequest.delete(`/cards/checklist/${checkListId}`);
+
+export const removeCheckListItem_API = (itemId) =>
+  apiRequest.delete(`/cards/checklist/item/${itemId}`);
+
+export const editDates_API = (cardId, data) =>
+  apiRequest.put(`/cards/${cardId}/dates`, data);
+
+export const dateComplete_API = (cardId, iscomplete) =>
+  apiRequest.post(`/cards/${cardId}/complete`, { iscomplete });
+
+export const joinCard_API = (cardId) =>
+  apiRequest.post(`/cards/${cardId}/join`);
+export const leaveCard_API = (cardId) =>
+  apiRequest.post(`/cards/${cardId}/leave`);
+
+export const addMemberToCard_API = (cardId, userId) =>
+  apiRequest.post(`/cards/${cardId}/member`, { userId });
+
+export const deleteMemberToCard_API = (cardId, userId) =>
+  apiRequest.patch(`/cards/${cardId}/member`, { userId });
+
 //Upload
 export const uploadFile_API = (formData) => {
   return apiRequest.post(`/upload/cover`, formData, {

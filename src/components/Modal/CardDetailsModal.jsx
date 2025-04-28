@@ -3,8 +3,13 @@ import { BsActivity, BsTextLeft } from "react-icons/bs";
 import { IoCloseOutline } from "react-icons/io5";
 import { MdOutlineAttachFile, MdOutlineLabel } from "react-icons/md";
 import { GoCommentDiscussion } from "react-icons/go";
-import { useSelector } from "react-redux";
-import { CiCalendarDate, CiCircleCheck, CiImageOn } from "react-icons/ci";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  CiCalendarDate,
+  CiCircleCheck,
+  CiImageOn,
+  CiLogout,
+} from "react-icons/ci";
 import { AiOutlineUser, AiOutlineUserAdd } from "react-icons/ai";
 import TitleCard from "../Cards/CardModal/TitleCard";
 import Loading from "../Loader/Loading";
@@ -12,21 +17,49 @@ import CoverCardImg from "../Cards/CardModal/CoverCardImg";
 import CoverBgCardModal from "./CoverBgCardModal";
 import LabelModal from "./LabelModal";
 import LabelsCard from "../Cards/CardModal/LabelsCard";
+import CheckList from "../Cards/CardModal/CheckList";
+import AddCheckListModal from "./AddCheckListModal";
+import DateModal from "./DateModal";
+import DatesCart from "../Cards/CardModal/DatesCart";
+import { joinCard_API, leaveCard_API } from "~/apis";
+import MemberCard from "../Cards/CardModal/MemberCard";
+import { fetchBoardById } from "~/store/slices/boardSlice";
+import MemberCardModal from "./MemberCardModal";
 
 const CardDetailsModal = ({ card, onClose }) => {
+  const dispatch = useDispatch();
+
   const user = useSelector((state) => state.auth.user);
+  const isMember = card?.CardMembers.some((c) => c.userId === user.id);
+
   const boardData = useSelector((state) => state.board?.board?.data);
   const [isLoading, setIsLoading] = useState(true);
   const [modalState, setModalState] = useState({
     cover: false,
     label: false,
+    checklist: false,
+    date: false,
+    member: false,
   });
 
   const handleModalToggle = (type) => {
     setModalState({
       cover: type === "cover",
       label: type === "label",
+      checklist: type === "checklist",
+      date: type === "date",
+      member: type === "member",
     });
+  };
+
+  const handleJoinCard = async () => {
+    await joinCard_API(card?.id);
+    dispatch(fetchBoardById(card?.boardId));
+  };
+
+  const handleLeaveCard = async () => {
+    await leaveCard_API(card?.id);
+    dispatch(fetchBoardById(card?.boardId));
   };
 
   useEffect(() => {
@@ -55,7 +88,10 @@ const CardDetailsModal = ({ card, onClose }) => {
             <div className="grid grid-cols-4 gap-5">
               <div className="col-span-3 space-y-5">
                 <TitleCard card={card} boards={boardData} />
+                <MemberCard card={card} />
+                <DatesCart card={card} />
                 <LabelsCard card={card} />
+                <CheckList card={card} boards={boardData} />
                 <div className="space-y-2">
                   <span className="font-medium text-base flex items-center gap-2">
                     <BsTextLeft size={20} />
@@ -113,11 +149,26 @@ const CardDetailsModal = ({ card, onClose }) => {
                 </div>
               </div>
               <div className="col-span-1 space-y-5 relative">
-                <div className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300">
-                  <AiOutlineUserAdd size={18} />
-                  Join
+                <div
+                  className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300"
+                  onClick={isMember ? handleLeaveCard : handleJoinCard}
+                >
+                  {isMember ? (
+                    <>
+                      <CiLogout size={18} />
+                      Leave
+                    </>
+                  ) : (
+                    <>
+                      <AiOutlineUserAdd size={18} />
+                      Join
+                    </>
+                  )}
                 </div>
-                <div className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300">
+                <div
+                  className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300"
+                  onClick={() => handleModalToggle("member")}
+                >
                   <AiOutlineUser size={18} />
                   Members
                 </div>
@@ -137,13 +188,19 @@ const CardDetailsModal = ({ card, onClose }) => {
                   <MdOutlineLabel size={18} />
                   Labels
                 </div>
-                <div className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300">
+                <div
+                  className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300"
+                  onClick={() => handleModalToggle("checklist")}
+                >
                   <CiCircleCheck size={18} />
                   Checklist
                 </div>
-                <div className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300">
+                <div
+                  className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300"
+                  onClick={() => handleModalToggle("date")}
+                >
                   <CiCalendarDate size={18} />
-                  Edit dates
+                  Dates
                 </div>
                 <div className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300">
                   <MdOutlineAttachFile size={18} />
@@ -154,7 +211,13 @@ const CardDetailsModal = ({ card, onClose }) => {
                     card={card}
                     isOpen
                     onClose={() =>
-                      setModalState({ cover: false, label: false })
+                      setModalState({
+                        cover: false,
+                        label: false,
+                        checklist: false,
+                        date: false,
+                        member: false,
+                      })
                     }
                   />
                 )}
@@ -164,7 +227,57 @@ const CardDetailsModal = ({ card, onClose }) => {
                     board={boardData}
                     isOpen
                     onClose={() =>
-                      setModalState({ cover: false, label: false })
+                      setModalState({
+                        cover: false,
+                        label: false,
+                        checklist: false,
+                        date: false,
+                        member: false,
+                      })
+                    }
+                  />
+                )}
+                {modalState.checklist && (
+                  <AddCheckListModal
+                    card={card}
+                    board={boardData}
+                    onClose={() =>
+                      setModalState({
+                        cover: false,
+                        label: false,
+                        checklist: false,
+                        date: false,
+                        member: false,
+                      })
+                    }
+                  />
+                )}
+                {modalState.date && (
+                  <DateModal
+                    card={card}
+                    onClose={() =>
+                      setModalState({
+                        cover: false,
+                        label: false,
+                        checklist: false,
+                        date: false,
+                        member: false,
+                      })
+                    }
+                  />
+                )}
+                {modalState.member && (
+                  <MemberCardModal
+                    card={card}
+                    board={boardData}
+                    onClose={() =>
+                      setModalState({
+                        cover: false,
+                        label: false,
+                        checklist: false,
+                        date: false,
+                        member: false,
+                      })
                     }
                   />
                 )}

@@ -5,8 +5,8 @@ const LabelsCard = ({ card }) => {
   return (
     <>
       {labels.length > 0 ? (
-        <div>
-          <span>Label</span>
+        <div className="flex items-center gap-3">
+          <span>Label:</span>
           <div className="flex items-center gap-2 mt-2">
             {labels.map((label) => (
               <div

@@ -17,6 +17,9 @@ import Card from "./ListColumns/Column/ListCards/Card/Card";
 import { cloneDeep, isEmpty } from "lodash";
 import { generatePlaceholderCard } from "~/utils/formatters";
 import { useBoardActions } from "~/utils/hooks/useBoardActions";
+import socket from "~/utils/socket";
+import { fetchBoardById } from "~/store/slices/boardSlice";
+import { useDispatch } from "react-redux";
 
 const ACTIVE_ITEM_TYPE = {
   COLOMN: "ACTIVE_COLUMN",
@@ -24,6 +27,7 @@ const ACTIVE_ITEM_TYPE = {
 };
 
 function BoardContent({ board }) {
+  const dispatch = useDispatch();
   const [orderColumn, setOrderColumn] = useState([]);
   const [boardHeight, setBoardHeight] = useState(0);
   const [activeId, setActiveId] = useState(null);
@@ -37,7 +41,6 @@ function BoardContent({ board }) {
   } = useBoardActions();
 
   useEffect(() => {
-    // const columns = mapOrder(board?.columns, board?.columnOrderIds, "id");
     const columns = mapOrder(board?.columns, board?.columnOrderIds, "id");
     setOrderColumn(columns);
 
@@ -48,6 +51,33 @@ function BoardContent({ board }) {
     const totalHeight = window.innerHeight - navbarHeight - boardbarHeight;
     setBoardHeight(totalHeight); // Cập nhật chiều cao của BoardContent
   }, [board]);
+
+  const handleUpdateColumnOrder = () => {
+    dispatch(fetchBoardById(board.id));
+  };
+  useEffect(() => {
+    if (!board?.id) return;
+
+    socket.emit("joinBoard", board?.id);
+    socket.on("updateColumnOrder", handleUpdateColumnOrder);
+    socket.on("notify", handleUpdateColumnOrder);
+    return () => {
+      socket.off("updateColumnOrder", handleUpdateColumnOrder);
+      socket.off("notify", handleUpdateColumnOrder);
+    };
+  }, [board?.id]);
+
+  useEffect(() => {
+    if (!board?.id) return;
+    const handleUpdateOrderCardIds = () => {
+      dispatch(fetchBoardById(board.id));
+    };
+    socket.emit("joinColumn", board);
+    socket.on("updateOrderCardIds", handleUpdateOrderCardIds);
+    return () => {
+      socket.off("updateOrderCardIds", handleUpdateOrderCardIds);
+    };
+  }, [board?.id]);
 
   const handleSetCardBetweenDifferentColumns = (
     overColumn,

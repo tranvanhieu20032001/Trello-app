@@ -20,14 +20,14 @@ const visibilityOptions = [
     value: "public",
     label: "Public",
     icon: <MdOutlinePublic size={20} />,
-    description:
-      "All members of the Sprint-1 Workspace can see and edit this board.",
+    description: "Public boards are visible to anyone on the internet.",
   },
   {
     value: "workspace",
     label: "Workspace",
     icon: <PiUsersThreeLight size={20} />,
-    description: "Public boards are visible to anyone on the internet.",
+    description:
+      "All members of the Workspace can see and edit this board.",
   },
 ];
 

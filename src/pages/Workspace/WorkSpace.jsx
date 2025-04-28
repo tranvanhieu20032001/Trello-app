@@ -29,17 +29,17 @@ const WorkSpace = () => {
     socket.emit("joinWorkspace", id);
 
     const handleNewMember = (username) => {
-      toast.info(`${username} has been added to the workspace!`);
+      toast.success(`${username} has been added to the workspace!`);
       dispatch(fetchWorkspaceData(id));
     };
 
     const handleRemoveMember = (username) => {
-      toast.info(`${username} has been removed from the workspace.`);
+      toast.success(`${username} has been removed from the workspace.`);
       dispatch(fetchWorkspaceData(id));
     };
 
     const handleLeaveMember = (username) => {
-      toast.info(`${username} has left the workspace.`);
+      toast.success(`${username} has left the workspace.`);
       dispatch(fetchWorkspaceData(id));
     };
 

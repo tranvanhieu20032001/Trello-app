@@ -26,7 +26,7 @@ const BoardWrapper = () => {
     <div className="flex w-screen mx-auto text-primary" style={{ height: wrapperHeight }}>
       <div
         className={`${
-          !isSidebarOpen ? "w-8" : "w-72"
+          !isSidebarOpen ? "min-w-8" : "min-w-64"
         } relative shadow-md flex flex-col bg-light dark:bg-dark text-primary dark:text-secondary`}
       >
         {isSidebarOpen && <Sidebar isSidebarOpen={isSidebarOpen} />}
