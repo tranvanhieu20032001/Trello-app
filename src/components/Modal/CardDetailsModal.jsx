@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { BsActivity, BsTextLeft } from "react-icons/bs";
 import { IoCloseOutline } from "react-icons/io5";
 import { MdOutlineAttachFile, MdOutlineLabel } from "react-icons/md";
-import { GoCommentDiscussion } from "react-icons/go";
 import { useDispatch, useSelector } from "react-redux";
 import {
   CiCalendarDate,
@@ -25,8 +24,14 @@ import { joinCard_API, leaveCard_API } from "~/apis";
 import MemberCard from "../Cards/CardModal/MemberCard";
 import { fetchBoardById } from "~/store/slices/boardSlice";
 import MemberCardModal from "./MemberCardModal";
+import AttachmentModal from "./AttachmentModal";
+import Attachments from "../Cards/CardModal/Attachments";
+import Descriptions from "../Cards/CardModal/Descriptions";
+import Comment from "../Cards/CardModal/Comment";
 
 const CardDetailsModal = ({ card, onClose }) => {
+  console.log("Card", card);
+
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.auth.user);
@@ -40,6 +45,7 @@ const CardDetailsModal = ({ card, onClose }) => {
     checklist: false,
     date: false,
     member: false,
+    attachment: false,
   });
 
   const handleModalToggle = (type) => {
@@ -49,6 +55,7 @@ const CardDetailsModal = ({ card, onClose }) => {
       checklist: type === "checklist",
       date: type === "date",
       member: type === "member",
+      attachment: type === "attachment",
     });
   };
 
@@ -92,52 +99,10 @@ const CardDetailsModal = ({ card, onClose }) => {
                 <DatesCart card={card} />
                 <LabelsCard card={card} />
                 <CheckList card={card} boards={boardData} />
-                <div className="space-y-2">
-                  <span className="font-medium text-base flex items-center gap-2">
-                    <BsTextLeft size={20} />
-                    Descriptions
-                  </span>
-                  <div className="p-4 rounded-md bg-gray-100">
-                    Add a more detailed description...
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium text-base flex items-center gap-2">
-                      <MdOutlineAttachFile size={20} />
-                      Attachments
-                    </span>
-                    <button className="text-sm bg-blue-600 text-white hover:bg-primary border border-blue-700 px-2 py-1 rounded-sm">
-                      Add
-                    </button>
-                  </div>
-                  <p className="text-center">No Attachments</p>
-                </div>
+                <Descriptions card={card} />
+                <Attachments card={card} />
                 <hr />
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium text-base flex items-center gap-2">
-                      <GoCommentDiscussion size={20} />
-                      Comments
-                    </span>
-                  </div>
-                  <div className="flex gap-2">
-                    {user?.avatar ? (
-                      <img
-                        className="w-7 h-7 rounded-full border"
-                        src={user?.avatar}
-                        alt=""
-                      />
-                    ) : (
-                      <div className="w-7 h-7 rounded-full border flex items-center justify-center text-xs bg-blue-600 text-white">
-                        {user?.username.slice(0, 2).toUpperCase()}
-                      </div>
-                    )}
-                    <div className="p-2 w-full rounded-md bg-gray-100 text-sm">
-                      Write a comment...
-                    </div>
-                  </div>
-                </div>
+                <Comment card={card} />
                 <hr />
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
@@ -202,7 +167,10 @@ const CardDetailsModal = ({ card, onClose }) => {
                   <CiCalendarDate size={18} />
                   Dates
                 </div>
-                <div className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300">
+                <div
+                  className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300"
+                  onClick={() => handleModalToggle("attachment")}
+                >
                   <MdOutlineAttachFile size={18} />
                   Attachments
                 </div>
@@ -217,6 +185,7 @@ const CardDetailsModal = ({ card, onClose }) => {
                         checklist: false,
                         date: false,
                         member: false,
+                        attachment: false,
                       })
                     }
                   />
@@ -233,6 +202,7 @@ const CardDetailsModal = ({ card, onClose }) => {
                         checklist: false,
                         date: false,
                         member: false,
+                        attachment: false,
                       })
                     }
                   />
@@ -248,6 +218,7 @@ const CardDetailsModal = ({ card, onClose }) => {
                         checklist: false,
                         date: false,
                         member: false,
+                        attachment: false,
                       })
                     }
                   />
@@ -262,6 +233,7 @@ const CardDetailsModal = ({ card, onClose }) => {
                         checklist: false,
                         date: false,
                         member: false,
+                        attachment: false,
                       })
                     }
                   />
@@ -277,6 +249,23 @@ const CardDetailsModal = ({ card, onClose }) => {
                         checklist: false,
                         date: false,
                         member: false,
+                        attachment: false,
+                      })
+                    }
+                  />
+                )}
+
+                {modalState?.attachment && (
+                  <AttachmentModal
+                    card={card}
+                    onClose={() =>
+                      setModalState({
+                        cover: false,
+                        label: false,
+                        checklist: false,
+                        date: false,
+                        member: false,
+                        attachment: false,
                       })
                     }
                   />

@@ -1,6 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useEffect, useRef, useState } from "react";
+import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { BiSolidEditAlt } from "react-icons/bi";
 import { BsClockHistory } from "react-icons/bs";
 import { LiaCommentSolid } from "react-icons/lia";
@@ -59,8 +60,6 @@ function Card({ card }) {
     transition,
     opacity: isDragging ? 0.3 : 1, // Giảm độ mờ khi kéo
   };
-  const extraMembers = card?.memberIds?.slice(4) || [];
-  const displayedMembers = card?.memberIds?.slice(0, 4) || [];
 
   return (
     <>
@@ -106,35 +105,9 @@ function Card({ card }) {
             card?.comments?.length > 0 ||
             card?.attachments?.length > 0) && (
             <div className="flex items-center justify-around pb-2">
-              <span className="flex items-center px-2">
-                {displayedMembers.map((memberId) => (
-                  <img
-                    key={memberId}
-                    className="w-5 h-5 rounded-full border -ml-1"
-                    src={users.find((user) => user?.id === memberId)?.avatar}
-                    alt="User avatar"
-                  />
-                ))}
-
-                {extraMembers.length > 0 && (
-                  <span
-                    id="memberIds"
-                    className="w-5 h-5 rounded-full border -ml-1 text-[10px] flex items-center justify-center"
-                  >
-                    +{extraMembers?.length}
-                  </span>
-                )}
-
-                {extraMembers?.length > 0 && (
-                  <Tooltip
-                    anchorSelect="#memberIds"
-                    clickable
-                    className="z-10 text-[4px]"
-                    place="bottom"
-                  >
-                    {extraMembers.join(", ")}
-                  </Tooltip>
-                )}
+              <span className="flex items-center gap-1 text-xs">
+                <AiOutlineUsergroupAdd size={18} />
+                {card?.CardMembers?.length}
               </span>
 
               <span className="flex items-center gap-1 text-xs">

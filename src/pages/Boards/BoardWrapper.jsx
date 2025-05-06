@@ -23,10 +23,13 @@ const BoardWrapper = () => {
   }, []);
 
   return (
-    <div className="flex w-screen mx-auto text-primary" style={{ height: wrapperHeight }}>
+    <div
+      className="flex w-screen mx-auto text-primary"
+      style={{ height: wrapperHeight }}
+    >
       <div
         className={`${
-          !isSidebarOpen ? "min-w-8" : "min-w-64"
+          !isSidebarOpen ? "min-w-8 w-8" : "min-w-64 w-64"
         } relative shadow-md flex flex-col bg-light dark:bg-dark text-primary dark:text-secondary`}
       >
         {isSidebarOpen && <Sidebar isSidebarOpen={isSidebarOpen} />}
@@ -34,12 +37,14 @@ const BoardWrapper = () => {
           className="absolute -right-0 top-2 p-1.5 rounded-full shadow-md hover:bg-gray-200"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         >
-          {isSidebarOpen ? <IoIosArrowBack size={15} /> : <IoIosArrowForward size={15} />}
+          {isSidebarOpen ? (
+            <IoIosArrowBack size={15} />
+          ) : (
+            <IoIosArrowForward size={15} />
+          )}
         </button>
       </div>
-      <div className="w-full">
-        <Outlet />
-      </div>
+      <Outlet />
     </div>
   );
 };

@@ -114,6 +114,26 @@ export const uploadFile_API = (formData) => {
     headers: { "Content-Type": "multipart/form-data" },
   });
 };
+export const uploadAttachment_API = (files) => {
+  const formData = new FormData();
+  files.forEach((file) => {
+    formData.append("files", file);
+  });
+
+  return apiRequest.post(`/upload/attachment`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};
+export const uploadAttachmentPath_API = (cardId, filePaths) =>
+  apiRequest.put(`/cards/${cardId}/attachment`, { filePaths });
+
+export const updateCardDescription_API = (cardId, content) =>
+  apiRequest.put(`/cards/${cardId}/description`, { content });
+
+export const deleteAttachment_API = (id, filePath) =>
+  apiRequest.delete(`/upload/attachment/${id}`, {
+    data: { filePath },
+  });
 
 //Labels
 export const createLabel_API = (data) => apiRequest.post("/labels", data);
@@ -142,3 +162,14 @@ export const inviteMemberBoard_API = (boardId) =>
 
 export const verifyInviteLink = (token) =>
   apiRequest.get(`/invite/${token}`, { token });
+
+//Comment
+
+export const addComment_API = (cardId, content) => {
+  return apiRequest.post(`/cards/${cardId}/comment`, { content });
+};
+export const editComment_API = (commentId, content) =>
+  apiRequest.patch(`/cards/comment/${commentId}`, { content });
+
+export const deleteComment_API = (commentId) =>
+  apiRequest.delete(`/cards/comment/${commentId}`);

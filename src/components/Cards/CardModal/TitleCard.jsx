@@ -4,7 +4,7 @@ import { dateComplete_API, moveCard_API } from "~/apis";
 
 const TitleCard = ({ card, boards }) => {
   const dropdownRef = useRef(null);
-  const [isComplete, setIsComplete] = useState(null);
+  const [isComplete, setIsComplete] = useState(false);
   const [columnTitle, setColumnTitle] = useState(
     boards?.columns.find((c) => c.id === card.columnId).title
   );
@@ -18,7 +18,6 @@ const TitleCard = ({ card, boards }) => {
     setIsOpen(false);
     setAction(column?.id !== card.columnId);
   };
-  
 
   const handleMove = async () => {
     if (!columnId || columnId === card.columnId) return;
