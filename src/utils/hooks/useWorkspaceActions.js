@@ -6,7 +6,6 @@ import {
   removeUserWorkspace,
 } from "~/apis";
 import { useDispatch } from "react-redux";
-import { fetchWorkspaceData } from "~/store/slices/workSpaceSlice";
 
 export const useWorkspaceActions = () => {
   const dispatch = useDispatch();

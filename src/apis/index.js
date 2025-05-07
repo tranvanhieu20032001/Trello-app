@@ -71,6 +71,9 @@ export const renameList_API = (columnId, newname) =>
 export const createCard_API = (newCardData) =>
   apiRequest.post("/cards", newCardData);
 
+export const uploadCardTitle_API = (cardId, newTitle) =>
+  apiRequest.put(`/cards/${cardId}/rename`, { newTitle });
+
 export const moveCard_API = (data) => apiRequest.put("/cards/move", data);
 
 export const uploadCoverImage_API = (cardId, filename) =>

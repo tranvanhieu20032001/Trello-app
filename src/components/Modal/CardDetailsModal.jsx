@@ -28,6 +28,7 @@ import AttachmentModal from "./AttachmentModal";
 import Attachments from "../Cards/CardModal/Attachments";
 import Descriptions from "../Cards/CardModal/Descriptions";
 import Comment from "../Cards/CardModal/Comment";
+import Activity from "../Cards/CardModal/Activity";
 
 const CardDetailsModal = ({ card, onClose }) => {
   console.log("Card", card);
@@ -104,14 +105,7 @@ const CardDetailsModal = ({ card, onClose }) => {
                 <hr />
                 <Comment card={card} />
                 <hr />
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium text-base flex items-center gap-2">
-                      <BsActivity size={20} />
-                      Activity
-                    </span>
-                  </div>
-                </div>
+                <Activity card={card} />
               </div>
               <div className="col-span-1 space-y-5 relative">
                 <div
