@@ -14,10 +14,13 @@ import Search from "./Menus/Search";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Create from "./Menus/Create";
+import Notifications from "./Menus/Notifications";
+import { useSelector } from "react-redux";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const user = useSelector((state) => state.auth.user);
 
   const showDropDown = () => {
     setOpen((prev) => !prev);
@@ -39,7 +42,7 @@ function Navbar() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [user?.id]);
 
   return (
     <div
@@ -82,16 +85,7 @@ function Navbar() {
       <div className="flex items-center gap-2 justify-between">
         <Search />
         <ModeSelect />
-        <div
-          id="notify"
-          className="w-10 h-10 relative flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
-        >
-          <BsBell size={20} />
-          <span className="absolute w-2 h-2 rounded-full bg-red-600 top-2 right-2"></span>
-        </div>
-        <Tooltip anchorSelect="#notify" clickable className="z-10">
-          Notifications
-        </Tooltip>
+        <Notifications />
         <div
           id="information"
           className="w-10 h-10 relative flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"

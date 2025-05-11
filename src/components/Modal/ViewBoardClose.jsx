@@ -3,7 +3,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { CiRedo } from "react-icons/ci";
 import { FaFlipboard } from "react-icons/fa6";
 import { LiaTimesSolid } from "react-icons/lia";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import ConfirmAction from "./ConfirmAction";
 import { useBoardActions } from "~/utils/hooks/useBoardActions";
@@ -11,13 +11,14 @@ import { useSelector } from "react-redux";
 import { IoIosLogOut } from "react-icons/io";
 
 const ViewBoardClose = ({ dataBoard, onClose }) => {
-  console.log("dataBoard", dataBoard);
   const user = useSelector((state) => state.auth.user);
-  console.log("user", user);
-
-  const [activeIndex, setActiveIndex] = useState(null);
-  const { handleReOpenBoard } = useBoardActions();
+  const navigate = useNavigate();
   const modalRef = useRef(null);
+
+  const { handleReOpenBoard, handleDeleteBoard } = useBoardActions();
+  const [activeReopenIndex, setActiveReopenIndex] = useState(null);
+  const [activeDeleteIndex, setActiveDeleteIndex] = useState(null);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -46,8 +47,8 @@ const ViewBoardClose = ({ dataBoard, onClose }) => {
         </div>
         <div className="mt-3">
           {dataBoard?.map((board, index) => (
-            <Link
-              to={`/board/${board.id}`}
+            <div
+              onClick={() => navigate(`/board/${board.id}`)}
               key={board.id}
               className="flex gap-2 items-center w-full group p-1.5 hover:bg-gray-100 relative"
             >
@@ -60,53 +61,67 @@ const ViewBoardClose = ({ dataBoard, onClose }) => {
                 <span className="text-sm capitalize">{board.title}</span>
 
                 <div className="items-center gap-2 flex relative">
+                  {/* Reopen */}
                   <button
-                    data-tooltip-id="reopen"
+                    data-tooltip-id={`reopen-${board.id}`}
                     className="text-sm text-primary hover:shadow-sm hover:bg-white p-1 rounded-full flex items-center gap-1"
                     onClick={(e) => {
-                      e.preventDefault();
                       e.stopPropagation();
-                      setActiveIndex(index);
+                      setActiveReopenIndex(index);
                     }}
                   >
                     <CiRedo size={18} />
+                    <Tooltip id={`reopen-${board.id}`} place="bottom" clickable>
+                      Reopen board
+                    </Tooltip>
                   </button>
-                  <Tooltip id="reopen" place="bottom" clickable>
-                    Reopen workspace
-                  </Tooltip>
+
+                  {/* Leave (placeholder only) */}
                   <button
-                    data-tooltip-id="leave"
+                    data-tooltip-id={`leave-${board.id}`}
                     className="text-sm text-red-500 hover:shadow-sm hover:bg-white p-1 rounded-full flex items-center gap-1"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <IoIosLogOut size={18} />
-                    <Tooltip id="leave" place="bottom" clickable>
+                    <Tooltip id={`leave-${board.id}`} place="bottom" clickable>
                       Leave board
                     </Tooltip>
                   </button>
+
                   {board.ownerId === user.id && (
                     <button
-                      data-tooltip-id="remove"
+                      data-tooltip-id={`remove-${board.id}`}
                       className="text-sm text-red-500 hover:shadow-sm hover:bg-white p-1 rounded-full flex items-center gap-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveDeleteIndex(index);
+                      }}
                     >
                       <AiOutlineDelete size={18} />
-                      <Tooltip id="remove" place="bottom" clickable>
+                      <Tooltip id={`remove-${board.id}`} place="bottom" clickable>
                         Remove board
                       </Tooltip>
                     </button>
                   )}
 
                   <ConfirmAction
-                    isOpen={activeIndex === index}
-                    onClose={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setActiveIndex(null);
+                    isOpen={activeDeleteIndex === index}
+                    onClose={() => setActiveDeleteIndex(null)}
+                    onConfirm={() => {
+                      handleDeleteBoard(board.id, board.workspaceId);
+                      setActiveDeleteIndex(null);
                     }}
-                    onConfirm={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
+                    title="Delete Board"
+                    message={`Are you sure you want to delete ${board?.title}?`}
+                    position="right-0 top-full"
+                  />
+
+                  <ConfirmAction
+                    isOpen={activeReopenIndex === index}
+                    onClose={() => setActiveReopenIndex(null)}
+                    onConfirm={() => {
                       handleReOpenBoard(board.id, board.workspaceId);
-                      setActiveIndex(null);
+                      setActiveReopenIndex(null);
                     }}
                     title="Reopen Board"
                     message={`Are you sure you want to open ${board?.title}?`}
@@ -114,7 +129,7 @@ const ViewBoardClose = ({ dataBoard, onClose }) => {
                   />
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </div>

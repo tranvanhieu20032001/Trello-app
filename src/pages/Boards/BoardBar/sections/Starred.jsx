@@ -2,35 +2,23 @@ import React, { useState } from "react";
 import { FaRegStar, FaStar } from "react-icons/fa6";
 import { Tooltip } from "react-tooltip";
 import Visibility from "./Visibility";
-import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { toggleStarred_API } from "~/apis";
-import { fetchBoardById } from "~/store/slices/boardSlice";
+import { useBoardActions } from "~/utils/hooks/useBoardActions";
 
 const Starred = ({ data }) => {
-  const user = useSelector((state) => state.auth.user);
   const { boardId } = useParams();
-  const dispatch = useDispatch();
 
-  const userPref = data?.UserBoardPreference?.[0]
+  const { handleToggleStarred } = useBoardActions();
+
+  const userPref = data?.UserBoardPreference?.[0];
   const [starred, setStarred] = useState(userPref?.starred || false);
-
-  const handleToggleStarred = async () => {
-    try {
-      await toggleStarred_API(boardId);
-      setStarred((prev) => !prev);
-      dispatch(fetchBoardById(boardId));
-    } catch (err) {
-      console.error("Toggle failed", err);
-    }
-  };
 
   return (
     <>
       <span
         id="star"
         className="p-2 hover:bg-gray-600 rounded-md"
-        onClick={handleToggleStarred}
+        onClick={() => {handleToggleStarred(boardId); setStarred((prev) => !prev)}}
       >
         {!starred ? (
           <FaRegStar className="hover:text-yellow-500" size={20} />

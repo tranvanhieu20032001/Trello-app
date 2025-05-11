@@ -24,16 +24,6 @@ function Column({ column }) {
   const isModalOpen = useSelector((state) => state.modal.isModalOpen);
 
   useEffect(() => {
-    if (!column?.id) return;
-    const handleFetchBoard = () => dispatch(fetchBoardById(column?.id));
-    socket.emit("joinColumn", column?.id);
-    socket.on("notifyBoard", handleFetchBoard);
-    return () => {
-      socket.off("notifyBoard", handleFetchBoard);
-    };
-  }, [column?.id]);
-
-  useEffect(() => {
     const handleClickOutside = (e) => {
       if (inputRef.current && !inputRef.current.contains(e.target)) {
         setEdit(false);

@@ -103,7 +103,7 @@ const CardDetailsModal = ({ card, onClose }) => {
                 <Descriptions card={card} />
                 <Attachments card={card} />
                 <hr />
-                <Comment card={card} />
+                <Comment card={card} board={boardData} />
                 <hr />
                 <Activity card={card} />
               </div>

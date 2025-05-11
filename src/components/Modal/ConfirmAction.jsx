@@ -49,7 +49,8 @@ const ConfirmAction = ({
             Cancel
           </button>
           <button
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               onConfirm();
               onClose();
             }}

@@ -31,9 +31,7 @@ export const useWorkspaceActions = () => {
       if (!id) return toast.error("Invalid workspace ID");
 
       try {
-        const response = await leaveWorkspace(id);
-        // toast.success(response.data.message);
-        // dispatch(fetchWorkspaceData(id)); // Cập nhật lại workspace
+        await leaveWorkspace(id);
       } catch (error) {
         toast.error("Failed to leave workspace.");
       }
@@ -46,9 +44,7 @@ export const useWorkspaceActions = () => {
       if (!id || !ownerId || !userId) return toast.error("Invalid data");
 
       try {
-        const response = await removeUserWorkspace(id, { ownerId, userId });
-        // toast.success(response.data.message);
-        // dispatch(fetchWorkspaceData(id)); // Cập nhật lại workspace
+        await removeUserWorkspace(id, { ownerId, userId });
       } catch (error) {
         toast.error("Failed to remove user.");
       }

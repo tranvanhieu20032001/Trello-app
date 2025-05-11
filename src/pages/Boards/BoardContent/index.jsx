@@ -20,6 +20,7 @@ import { useBoardActions } from "~/utils/hooks/useBoardActions";
 import socket from "~/utils/socket";
 import { fetchBoardById } from "~/store/slices/boardSlice";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 const ACTIVE_ITEM_TYPE = {
   COLOMN: "ACTIVE_COLUMN",
@@ -52,30 +53,53 @@ function BoardContent({ board }) {
     setBoardHeight(totalHeight); // Cập nhật chiều cao của BoardContent
   }, [board]);
 
-  const handleUpdateColumnOrder = () => {
+  const updateHandler = () => {
     dispatch(fetchBoardById(board.id));
   };
-  useEffect(() => {
-    if (!board?.id) return;
-
-    socket.emit("joinBoard", board?.id);
-    socket.on("updateColumnOrder", handleUpdateColumnOrder);
-    socket.on("notify", handleUpdateColumnOrder);
-    return () => {
-      socket.off("updateColumnOrder", handleUpdateColumnOrder);
-      socket.off("notify", handleUpdateColumnOrder);
-    };
-  }, [board?.id]);
 
   useEffect(() => {
     if (!board?.id) return;
-    const handleUpdateOrderCardIds = () => {
+    const handleMemberEvent = (username, reason) => {
+      let message = `${username} has been updated.`;
+      if (reason === "new-member") {
+        message = `${username} has been added to the board!`;
+      } else if (reason === "remove-member") {
+        message = `${username} has been removed from the board.`;
+      } else if (reason === "leave-member") {
+        message = `${username} has left the board.`;
+      }
+      toast.success(message);
       dispatch(fetchBoardById(board.id));
     };
-    socket.emit("joinColumn", board);
-    socket.on("updateOrderCardIds", handleUpdateOrderCardIds);
+
+    socket.emit("joinBoard", board.id);
+    socket.on("updateColumnOrder", updateHandler);
+    socket.on("notify", updateHandler);
+    socket.on("new-member", (username) =>
+      handleMemberEvent(username, "new-member")
+    );
+    socket.on("remove-member", (username) =>
+      handleMemberEvent(username, "remove-member")
+    );
+    socket.on("leave-member", (username) =>
+      handleMemberEvent(username, "leave-member")
+    );
+
     return () => {
-      socket.off("updateOrderCardIds", handleUpdateOrderCardIds);
+      socket.off("updateColumnOrder", updateHandler);
+      socket.off("notify", updateHandler);
+      socket.off("new-member");
+      socket.off("remove-member");
+      socket.off("leave-member");
+    };
+  }, [board?.id, dispatch]);
+
+  useEffect(() => {
+    if (!board?.id) return;
+    socket.emit("joinColumn", board);
+    socket.on("updateOrderCardIds", updateHandler);
+    return () => {
+      socket.off("updateOrderCardIds", updateHandler);
     };
   }, [board?.id]);
 

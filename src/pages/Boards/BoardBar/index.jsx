@@ -19,8 +19,6 @@ function BoardBar({ board }) {
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const { handleReOpenBoard } = useBoardActions();
 
-  console.log("board", board?.BoardMembers);
-
   return (
     <div
       id="boardbar"

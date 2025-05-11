@@ -1,5 +1,5 @@
 import HeaderWorkspaceContent from "../Header/HeaderWorkspaceContent";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState, useRef, useEffect } from "react";
 import { IoIosAdd, IoIosArrowDown } from "react-icons/io";
 import { Link, useParams } from "react-router-dom";
@@ -11,28 +11,33 @@ import nofund from "~/assets/nofund.svg";
 import CreateBoardModal from "~/components/Modal/CreateBoardModal";
 import { IoClose } from "react-icons/io5";
 import ViewBoardClose from "../../Modal/ViewBoardClose";
+import socket from "~/utils/socket";
+import { fetchWorkspaceData } from "~/store/slices/workSpaceSlice";
+import ConfirmAction from "~/components/Modal/ConfirmAction";
+import { useBoardActions } from "~/utils/hooks/useBoardActions";
 
 const BoardsContent = () => {
   const workspaceData = useSelector((state) => state.workspace.workspaceData);
+  const { handleCloseBoard } = useBoardActions();
+
   const [isOpen, setIsOpen] = useState(false);
   const [sortOrder, setSortOrder] = useState("a-z");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   const [isViewBoardCloseOpen, setIsViewBoardCloseOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeIndex, setActiveIndex] = useState(null);
+
   const dropdownRef = useRef(null);
+  const dispatch = useDispatch();
 
-  const userBoardsOpen = workspaceData?.boards.filter((wpb) => wpb.status);
-  const userBoardsClose = workspaceData?.boards.filter((wpb) => !wpb.status);
+  const userBoardsOpen = workspaceData?.boards?.filter((wpb) => wpb.status) || [];
+  const userBoardsClose = workspaceData?.boards?.filter((wpb) => !wpb.status) || [];
 
-  // Sắp xếp boards theo sortOrder
   const sortedBoards = [...userBoardsOpen].sort((a, b) => {
     if (sortOrder === "a-z") return a.title.localeCompare(b.title);
     if (sortOrder === "z-a") return b.title.localeCompare(a.title);
-    if (sortOrder === "newest")
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    if (sortOrder === "oldest")
-      return new Date(a.createdAt) - new Date(b.createdAt);
+    if (sortOrder === "newest") return new Date(b.createdAt) - new Date(a.createdAt);
+    if (sortOrder === "oldest") return new Date(a.createdAt) - new Date(b.createdAt);
     return 0;
   });
 
@@ -50,6 +55,23 @@ const BoardsContent = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (!workspaceData?.id) return;
+
+    const workspaceId = workspaceData.id;
+    socket.emit("joinWorkspace", workspaceId);
+
+    const handleNotify = () => {
+      dispatch(fetchWorkspaceData(workspaceId));
+    };
+
+    socket.on("notify", handleNotify);
+
+    return () => {
+      socket.off("notify", handleNotify);
+    };
+  }, [workspaceData?.id]);
+
   return (
     <div className="py-8 px-20">
       <HeaderWorkspaceContent />
@@ -57,7 +79,6 @@ const BoardsContent = () => {
       <h1 className="font-medium text-lg">Boards</h1>
 
       <div className="flex items-center justify-between mt-4">
-        {/* Sort Dropdown */}
         <div className="relative w-48 text-sm" ref={dropdownRef}>
           <button
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -104,56 +125,80 @@ const BoardsContent = () => {
       {filteredBoards.length > 0 ? (
         <>
           <div className="grid grid-cols-4 gap-4 mt-4">
-            {filteredBoards.map((board) => (
-              <Link
-                to={`/board/${board.id}`}
-                key={board.id}
-                className="p-1 border rounded-md shadow-md w-56 h-28 relative text-white capitalize overflow-hidden hover:border-blue-500 group"
-              >
-                <img
-                  src={board?.background}
-                  alt=""
-                  className="w-full h-full object-cover"
+            {filteredBoards.map((board, index) => (
+              <div key={board.id} className="relative">
+                <Link
+                  to={`/board/${board.id}`}
+                  className="p-1 border rounded-md shadow-md w-56 h-28 relative text-white capitalize overflow-hidden hover:border-blue-500 group block"
+                >
+                  <img src={board?.background} alt="" className="w-full h-full object-cover" />
+                  <div className="absolute top-2 left-2 text-sm font-medium flex items-center gap-2">
+                    <span>{board?.title}</span>
+                    <span>
+                      {board?.type === "private" ? (
+                        <CiLock size={15} />
+                      ) : board?.type === "public" ? (
+                        <MdOutlinePublic size={15} />
+                      ) : (
+                        <PiUsersThreeLight size={15} />
+                      )}
+                    </span>
+                  </div>
+                  <div
+                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:text-red-500"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setActiveIndex(index);
+                    }}
+                  >
+                    <IoClose size={20} />
+                  </div>
+                  <span className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:text-yellow-500">
+                    {board?.starred ? (
+                      <FaStar size={15} color="#ffd600" />
+                    ) : (
+                      <FaRegStar size={15} />
+                    )}
+                  </span>
+                </Link>
+
+                <ConfirmAction
+                  isOpen={activeIndex === index}
+                  onClose={(e) => {
+                    setActiveIndex(null);
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  onConfirm={(e) => {
+                    handleCloseBoard(board.id, board.workspaceId);
+                    setActiveIndex(null);
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  title="Close Board"
+                  message="Are you sure you want to close this board?"
+                  position="left-0 top-full"
                 />
-                <span className="absolute top-2 left-2 text-sm font-medium">
-                  {board?.title}
-                </span>
-                <span className="absolute bottom-2 left-2">
-                  {board?.type === "private" ? (
-                    <CiLock size={20} />
-                  ) : board?.type === "public" ? (
-                    <MdOutlinePublic size={20} />
-                  ) : (
-                    <PiUsersThreeLight size={20} />
-                  )}
-                </span>
-                <span className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:text-red-500">
-                  <IoClose size={20} />
-                </span>
-                <span className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:text-yellow-500">
-                  {board?.starred ? (
-                    <FaStar size={15} color="#ffd600" />
-                  ) : (
-                    <FaRegStar size={15} />
-                  )}
-                </span>
-              </Link>
+              </div>
             ))}
             <div
-              className="p-1 border rounded-md shadow-md w-56 h-28 relative text-primary flex items-center justify-center cursor-pointer capitalize group bg-slate-200 hover:border-blue-500  group"
+              className="p-1 border rounded-md shadow-md w-56 h-28 relative text-primary flex items-center justify-center cursor-pointer capitalize group bg-slate-200 hover:border-blue-500"
               onClick={() => setIsOpen(true)}
             >
               <span className="flex items-center gap-2 text-sm group-hover:scale-105 group-hover:text-blue-500">
                 <IoIosAdd size={20} /> Create new board
               </span>
-              <CreateBoardModal
-                isOpen={isOpen}
-                onClose={() => setIsOpen(false)}
-                position="top-0"
-              />
             </div>
           </div>
-          {userBoardsClose && userBoardsClose.length > 0 && (
+
+          <CreateBoardModal
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+            position="top-0"
+          />
+
+          {userBoardsClose.length > 0 && (
             <>
               <button
                 className="my-4 text-[13px] gap-2 font-medium flex items-center px-2 py-1.5 bg-blue-600 text-white hover:bg-primary border border-blue-700 rounded-sm"

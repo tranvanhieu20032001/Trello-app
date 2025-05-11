@@ -19,8 +19,6 @@ const InvitePage = () => {
     const verifyInvite = async () => {
       try {
         const response = await verifyInviteLink(token);
-        console.log("response", response);
-        
         if (response.data.workspaceId) setWorkspaceId(response.data.workspaceId);
         if (response.data.boardId) setBoardId(response.data.boardId);
         setIsValid(true);

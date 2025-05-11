@@ -1,7 +1,7 @@
 import { CiUser, CiViewBoard } from "react-icons/ci";
 import { IoIosAdd, IoIosArrowRoundForward } from "react-icons/io";
 import { MdDashboard } from "react-icons/md";
-import { Link, NavLink, useParams } from "react-router-dom";
+import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { FaRegStar, FaStar } from "react-icons/fa6";
@@ -17,10 +17,12 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(null);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const user = useSelector((state) => state.auth.user);
   const workspaceData = useSelector((state) => state.workspace.workspaceData);
   const workspaceName = workspaceData?.name || "Workspace";
+  
   // console.log("user", user);
 
   const boards = workspaceData?.boards?.filter(
@@ -29,6 +31,7 @@ const Sidebar = () => {
       board.status &&
       board.BoardMembers.some((boardmember) => boardmember.userId === user?.id)
   );
+  
 
   const isMemberBoard = useMemo(
     () => workspaceData?.members.some((member) => member.userId === user.id),
@@ -91,8 +94,8 @@ const Sidebar = () => {
           <div className="w-full">
             {boards?.length
               ? boards.map((board, index) => (
-                  <Link
-                    to={`/board/${board.id}`}
+                  <div
+                    onClick={() => navigate(`/board/${board.id}`)}
                     key={board.id}
                     className="flex gap-2 items-center w-full group p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 relative"
                   >
@@ -104,11 +107,11 @@ const Sidebar = () => {
                     <div className="flex items-center justify-between flex-1">
                       <span className="text-sm">{board.title}</span>
                       <div className="items-center gap-2 hidden group-hover:flex">
-                        <span className="inline-block p-1 rounded-sm hover:text-yellow-500">
-                          {board?.starred ? (
-                            <FaStar size={15} color="#ffd600" />
+                        <span className="inline-block p-1 rounded-sm">
+                          {!board?.UserBoardPreference[0]?.starred ? (
+                           <FaRegStar className="" size={15} />
                           ) : (
-                            <FaRegStar size={15} />
+                           <FaStar size={15} color="#eab308" />
                           )}
                         </span>
                         {board?.ownerId === user.id && (
@@ -153,7 +156,7 @@ const Sidebar = () => {
                         position="left-0 top-full"
                       />
                     </div>
-                  </Link>
+                  </div>
                 ))
               : isMemberBoard && (
                   <div className="px-3 text-sm space-y-3">

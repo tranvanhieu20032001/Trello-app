@@ -22,7 +22,7 @@ export function generateActivityMessage(action, data) {
 
     case "DELETE_ATTACHMENT":
       return `deleted "${data?.fileName}" to this card`;
-
+  
     default:
       return "performed an action";
   }

@@ -1,11 +1,22 @@
 import { useEffect, useState } from "react";
-import { CiCalendarDate, CiCreditCard2, CiImageOn } from "react-icons/ci";
+import {
+  CiCalendarDate,
+  CiCircleCheck,
+  CiCreditCard2,
+  CiImageOn,
+} from "react-icons/ci";
 import { HiOutlineArrowSmallRight } from "react-icons/hi2";
 import { IoCopyOutline } from "react-icons/io5";
 import { MdOutlineLabel } from "react-icons/md";
 import { useSelector } from "react-redux";
 import CoverBgCardModal from "./CoverBgCardModal";
 import LabelModal from "./LabelModal";
+import TitleCard from "../Cards/CardDisplay/TitleCard";
+import DatesCart from "../Cards/CardDisplay/DatesCart";
+import LabelsCard from "../Cards/CardDisplay/LabelsCard";
+import CardFooter from "../Cards/CardDisplay/CardFooter";
+import DateModal from "./DateModal";
+import AddCheckListModal from "./AddCheckListModal";
 
 function CardModal({ onClose, card, rect, onOpenDetails }) {
   const boardData = useSelector((state) => state.board?.board?.data);
@@ -13,6 +24,10 @@ function CardModal({ onClose, card, rect, onOpenDetails }) {
   const [modalState, setModalState] = useState({
     cover: false,
     label: false,
+    checklist: false,
+    date: false,
+    member: false,
+    attachment: false,
   });
 
   useEffect(() => {
@@ -33,6 +48,8 @@ function CardModal({ onClose, card, rect, onOpenDetails }) {
     setModalState({
       cover: type === "cover",
       label: type === "label",
+      checklist: type === "checklist",
+      date: type === "date",
     });
   };
 
@@ -54,9 +71,10 @@ function CardModal({ onClose, card, rect, onOpenDetails }) {
               className="h-40 w-full rounded-t-md object-cover"
             />
           )}
-          <h1 className="font-normal text-[13px] px-2 py-2 flex items-center gap-2">
-            {card?.title}
-          </h1>
+          <TitleCard card={card} />
+          {card?.dueDate && card?.startDate && <DatesCart card={card} />}
+          {card?.labels && <LabelsCard card={card} />}
+          <CardFooter card={card} />
         </div>
 
         <div className="space-y-3 flex flex-col items-start">
@@ -78,12 +96,8 @@ function CardModal({ onClose, card, rect, onOpenDetails }) {
           <ActionButton
             icon={<CiCalendarDate size={18} />}
             label="Edit dates"
+            onClick={() => handleModalToggle("date")}
           />
-          <ActionButton
-            icon={<HiOutlineArrowSmallRight size={18} />}
-            label="Move"
-          />
-          <ActionButton icon={<IoCopyOutline size={18} />} label="Copy card" />
 
           {modalState.cover && (
             <CoverBgCardModal
@@ -98,6 +112,22 @@ function CardModal({ onClose, card, rect, onOpenDetails }) {
               board={boardData}
               isOpen
               onClose={() => setModalState({ cover: false, label: false })}
+            />
+          )}
+
+          {modalState.date && (
+            <DateModal
+              card={card}
+              onClose={() =>
+                setModalState({
+                  cover: false,
+                  label: false,
+                  checklist: false,
+                  date: false,
+                  member: false,
+                  attachment: false,
+                })
+              }
             />
           )}
         </div>

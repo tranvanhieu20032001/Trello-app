@@ -2,23 +2,34 @@ import { formatUploadTime } from "~/utils/formatters";
 import { GoCommentDiscussion } from "react-icons/go";
 import { useSelector, useDispatch } from "react-redux";
 import { BsDot } from "react-icons/bs";
-import { Editor } from "@tinymce/tinymce-react";
 import { useRef, useState } from "react";
 import { addComment_API, deleteComment_API, editComment_API } from "~/apis";
 import { fetchBoardById } from "~/store/slices/boardSlice";
+import TinyEditor from "./TinyEditor";
 
-const Comment = ({ card }) => {
+const Comment = ({ card, board }) => {
+  const user = useSelector((state) => state.auth.user);
   const comments = card?.comments || [];
+  const member = board?.BoardMembers || [];
+  const mentionsData = member
+    ?.filter((m) => m.user.id !== user?.id)
+    .map((m) => ({
+      id: m.user.id,
+      name: m.user.username,
+    }));
+
+  console.log("mentionsData", mentionsData);
+
   const editorRef = useRef(null);
   const editRef = useRef(null);
 
   const [isCommenting, setIsCommenting] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState(null);
-
-  const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
 
   const handleSaveComment = async () => {
+    if (!editorRef.current) return;
+
     const content = editorRef.current.getContent();
     if (!content) return;
 
@@ -26,7 +37,7 @@ const Comment = ({ card }) => {
       await addComment_API(card.id, content);
       setIsCommenting(false);
       editorRef.current.setContent("");
-      dispatch(fetchBoardById(card?.boardId)); // cập nhật lại dữ liệu
+      dispatch(fetchBoardById(card?.boardId));
     } catch (error) {
       console.error("Add comment error:", error);
     }
@@ -66,7 +77,11 @@ const Comment = ({ card }) => {
 
         <div className="flex gap-2">
           {user?.avatar ? (
-            <img className="w-7 h-7 rounded-full border" src={user?.avatar} alt="" />
+            <img
+              className="w-7 h-7 rounded-full border"
+              src={user?.avatar}
+              alt=""
+            />
           ) : (
             <div className="w-7 h-7 rounded-full border flex items-center justify-center text-xs bg-blue-600 text-white">
               {user?.username.slice(0, 2).toUpperCase()}
@@ -82,15 +97,9 @@ const Comment = ({ card }) => {
             </div>
           ) : (
             <div className="w-full space-y-2">
-              <Editor
-                onInit={(evt, editor) => (editorRef.current = editor)}
-                apiKey="10lpxjmyvyly4rdb88xil2fxm3y11ava3j2s5rn9tl5btib8"
-                init={{
-                  height: 150,
-                  menubar: false,
-                  plugins: ["link", "lists", "wordcount", "emoticons"],
-                  toolbar: "bold italic underline | bullist numlist | emoticons | undo redo",
-                }}
+              <TinyEditor
+                onChangeRef={(ref) => (editorRef.current = ref)}
+                mentionsData={mentionsData}
               />
               <div className="flex gap-2">
                 <button
@@ -116,7 +125,11 @@ const Comment = ({ card }) => {
           {comments.map((comment) => (
             <div key={comment.id} className="flex gap-2 items-start">
               {comment.user?.avatar ? (
-                <img className="w-7 h-7 rounded-full border mt-2" src={comment.user.avatar} alt="" />
+                <img
+                  className="w-7 h-7 rounded-full border mt-2"
+                  src={comment.user.avatar}
+                  alt=""
+                />
               ) : (
                 <div className="mt-2 w-7 h-7 rounded-full border flex items-center justify-center text-xs bg-blue-600 text-white">
                   {comment.user?.username?.slice(0, 2).toUpperCase()}
@@ -127,22 +140,19 @@ const Comment = ({ card }) => {
                 <div className="flex items-center gap-1 text-xs">
                   <h1 className="font-semibold">{comment.user?.username}</h1>
                   <BsDot />
-                  <span className="text-[10px]">{formatUploadTime(comment.createdAt)}</span>
+                  <span className="text-[10px]">
+                    {formatUploadTime(comment.createdAt)}
+                  </span>
                 </div>
 
                 {editingCommentId === comment.id ? (
                   <div className="space-y-2">
-                    <Editor
-                      onInit={(evt, editor) => (editRef.current = editor)}
+                    <TinyEditor
+                      onChangeRef={(ref) => (editRef.current = ref)}
                       initialValue={comment.content}
-                      apiKey="10lpxjmyvyly4rdb88xil2fxm3y11ava3j2s5rn9tl5btib8"
-                      init={{
-                        height: 150,
-                        menubar: false,
-                        plugins: ["link", "lists", "wordcount", "emoticons"],
-                        toolbar: "bold italic underline | bullist numlist | emoticons | undo redo",
-                      }}
+                      mentionsData={mentionsData}
                     />
+
                     <div className="flex gap-2">
                       <button
                         className="bg-blue-600 text-white hover:bg-blue-700 px-3 py-1 rounded-sm text-sm"

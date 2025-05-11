@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import {
   closeBoard_API,
+  deleteBoard_API,
   inviteMemberBoard_API,
   leaveBoard,
   removeUserboard,
@@ -81,16 +82,35 @@ export const useBoardActions = () => {
     [dispatch]
   );
 
-  const handleToggleStarred = useCallback(
+  const handleDeleteBoard = useCallback(
     async (boardId, workspaceId) => {
+      if (!boardId) return toast.error("Invalid board ID");
+
+      dispatch(startLoading());
+
+      try {
+        const response = await deleteBoard_API(boardId);
+        dispatch(fetchWorkspaceData(workspaceId));
+        dispatch(fetchBoardById(boardId));
+        toast.success(response.data.message);
+      } catch (error) {
+        toast.error("Failed to reopen board");
+      } finally {
+        setTimeout(() => {
+          dispatch(stopLoading());
+        }, 800);
+      }
+    },
+    [dispatch]
+  );
+
+  const handleToggleStarred = useCallback(
+    async (boardId) => {
       if (!boardId) return toast.error("Invalid board ID");
 
       try {
         const response = await toggleStarred_API(boardId);
-        dispatch(fetchWorkspaceData(workspaceId)); // Cập nhật workspace
-        dispatch(fetchBoardById(boardId)); // Cập nhật lại board
-
-        toast.success(response.data.message);
+        dispatch(fetchBoardById(boardId));
       } catch (error) {
         toast.error("Failed to handle board");
       }
@@ -203,6 +223,7 @@ export const useBoardActions = () => {
     handleCopyLink,
     handleCloseBoard,
     handleReOpenBoard,
+    handleDeleteBoard,
     handleToggleStarred,
     getBoardsWithUserStarred,
     handleRemoveMemberFromBoard,

@@ -3,29 +3,24 @@ import { CSS } from "@dnd-kit/utilities";
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { BiSolidEditAlt } from "react-icons/bi";
-import { BsClockHistory } from "react-icons/bs";
 import { LiaCommentSolid } from "react-icons/lia";
 import { PiPaperclipLight } from "react-icons/pi";
 import { useDispatch } from "react-redux";
 import { Tooltip } from "react-tooltip";
+import { dateComplete_API } from "~/apis";
+import CardFooter from "~/components/Cards/CardDisplay/CardFooter";
+import DatesCart from "~/components/Cards/CardDisplay/DatesCart";
+import LabelsCard from "~/components/Cards/CardDisplay/LabelsCard";
+import TitleCard from "~/components/Cards/CardDisplay/TitleCard";
 import CardActionsModal from "~/components/Modal/CardActionsModal";
 import CardDetailsModal from "~/components/Modal/CardDetailsModal";
-import users from "~/data/user";
-import { fetchBoardById } from "~/store/slices/boardSlice";
 import { closeModal, openModal } from "~/store/slices/modalSlice";
-import socket from "~/utils/socket";
 
 function Card({ card }) {
+  console.log("Card", card);
+
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (!card?.id) return;
-    const handleFetchBoard = () => dispatch(fetchBoardById(card.boardId));
-    socket.emit("joinCard", card?.id);
-    socket.on("notify", handleFetchBoard);
-    return () => {
-      socket.off("notify", handleFetchBoard);
-    };
-  }, [card?.id]);
+
   const cardRef = useRef();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalDetailsOpen, setModalDetailsOpen] = useState(false);
@@ -60,7 +55,6 @@ function Card({ card }) {
     transition,
     opacity: isDragging ? 0.3 : 1, // Giảm độ mờ khi kéo
   };
-
   return (
     <>
       <div
@@ -90,37 +84,10 @@ function Card({ card }) {
             />
           )}
 
-          <h1 className="font-normal text-[13px] px-2 py-2 flex items-center gap-2">
-            <input data-tooltip-id={`complete-${card?.id}`} type="checkbox" />
-            {card?.title}
-          </h1>
-          {card?.start_date && (
-            <span className="text-[10px] lg:text-xs inline-flex items-center gap-2 mx-2 px-2 pb-2 text-green-500 rounded-sm">
-              <BsClockHistory size={12} />
-              {card?.start_date}
-            </span>
-          )}
-
-          {(card?.memberIds?.length > 0 ||
-            card?.comments?.length > 0 ||
-            card?.attachments?.length > 0) && (
-            <div className="flex items-center justify-around pb-2">
-              <span className="flex items-center gap-1 text-xs">
-                <AiOutlineUsergroupAdd size={18} />
-                {card?.CardMembers?.length}
-              </span>
-
-              <span className="flex items-center gap-1 text-xs">
-                <LiaCommentSolid size={18} />
-                {card?.comments?.length}
-              </span>
-
-              <span className="flex items-center gap-1 text-xs">
-                <PiPaperclipLight size={18} />
-                {card?.attachments?.length}
-              </span>
-            </div>
-          )}
+          <TitleCard card={card} />
+          {card?.dueDate && card?.startDate && <DatesCart card={card} />}
+          {card?.labels && <LabelsCard card={card} />}
+          <CardFooter card={card} />
         </div>
       </div>
       {modalOpen && (

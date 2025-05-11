@@ -34,6 +34,9 @@ export const closeBoard_API = (boardId) =>
 export const reOpenBoard_API = (boardId) =>
   apiRequest.patch(`/boards/${boardId}/reopen`);
 
+export const deleteBoard_API = (boardId) =>
+  apiRequest.delete(`/boards/${boardId}`);
+
 export const toggleStarred_API = (boardId) =>
   apiRequest.patch(`/boards/${boardId}/starred`);
 
@@ -165,6 +168,8 @@ export const inviteMemberBoard_API = (boardId) =>
 
 export const verifyInviteLink = (token) =>
   apiRequest.get(`/invite/${token}`, { token });
+
+export const getNotifications_API = () => apiRequest.get(`users/notifications`);
 
 //Comment
 
