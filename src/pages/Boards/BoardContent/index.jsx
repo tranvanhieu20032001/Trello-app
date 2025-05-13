@@ -44,13 +44,11 @@ function BoardContent({ board }) {
   useEffect(() => {
     const columns = mapOrder(board?.columns, board?.columnOrderIds, "id");
     setOrderColumn(columns);
-
-    // Tính toán chiều cao của BoardContent
-    const navbarHeight = document.getElementById("navbar")?.offsetHeight || 0; // Lấy chiều cao của navbar
+    const navbarHeight = document.getElementById("navbar")?.offsetHeight || 0;
     const boardbarHeight =
-      document.getElementById("boardbar")?.offsetHeight || 0; // Lấy chiều cao của boardbar
+      document.getElementById("boardbar")?.offsetHeight || 0;
     const totalHeight = window.innerHeight - navbarHeight - boardbarHeight;
-    setBoardHeight(totalHeight); // Cập nhật chiều cao của BoardContent
+    setBoardHeight(totalHeight);
   }, [board]);
 
   const updateHandler = () => {

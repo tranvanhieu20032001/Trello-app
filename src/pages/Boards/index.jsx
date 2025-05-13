@@ -73,10 +73,10 @@ function Board() {
 
   return (
     <div
-      className="bg-cover h-screen max-h-screen block overflow-y-hidden w-full"
+      className="bg-cover block overflow-y-hidden w-full"
       style={{ backgroundImage }}
     >
-      <div className="bg-black bg-opacity-5 h-full dark:bg-opacity-50">
+      <div className="bg-black bg-opacity-5 dark:bg-opacity-50">
         {localBoard && (
           <>
             {permissionAccess ? (

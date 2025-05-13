@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FaRegStar, FaStar } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useBoardActions } from "~/utils/hooks/useBoardActions";
@@ -57,7 +57,7 @@ function Starred() {
                 <div
                   onClick={() => navigate(`/board/${board.id}`)}
                   key={index}
-                  className="flex gap-2 items-center w-full group p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 relative"
+                  className="flex gap-2 items-center w-full group p-2 hover:bg-gray-200 dark:hover:bg-gray-700 relative"
                 >
                   <img
                     src={board?.background}

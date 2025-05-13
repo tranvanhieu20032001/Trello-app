@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { MdOutlineArrowDropDown } from "react-icons/md";
+import progress from "~/assets/progress.png";
 
 function Templates() {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,33 +29,8 @@ function Templates() {
       </button>
 
       {isOpen && (
-        <div className="absolute -top-24 lg:top-full right-full lg:left-0 mt-2 bg-light dark:bg-gray-700 border border-gray-200 p-2 rounded-md min-w-60 lg:min-w-80 z-10 text-primary dark:text-secondary">
-          <ul>
-            <li className="py-2 px-4 dark:hover:bg-gray-600 hover:bg-gray-200 rounded-md flex items-center gap-4 cursor-pointer">
-              <span className="w-10 h-10 rounded-sm flex justify-center items-center bg-blue-300">
-                Hieu
-              </span>
-              Chú bé đần
-            </li>
-            <li className="py-2 px-4 dark:hover:bg-gray-600 hover:bg-gray-200 rounded-md flex items-center gap-4 cursor-pointer">
-              <span className="w-10 h-10 rounded-sm flex justify-center items-center bg-blue-300">
-                Hieu
-              </span>
-              Sprint-1
-            </li>
-            <li className="py-2 px-4 dark:hover:bg-gray-600 hover:bg-gray-200 rounded-md flex items-center gap-4 cursor-pointer">
-              <span className="w-10 h-10 rounded-sm flex justify-center items-center bg-blue-300">
-                Hieu
-              </span>
-              Trello workspace
-            </li>
-            <li className="py-2 px-4 dark:hover:bg-gray-600 hover:bg-gray-200 rounded-md flex items-center gap-4 cursor-pointer">
-              <span className="w-10 h-10 rounded-sm flex justify-center items-center bg-blue-300">
-                Hieu
-              </span>
-              Chatbox-V1
-            </li>
-          </ul>
+        <div className="absolute top-full left-0 mt-2 bg-light dark:bg-gray-700 border border-gray-200 p-2 rounded-md min-w-52 lg:min-w-72 h-52 z-10 text-primary dark:text-secondary flex justify-center items-center">
+          <img src={progress} className="max-h-full max-w-full" alt="" />
         </div>
       )}
     </div>

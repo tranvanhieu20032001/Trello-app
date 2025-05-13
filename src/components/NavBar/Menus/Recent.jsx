@@ -61,7 +61,7 @@ function Recent() {
                 <div
                   onClick={() => navigate(`/board/${board.board.id}`)}
                   key={index}
-                  className="flex gap-2 items-center w-full group p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 relative"
+                  className="flex gap-2 items-center w-full group p-2 hover:bg-gray-200 dark:hover:bg-gray-700 relative"
                 >
                   <img
                     src={board?.board?.background}

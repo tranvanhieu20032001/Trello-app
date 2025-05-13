@@ -11,7 +11,6 @@ function Workspace() {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
-  const workspaceData = useSelector((state) => state.workspace.workspaceData);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,7 +21,6 @@ function Workspace() {
         if (data) {
           const yourWps = data.filter((wp) => wp.ownerId === user?.id);
           const guestWps = data.filter((wp) => wp.ownerId !== user?.id);
-          console.log("workspaceData", workspaceData);
 
           setYourWorkspaces(yourWps);
           setGuestWorkspaces(guestWps);

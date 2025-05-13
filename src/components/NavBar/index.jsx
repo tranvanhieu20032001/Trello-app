@@ -6,9 +6,6 @@ import Workspace from "./Menus/Workspace";
 import Recent from "./Menus/Recent";
 import Starred from "./Menus/Starred";
 import Templates from "./Menus/Templates";
-import { IoIosInformationCircleOutline } from "react-icons/io";
-import { BsBell } from "react-icons/bs";
-import { Tooltip } from "react-tooltip";
 import Profile from "./Menus/Profile";
 import Search from "./Menus/Search";
 import { MdOutlineArrowDropDown } from "react-icons/md";
@@ -16,6 +13,7 @@ import { Link } from "react-router-dom";
 import Create from "./Menus/Create";
 import Notifications from "./Menus/Notifications";
 import { useSelector } from "react-redux";
+import Informations from "./Menus/Informations";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
@@ -86,15 +84,7 @@ function Navbar() {
         <Search />
         <ModeSelect />
         <Notifications />
-        <div
-          id="information"
-          className="w-10 h-10 relative flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
-        >
-          <IoIosInformationCircleOutline size={20} />
-        </div>
-        <Tooltip anchorSelect="#information" clickable className="z-10">
-          Information
-        </Tooltip>
+        <Informations />
         <Profile />
       </div>
     </div>
