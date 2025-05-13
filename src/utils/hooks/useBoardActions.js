@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import {
   closeBoard_API,
   deleteBoard_API,
+  getBoardByRecent_API,
+  getBoardByStarred_API,
   inviteMemberBoard_API,
   leaveBoard,
   removeUserboard,
@@ -33,6 +35,24 @@ export const useBoardActions = () => {
       }
     } catch (error) {
       toast.error("Error generating invite link.");
+    }
+  }, []);
+
+  const handlGetBoardByRecent = useCallback(async () => {
+    try {
+      const response = await getBoardByRecent_API();
+      return response.data;
+    } catch (error) {
+      toast.error("Failed to board");
+    }
+  }, []);
+
+    const handlGetBoardByStarred = useCallback(async () => {
+    try {
+      const response = await getBoardByStarred_API();
+      return response.data;
+    } catch (error) {
+      toast.error("Failed to board");
     }
   }, []);
 
@@ -117,6 +137,7 @@ export const useBoardActions = () => {
     },
     [dispatch]
   );
+  
 
   const getBoardsWithUserStarred = (boards, userId) => {
     return boards.map((board) => {
@@ -136,8 +157,6 @@ export const useBoardActions = () => {
       try {
         dispatch(startLoading());
         const response = await leaveBoard(id);
-        // toast.success(response.data.message);
-        // dispatch(fetchBoardById(id));
       } catch (error) {
         toast.error("Failed to leave workspace.");
       } finally {
@@ -155,8 +174,6 @@ export const useBoardActions = () => {
       try {
         dispatch(startLoading());
         const response = await removeUserboard(boardId, { ownerId, userId });
-        // toast.success(response.data.message);
-        // dispatch(fetchBoardById(boardId));
       } catch (error) {
         toast.error("Failed to remove user.");
       } finally {
@@ -222,6 +239,8 @@ export const useBoardActions = () => {
   return {
     handleCopyLink,
     handleCloseBoard,
+    handlGetBoardByRecent,
+    handlGetBoardByStarred,
     handleReOpenBoard,
     handleDeleteBoard,
     handleToggleStarred,

@@ -10,14 +10,17 @@ import {
 } from "react-icons/bs";
 import AttachmentModal from "~/components/Modal/AttachmentModal";
 import { deleteAttachment_API } from "~/apis";
+import { useSelector } from "react-redux";
 
-const Attachments = ({ card }) => {
+const Attachments = ({ card, handleFetchData }) => {
   const attachments = card?.attachments;
   const [openMenuIndex, setOpenMenuIndex] = useState(null);
+  const user = useSelector((state) => state.auth.user);
   const [isOpen, setIsOpen] = useState(false);
 
   const handleDelete = async (fileId, filePath) => {
     await deleteAttachment_API(fileId, filePath);
+    await handleFetchData();
   };
 
   return (
@@ -89,13 +92,19 @@ const Attachments = ({ card }) => {
                       >
                         Download
                       </a>
-
-                      <button
-                        onClick={() => handleDelete(file.id, file.fileUrl?.split("\\").pop())}
-                        className="w-full text-left px-4 py-2 text-sm hover:bg-red-100 text-red-500"
-                      >
-                        Delete
-                      </button>
+                      {user?.id === file?.userId && (
+                        <button
+                          onClick={() =>
+                            handleDelete(
+                              file.id,
+                              file.fileUrl?.split("\\").pop()
+                            )
+                          }
+                          className="w-full text-left px-4 py-2 text-sm hover:bg-red-100 text-red-500"
+                        >
+                          Delete
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>

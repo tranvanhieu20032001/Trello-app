@@ -6,6 +6,7 @@ import { generateNotificationsMessage } from "~/utils/hooks/generateNotification
 import { formatUploadTime } from "~/utils/formatters";
 import { useSelector } from "react-redux";
 import socket from "~/utils/socket";
+import { useNavigate } from "react-router-dom";
 
 const Notifications = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,6 +14,7 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const user = useSelector((state) => state.auth.user);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -54,10 +56,6 @@ const Notifications = () => {
   }, [user?.id]);
 
   const unreadNotifications = notifications.filter((n) => !n.isRead);
-  const displayedNotifications = showUnreadOnly
-    ? unreadNotifications
-    : notifications;
-
   return (
     <div className="dropdown relative" ref={dropdownRef}>
       <div
@@ -98,8 +96,9 @@ const Notifications = () => {
             {notifications.length > 0 ? (
               notifications.map((notification) => (
                 <li
+                  onClick={() => navigate(`card/${notification?.data?.cardId}`)}
                   key={notification?.id}
-                  className={`px-4 py-3 flex items-start gap-3 border-b border-gray-100 dark:border-gray-700 last:border-b-0 ${
+                  className={`px-2 py-1 flex items-start gap-3 border-b border-gray-100 dark:border-gray-700 last:border-b-0 ${
                     !notification?.isRead ? "bg-blue-100 dark:bg-gray-900" : ""
                   }`}
                 >
@@ -119,7 +118,7 @@ const Notifications = () => {
                       <span className="font-semibold">
                         {notification?.actor.username}
                       </span>{" "}
-                      {generateNotificationsMessage(notification?.type)}
+                      <span>{generateNotificationsMessage(notification?.type, notification?.data)}</span>
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
                       {formatUploadTime(notification?.createdAt)}

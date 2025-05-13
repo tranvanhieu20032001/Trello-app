@@ -26,6 +26,13 @@ export const removeUserWorkspace = (workspaceId, data) =>
 export const fetchBoardById_API = (boardId) =>
   apiRequest.get(`/boards/${boardId}`);
 
+export const getBoardByRecent_API = () =>
+  apiRequest.get(`/boards/user/recent`);
+
+export const getBoardByStarred_API = () =>
+  apiRequest.get(`/boards/user/starred`);
+
+
 export const createBoard_API = (data) => apiRequest.post("/boards", data);
 
 export const closeBoard_API = (boardId) =>
@@ -73,6 +80,9 @@ export const renameList_API = (columnId, newname) =>
 // Cards
 export const createCard_API = (newCardData) =>
   apiRequest.post("/cards", newCardData);
+
+export const getCardById_API = (cardId) =>
+  apiRequest.get(`/cards/${cardId}`);
 
 export const uploadCardTitle_API = (cardId, newTitle) =>
   apiRequest.put(`/cards/${cardId}/rename`, { newTitle });

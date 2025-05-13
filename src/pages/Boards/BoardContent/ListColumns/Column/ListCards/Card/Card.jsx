@@ -1,42 +1,51 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useEffect, useRef, useState } from "react";
-import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { BiSolidEditAlt } from "react-icons/bi";
-import { LiaCommentSolid } from "react-icons/lia";
-import { PiPaperclipLight } from "react-icons/pi";
 import { useDispatch } from "react-redux";
 import { Tooltip } from "react-tooltip";
-import { dateComplete_API } from "~/apis";
+import { useLocation, useNavigate } from "react-router-dom";
+import { closeModal, openModal } from "~/store/slices/modalSlice";
+
 import CardFooter from "~/components/Cards/CardDisplay/CardFooter";
 import DatesCart from "~/components/Cards/CardDisplay/DatesCart";
 import LabelsCard from "~/components/Cards/CardDisplay/LabelsCard";
 import TitleCard from "~/components/Cards/CardDisplay/TitleCard";
 import CardActionsModal from "~/components/Modal/CardActionsModal";
-import CardDetailsModal from "~/components/Modal/CardDetailsModal";
-import { closeModal, openModal } from "~/store/slices/modalSlice";
 
 function Card({ card }) {
-  console.log("Card", card);
-
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
+  const location = useLocation();
   const cardRef = useRef();
+
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalDetailsOpen, setModalDetailsOpen] = useState(false);
   const [cardRect, setCardRect] = useState(null);
 
-  const handleClick = (e) => {
+  const handleOpenActionsModal = (e) => {
     e.stopPropagation();
     const rect = cardRef.current.getBoundingClientRect();
     setCardRect(rect);
     setModalOpen(true);
     dispatch(openModal());
   };
-  const handleClickModalDetails = () => {
-    setModalDetailsOpen(true);
-    dispatch(openModal());
+
+  const handleOpenDetailsModal = () => {
+    navigate(`/card/${card.id}`, {
+      state: { backgroundLocation: location },
+    });
   };
+
+  const handleCloseModals = () => {
+    setModalOpen(false);
+    dispatch(closeModal());
+  };
+
+  const handleOpenDetailsFromActions = () => {
+    setModalOpen(false);
+    navigate(`/card/${card.id}`);
+  };
+
   const {
     attributes,
     listeners,
@@ -53,8 +62,10 @@ function Card({ card }) {
   const style = {
     transform: CSS.Translate.toString(transform),
     transition,
-    opacity: isDragging ? 0.3 : 1, // Giảm độ mờ khi kéo
+    opacity: isDragging ? 0.3 : 1,
   };
+
+  const showEditButton = !card.Fe_placeholderCard;
   return (
     <>
       <div
@@ -62,60 +73,49 @@ function Card({ card }) {
         style={style}
         {...attributes}
         {...listeners}
+        onClick={handleOpenDetailsModal}
         className={`${
           card.Fe_placeholderCard ? "h-0" : ""
-        } card w-full relative bg-white overflow-hidden dark:bg-gray-600 rounded-md shadow-md cursor-pointer text-primary dark:text-secondary text-xs md:text-sm group border border-transparent hover:border-blue-500 ${
+        } card w-full relative bg-white dark:bg-gray-600 rounded-md shadow-md cursor-pointer text-primary dark:text-secondary text-xs md:text-sm group border border-transparent hover:border-blue-500 ${
           modalOpen ? "pointer-events-none" : ""
         }`}
-        onClick={handleClickModalDetails}
       >
         <div ref={cardRef}>
-          <button
-            className="absolute top-1.5 text-black rounded-full right-3 bg-gray-200 p-1.5 hidden group-hover:flex items-center justify-center"
-            onClick={(e) => handleClick(e)}
-          >
-            <BiSolidEditAlt />
-          </button>
+          {showEditButton && (
+            <button
+              className="absolute top-1.5 right-3 bg-gray-200 text-black p-1.5 rounded-full hidden group-hover:flex items-center justify-center"
+              onClick={handleOpenActionsModal}
+            >
+              <BiSolidEditAlt />
+            </button>
+          )}
+
           {card?.cover && (
             <img
-              src={card?.cover}
+              src={card.cover}
               alt="Cover"
-              className="h-40 w-full rounded-t-md object-cover"
+              className="h-40 w-full object-cover rounded-t-md"
             />
           )}
 
           <TitleCard card={card} />
-          {card?.dueDate && card?.startDate && <DatesCart card={card} />}
-          {card?.labels && <LabelsCard card={card} />}
+          {card.startDate && card.dueDate && <DatesCart card={card} />}
+          {card.labels?.length > 0 && <LabelsCard card={card} />}
           <CardFooter card={card} />
         </div>
       </div>
+
       {modalOpen && (
         <CardActionsModal
           card={card}
           rect={cardRect}
-          onClose={() => {
-            setModalOpen(false);
-            dispatch(closeModal());
-          }}
-          onOpenDetails={() => {
-            setModalOpen(false);
-            setModalDetailsOpen(true);
-          }}
+          onClose={handleCloseModals}
+          onOpenDetails={handleOpenDetailsFromActions}
         />
       )}
 
-      {modalDetailsOpen && (
-        <CardDetailsModal
-          card={card}
-          onClose={() => {
-            setModalDetailsOpen(false);
-            dispatch(closeModal());
-          }}
-        />
-      )}
       <Tooltip
-        id={`complete-${card?.id}`}
+        id={`complete-${card.id}`}
         clickable
         place="bottom"
         className="z-50"
@@ -125,4 +125,5 @@ function Card({ card }) {
     </>
   );
 }
+
 export default Card;

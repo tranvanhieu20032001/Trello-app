@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { updateCardDescription_API } from "~/apis";
 import { BsTextLeft } from "react-icons/bs";
@@ -6,14 +6,22 @@ import { BsTextLeft } from "react-icons/bs";
 export default function Descriptions({ card }) {
   const editorRef = useRef(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [initialContent, setInitialContent] = useState(card?.description || "");
+  const [initialContent, setInitialContent] = useState("");
+
+  useEffect(() => {
+    setInitialContent(card?.description || "");
+  }, [card?.description]);
 
   const handleSave = async () => {
-    if (editorRef.current) {
+    if (!editorRef.current) return;
+
+    try {
       const content = editorRef.current.getContent();
       await updateCardDescription_API(card?.id, content);
-      setIsEditing(false);
       setInitialContent(content);
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Failed to update description:", error);
     }
   };
 
@@ -21,7 +29,7 @@ export default function Descriptions({ card }) {
     <div className="space-y-2">
       <span className="font-medium text-base flex items-center gap-2">
         <BsTextLeft size={20} />
-        Descriptions
+        Description
       </span>
 
       {!isEditing ? (
@@ -40,23 +48,15 @@ export default function Descriptions({ card }) {
       ) : (
         <div>
           <Editor
-            onInit={(evt, editor) => {
-              editorRef.current = editor;
-            }}
+            onInit={(evt, editor) => (editorRef.current = editor)}
             apiKey="10lpxjmyvyly4rdb88xil2fxm3y11ava3j2s5rn9tl5btib8"
             initialValue={initialContent}
             init={{
               height: 200,
-              plugins: [
-                "link",
-                "lists",
-                "table",
-                "wordcount",
-                "emoticons",
-              ],
+              menubar: false,
+              plugins: ["link", "lists", "table", "wordcount", "emoticons"],
               toolbar:
-                "undo redo | bold italic | link image media | bullist numlist | removeformat",
-
+                "undo redo | bold italic | bullist numlist | link | removeformat",
               file_picker_types: "image",
             }}
           />

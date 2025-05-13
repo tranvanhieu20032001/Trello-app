@@ -10,6 +10,8 @@ import TinyEditor from "./TinyEditor";
 const Comment = ({ card, board }) => {
   const user = useSelector((state) => state.auth.user);
   const comments = card?.comments || [];
+  console.log("comments", comments);
+  
   const member = board?.BoardMembers || [];
   const mentionsData = member
     ?.filter((m) => m.user.id !== user?.id)

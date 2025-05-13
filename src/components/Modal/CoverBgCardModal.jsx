@@ -6,7 +6,6 @@ import Loading from "../Loader/Loading";
 import { uploadCoverImage_API, uploadFile_API } from "~/apis";
 import { BE_URL } from "~/utils/constants";
 import { useDispatch } from "react-redux";
-import { fetchBoardById } from "~/store/slices/boardSlice";
 import loading from "~/assets/loading.svg";
 import { LiaTimesSolid } from "react-icons/lia";
 
@@ -25,12 +24,12 @@ const collections = [
 const CoverBgCardModal = ({
   card,
   isOpen,
+  fetchCard,
   onClose,
   position = "top-0 left-full",
 }) => {
   const [cover, setCover] = useState("");
   const [images, setImages] = useState([]);
-  const dispatch = useDispatch();
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingCover, setIsLoadingCover] = useState(false);
@@ -77,7 +76,6 @@ const CoverBgCardModal = ({
           hasMore = false;
         }
       }
-
       setImages(allResults);
     } catch (error) {
       console.error("Error fetching images:", error);
@@ -123,7 +121,7 @@ const CoverBgCardModal = ({
       await uploadCoverImage_API(card?.id, fullUrl);
       setCover(fullUrl);
       setTimeout(() => setIsLoadingCover(false), 600);
-      dispatch(fetchBoardById(card?.boardId));
+      await fetchCard();
     } catch (error) {
       console.error("Upload error:", error);
     }
@@ -135,7 +133,7 @@ const CoverBgCardModal = ({
       await uploadCoverImage_API(card?.id, filePath);
       setCover(filePath);
       setTimeout(() => setIsLoadingCover(false), 600);
-      dispatch(fetchBoardById(card?.boardId));
+      await fetchCard();
     } catch (error) {
       console.error("Set cover error:", error);
     }
@@ -145,7 +143,7 @@ const CoverBgCardModal = ({
     try {
       await uploadCoverImage_API(card?.id, null);
       setCover(null);
-      dispatch(fetchBoardById(card?.boardId));
+      await fetchCard();
     } catch (err) {
       console.error("Delete cover error:", err);
     }

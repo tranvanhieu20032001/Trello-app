@@ -22,8 +22,6 @@ const Sidebar = () => {
   const user = useSelector((state) => state.auth.user);
   const workspaceData = useSelector((state) => state.workspace.workspaceData);
   const workspaceName = workspaceData?.name || "Workspace";
-  
-  // console.log("user", user);
 
   const boards = workspaceData?.boards?.filter(
     (board) =>
@@ -31,7 +29,6 @@ const Sidebar = () => {
       board.status &&
       board.BoardMembers.some((boardmember) => boardmember.userId === user?.id)
   );
-  
 
   const isMemberBoard = useMemo(
     () => workspaceData?.members.some((member) => member.userId === user.id),
