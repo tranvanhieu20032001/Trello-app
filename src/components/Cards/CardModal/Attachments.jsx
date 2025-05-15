@@ -120,7 +120,7 @@ const Attachments = ({ card, handleFetchData }) => {
           ))}
         </ul>
       ) : (
-        <p className="text-center text-gray-500 italic">No attachments</p>
+        <p className="text-center text-gray-500 dark:text-white italic">No attachments</p>
       )}
       {isOpen && (
         <AttachmentModal card={card} onClose={() => setIsOpen(false)} />

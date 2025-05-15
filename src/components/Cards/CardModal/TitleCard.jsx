@@ -111,19 +111,19 @@ const TitleCard = ({ card, boards }) => {
 
       <div className="relative w-44 text-sm" ref={dropdownRef}>
         <button
-          className="p-1 px-2 w-full flex justify-between items-center border border-gray-300 rounded-md bg-white"
+          className="p-1 px-2 w-full flex justify-between items-center border border-gray-300 rounded-md bg-white dark:bg-gray-700"
           onClick={() => setIsOpen((prev) => !prev)}
         >
           {columnTitle}
           <IoIosArrowDown size={14} />
         </button>
         {isOpen && (
-          <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto">
+          <ul className="absolute left-0 right-0 mt-1 bg-white dark:bg-gray-700 border border-gray-300 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto">
             {boards?.columns.map((column) => (
               <li
                 key={column.id}
                 onClick={() => handleChangeList(column)}
-                className="p-1 px-2 cursor-pointer hover:bg-gray-200"
+                className="p-1 px-2 cursor-pointer hover:bg-gray-200 dark:bg-gray-700"
               >
                 {column.title}
               </li>

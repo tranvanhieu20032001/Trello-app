@@ -34,7 +34,7 @@ const BoardWrapper = () => {
       >
         {isSidebarOpen && <Sidebar isSidebarOpen={isSidebarOpen} />}
         <button
-          className="absolute -right-0 top-2 p-1.5 rounded-full shadow-md hover:bg-gray-200"
+          className="absolute -right-0 top-2 p-1.5 rounded-full shadow-md hover:bg-gray-200 hover:dark:bg-gray-700"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         >
           {isSidebarOpen ? (

@@ -80,7 +80,7 @@ const Sidebar = () => {
             </span>
             {isMemberBoard && (
               <span
-                className="p-1 rounded-sm hover:bg-gray-200 cursor-pointer"
+                className="p-1 rounded-sm hover:bg-gray-200 hover:dark:bg-gray-700 cursor-pointer"
                 onClick={() => setIsOpen(true)}
               >
                 <IoIosAdd size={20} />

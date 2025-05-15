@@ -80,7 +80,7 @@ const Notifications = () => {
       </div>
 
       {isOpen && (
-        <div className="absolute -top-14 lg:top-full right-full lg:right-0 mt-3 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-md min-w-72 lg:min-w-80 z-10 shadow-xl overflow-hidden">
+        <div className="absolute -top-14 lg:top-full right-full lg:right-0 mt-3 bg-white dark:bg-gray-700 border border-gray-100 dark:border-gray-700 rounded-md min-w-72 lg:min-w-80 z-10 shadow-xl overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
             <h3 className="font-semibold text-gray-700 dark:text-gray-300">
               Notifications

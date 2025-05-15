@@ -121,7 +121,7 @@ const LabelModal = ({ card, board, isOpen, onClose, handleFetchData }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="absolute top-0 left-full bg-white px-6 py-4 rounded-2xl border shadow-lg w-80 z-50">
+    <div className="absolute top-0 left-full bg-white dark:bg-gray-600 dark:text-secondary px-6 py-4 rounded-2xl border shadow-lg w-80 z-50">
       <div className="flex justify-center items-center mb-4 relative">
         <h1 className="text-center font-medium">Labels</h1>
         <button
@@ -133,7 +133,7 @@ const LabelModal = ({ card, board, isOpen, onClose, handleFetchData }) => {
         </button>
       </div>
 
-      <button onClick={toggleForm} className="text-sm text-blue-600 mb-2">
+      <button onClick={toggleForm} className="text-sm text-blue-500 mb-2">
         {form.isVisible ? "← Back" : "+ Create new label"}
       </button>
 
@@ -173,7 +173,7 @@ const LabelModal = ({ card, board, isOpen, onClose, handleFetchData }) => {
               </div>
             ))
           ) : (
-            <p className="text-sm text-gray-500 italic">No labels yet.</p>
+            <p className="text-sm italic">No labels yet.</p>
           )}
           <hr className="py-2" />
         </div>

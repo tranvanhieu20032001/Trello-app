@@ -166,8 +166,8 @@ const NotificationItem = ({ notification, fetchNotifications }) => {
     <li
       key={notification?.id}
       onClick={handleClick}
-      className={`px-2 py-1 flex items-start gap-3 border-b border-gray-100 dark:border-gray-700 last:border-b-0 cursor-pointer ${
-        !notification?.isRead ? "bg-blue-100 dark:bg-gray-900" : ""
+      className={`px-2 py-1 flex items-start gap-3 border-b border-gray-100 dark:border-gray-500 last:border-b-0 cursor-pointer ${
+        !notification?.isRead ? "bg-blue-100 dark:bg-gray-800" : ""
       }`}
     >
       {notification?.actor?.avatar ? (

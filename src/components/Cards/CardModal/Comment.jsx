@@ -92,7 +92,7 @@ const Comment = ({ card, board }) => {
 
           {!isCommenting ? (
             <div
-              className="p-2 w-full rounded-md bg-gray-100 text-sm cursor-pointer"
+              className="p-2 w-full rounded-md bg-gray-100 dark:bg-gray-700 text-sm cursor-pointer"
               onClick={() => setIsCommenting(true)}
             >
               Write a comment...

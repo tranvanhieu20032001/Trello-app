@@ -62,7 +62,7 @@ function CardModal({ onClose, card, rect, onOpenDetails }) {
       >
         <div
           style={{ width: rect.width, height: rect.height }}
-          className="bg-white rounded-md shadow-lg"
+          className="bg-white dark:bg-gray-600 rounded-md shadow-lg"
         >
           {card?.cover && (
             <img
@@ -139,7 +139,7 @@ function CardModal({ onClose, card, rect, onOpenDetails }) {
 function ActionButton({ icon, label, onClick }) {
   return (
     <div
-      className="flex items-center bg-white py-1.5 px-3 gap-2 rounded-md hover:scale-105 cursor-pointer"
+      className="flex items-center bg-white dark:bg-gray-600 py-1.5 px-3 gap-2 rounded-md hover:scale-105 cursor-pointer"
       onClick={onClick}
     >
       {icon}

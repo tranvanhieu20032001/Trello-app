@@ -88,7 +88,7 @@ const Filter = () => {
       </Tooltip>
 
       {isOpen && (
-        <div className="absolute bg-white text-primary right-0 mt-2 w-72 shadow-lg rounded-lg p-4 z-50 border space-y-4 text-sm">
+        <div className="absolute bg-white text-primary right-0 mt-2 w-72 shadow-lg rounded-lg p-4 z-50 border space-y-4 text-sm dark:bg-gray-700 dark:text-secondary">
           <div className="max-h-56 overflow-y-auto">
             <p className="font-medium mb-1">Card Members</p>
             {mockMembers
@@ -148,7 +148,7 @@ const Filter = () => {
                 />
                 <span
                   className={`flex items-center gap-2 ${
-                    item.label === "Overdue" ? "text-red-500" : "text-gray-600"
+                    item.label === "Overdue" ? "text-red-500" : ""
                   }`}
                 >
                   {item.icon}

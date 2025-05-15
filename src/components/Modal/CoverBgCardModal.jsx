@@ -152,7 +152,7 @@ const CoverBgCardModal = ({
 
   return (
     <div
-      className={`absolute ${position} bg-white p-6 rounded-2xl border shadow-lg w-96 z-50`}
+      className={`absolute ${position} bg-white dark:bg-gray-600 dark:text-secondary p-6 rounded-2xl border shadow-lg w-96 z-50`}
       onClick={(e) => e.stopPropagation()}
     >
       <button
@@ -195,7 +195,7 @@ const CoverBgCardModal = ({
       <h2 className="text-xs font-medium">Attachment</h2>
       <button
         onClick={handleUploadClick}
-        className="w-full py-1 px-2 bg-gray-200 rounded-sm hover:bg-gray-300 mb-4"
+        className="w-full py-1 px-2 bg-gray-200 dark:bg-gray-700 rounded-sm hover:bg-gray-300 mb-4"
       >
         Upload a cover image
       </button>
@@ -233,7 +233,7 @@ const CoverBgCardModal = ({
             className={`px-2 py-1 rounded-md text-[10px] cursor-pointer ${
               collectionId === c.id
                 ? "bg-blue-600 text-white"
-                : "bg-gray-200 hover:bg-gray-300"
+                : "bg-gray-700 hover:bg-gray-800"
             }`}
           >
             {c.name}
