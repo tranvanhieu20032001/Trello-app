@@ -23,7 +23,7 @@ function BoardBar({ board }) {
   return (
     <div
       id="boardbar"
-      className="h-12 text-white dark:text-secondary bg-white bg-opacity-15 px-4 py-2 flex justify-between text-xs md:text-sm flex-col lg:flex-row"
+      className="h-12 text-white dark:text-secondary bg-black bg-opacity-15 px-4 py-2 flex justify-between text-xs md:text-sm flex-col lg:flex-row"
     >
       <div className="flex items-center gap-4 justify-between lg:justify-start">
         <TitleBoard data={board} />
@@ -49,7 +49,7 @@ function BoardBar({ board }) {
             </Tooltip> */}
             <span
               id="automation"
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center gap-1"
+              className="rounded-sm flex items-center gap-1 text-sm hover:bg-gray-700 p-2"
             >
               <IoIosFlash size={20} />{" "}
               <span className="hidden lg:inline-block">Automation</span>

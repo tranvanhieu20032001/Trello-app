@@ -182,7 +182,7 @@ const CardDetailsModal = ({ cardId }) => {
     <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/20 backdrop-blur-[2px] px-4 py-10 overflow-y-auto">
       <div className="absolute inset-0" onClick={onClose}></div>
       <div
-        className="relative z-10 w-full max-w-3xl bg-white dark:bg-gray-800 rounded-xl p-6 space-y-6"
+        className="relative z-10 w-full max-w-3xl bg-white dark:bg-gray-600 dark:text-white rounded-xl p-6 space-y-6"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -213,7 +213,7 @@ const CardDetailsModal = ({ cardId }) => {
           {/* RIGHT */}
           <div className="col-span-1 space-y-5 relative">
             <div
-              className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300 cursor-pointer"
+              className="flex items-center bg-gray-100 dark:bg-gray-700 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300 cursor-pointer"
               onClick={isMember ? handleLeaveCard : handleJoinCard}
             >
               {isMember ? (
@@ -308,7 +308,7 @@ const CardDetailsModal = ({ cardId }) => {
 
 const SideButton = ({ icon, label, onClick }) => (
   <div
-    className="flex items-center bg-gray-100 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300 cursor-pointer"
+    className="flex items-center bg-gray-100 dark:bg-gray-700 py-1.5 px-3 gap-2 rounded-md hover:bg-gray-300 cursor-pointer"
     onClick={onClick}
   >
     {icon}

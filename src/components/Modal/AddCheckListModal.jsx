@@ -21,7 +21,7 @@ const AddCheckListModal = ({ card, board, onClose }) => {
   };
 
   return (
-    <div className="absolute top-0 left-full bg-white px-6 py-4 rounded-2xl border shadow-lg w-80 z-50">
+    <div className="absolute top-0 left-full bg-white dark:bg-gray-600 text-primary dark:text-secondary px-6 py-4 rounded-2xl border shadow-lg w-80 z-50">
       <h1 className="text-center font-medium text-base">Add checklist</h1>
       <button
         onClick={onClose}
@@ -32,7 +32,7 @@ const AddCheckListModal = ({ card, board, onClose }) => {
       <div>
         <label
           htmlFor="title"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium mb-1"
         >
           Title
         </label>
@@ -41,7 +41,7 @@ const AddCheckListModal = ({ card, board, onClose }) => {
           autoFocus
           value={titleCheckList}
           onChange={(e) => setTitleCheckList(e.target.value)}
-          className="py-1.5 px-3 rounded-lg outline-none text-sm text-gray-800 border border-gray-300 focus:border-blue-500 transition w-full"
+          className="py-1.5 px-3 rounded-lg outline-none text-sm text-gray-800 dark:text-white dark:bg-gray-700 border border-gray-300 focus:border-blue-500 transition w-full"
           type="text"
         />
         <button

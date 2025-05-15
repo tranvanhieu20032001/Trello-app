@@ -34,13 +34,13 @@ export default function Descriptions({ card }) {
 
       {!isEditing ? (
         <div
-          className="p-2 rounded-md bg-gray-100 hover:bg-gray-200 cursor-pointer"
+          className="p-2 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 cursor-pointer"
           onClick={() => setIsEditing(true)}
         >
           {initialContent ? (
             <div dangerouslySetInnerHTML={{ __html: initialContent }} />
           ) : (
-            <span className="text-gray-400 italic">
+            <span className="text-gray-400 dark:text-white italic">
               Add a more detailed description...
             </span>
           )}

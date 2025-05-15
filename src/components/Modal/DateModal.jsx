@@ -57,10 +57,10 @@ const DateModal = ({ card, onClose, position = "top-0 left-full" }) => {
 
   return (
     <div
-      className={`absolute ${position} bg-white px-6 py-4 rounded-2xl border shadow-lg w-72 z-50`}
+      className={`absolute ${position} bg-white dark:bg-gray-600 text-primary dark:text-secondary px-6 py-4 rounded-2xl border shadow-lg w-72 z-50`}
     >
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-center font-medium text-lg flex-grow text-gray-800">
+        <h1 className="text-center font-medium text-lg flex-grow">
           Dates
         </h1>
         <button className="text-gray-600 hover:text-red-500" onClick={onClose}>
@@ -75,7 +75,7 @@ const DateModal = ({ card, onClose, position = "top-0 left-full" }) => {
           name="start"
           value={dates.start}
           onChange={handleChange}
-          className={`w-full border px-3 py-1.5 rounded-md text-sm outline-none focus:border-blue-500 ${
+          className={`w-full border px-3 py-1.5 rounded-md text-sm outline-none dark:bg-gray-700 focus:border-blue-500 ${
             errors.start ? "border-red-500" : ""
           }`}
         />
@@ -91,7 +91,7 @@ const DateModal = ({ card, onClose, position = "top-0 left-full" }) => {
           name="due"
           value={dates.due}
           onChange={handleChange}
-          className={`w-full border px-3 py-1.5 rounded-md text-sm outline-none focus:border-blue-500 ${
+          className={`w-full border px-3 py-1.5 rounded-md text-sm outline-none dark:bg-gray-700 focus:border-blue-500 ${
             errors.due ? "border-red-500" : ""
           }`}
         />

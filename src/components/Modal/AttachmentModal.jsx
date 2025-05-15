@@ -62,7 +62,7 @@ const AttachmentModal = ({ card, onClose }) => {
   };
 
   return (
-    <div className="absolute top-0 left-full bg-white px-6 py-4 rounded-2xl border shadow-lg w-96 z-50">
+    <div className="absolute top-0 left-full bg-white dark:bg-gray-600 px-6 py-4 rounded-2xl border shadow-lg w-96 z-50">
       <div className="flex justify-center items-center mb-4 relative">
         <h1 className="text-center font-medium">Attachments</h1>
         <button
@@ -88,7 +88,7 @@ const AttachmentModal = ({ card, onClose }) => {
             or{" "}
             <button
               onClick={handleButtonClick}
-              className="text-blue-600 hover:underline"
+              className="text-blue-500 hover:underline"
             >
               browse
             </button>{" "}
