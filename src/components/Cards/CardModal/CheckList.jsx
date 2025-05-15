@@ -119,7 +119,7 @@ const CheckList = ({ card, boards }) => {
                   .map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center gap-2 hover:bg-gray-100 py-1.5 px-3 rounded-md group"
+                      className="flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-700 py-1.5 px-3 rounded-md group"
                     >
                       <input
                         type="checkbox"

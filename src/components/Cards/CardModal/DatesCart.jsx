@@ -21,7 +21,7 @@ const DatesCart = ({ card }) => {
       {!!card?.startDate && (
         <div className="flex gap-4 items-center relative">
           <span>Dates:</span>
-          <div className="flex gap-1 items-center py-1 px-2 bg-gray-200 rounded-md">
+          <div className="flex gap-1 items-center py-1 px-2 bg-gray-200 dark:bg-gray-700 rounded-md">
             <IoIosTimer size={18} />
             <span>
               {startDate} - {dueDate}

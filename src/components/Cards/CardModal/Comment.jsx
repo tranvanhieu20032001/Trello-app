@@ -173,7 +173,7 @@ const Comment = ({ card, board }) => {
                 ) : (
                   <div>
                     <div
-                      className="px-2 py-1.5 bg-gray-100 rounded-md"
+                      className="px-2 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-md"
                       dangerouslySetInnerHTML={{ __html: comment.content }}
                     />
                     {user.id === comment.user.id && (

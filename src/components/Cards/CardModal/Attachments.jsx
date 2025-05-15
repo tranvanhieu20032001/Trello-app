@@ -44,7 +44,7 @@ const Attachments = ({ card, handleFetchData }) => {
           {attachments.map((file, index) => (
             <li
               key={index}
-              className="flex items-center justify-between border border-gray-200 px-2 py-1 rounded-md hover:bg-gray-100 relative"
+              className="flex items-center justify-between border border-gray-200 px-2 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 relative"
             >
               <div className="flex items-center gap-3 w-full">
                 {(() => {
@@ -68,14 +68,14 @@ const Attachments = ({ card, handleFetchData }) => {
                       target="_blank"
                       rel="noopener noreferrer"
                       download={file.fileUrl?.split("\\").pop()}
-                      className="text-blue-600 text-sm break-all"
+                      className="text-blue-500 text-sm break-all"
                     >
                       {file?.type === "LOCAL"
                         ? file.fileUrl?.split("\\").pop()
                         : file.fileName}
                     </a>
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-500 dark:text-white">
                     {formatUploadTime(file.createdAt)}
                   </div>
                 </div>
