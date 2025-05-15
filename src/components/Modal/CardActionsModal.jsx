@@ -5,8 +5,6 @@ import {
   CiCreditCard2,
   CiImageOn,
 } from "react-icons/ci";
-import { HiOutlineArrowSmallRight } from "react-icons/hi2";
-import { IoCopyOutline } from "react-icons/io5";
 import { MdOutlineLabel } from "react-icons/md";
 import { useSelector } from "react-redux";
 import CoverBgCardModal from "./CoverBgCardModal";
@@ -16,7 +14,6 @@ import DatesCart from "../Cards/CardDisplay/DatesCart";
 import LabelsCard from "../Cards/CardDisplay/LabelsCard";
 import CardFooter from "../Cards/CardDisplay/CardFooter";
 import DateModal from "./DateModal";
-import AddCheckListModal from "./AddCheckListModal";
 
 function CardModal({ onClose, card, rect, onOpenDetails }) {
   const boardData = useSelector((state) => state.board?.board?.data);

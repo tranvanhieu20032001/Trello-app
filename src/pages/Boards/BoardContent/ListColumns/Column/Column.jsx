@@ -160,6 +160,7 @@ function Column({ column }) {
             List actions
           </Tooltip>
           <ListActions
+            list={column}
             isOpen={isMenuOpen}
             onClose={closeMenu}
             onRename={() => setEdit(true)}
