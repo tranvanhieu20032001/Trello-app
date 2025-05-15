@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { MdOutlineAttachFile } from "react-icons/md";
-import { FaRegFile } from "react-icons/fa";
 import { formatUploadTime } from "~/utils/formatters";
 import {
   BsFileEarmarkPdf,
@@ -11,6 +10,8 @@ import {
 import AttachmentModal from "~/components/Modal/AttachmentModal";
 import { deleteAttachment_API } from "~/apis";
 import { useSelector } from "react-redux";
+import { GoFile } from "react-icons/go";
+import { LiaGoogleDrive } from "react-icons/lia";
 
 const Attachments = ({ card, handleFetchData }) => {
   const attachments = card?.attachments;
@@ -47,13 +48,17 @@ const Attachments = ({ card, handleFetchData }) => {
             >
               <div className="flex items-center gap-3 w-full">
                 {(() => {
-                  const ext = file.fileUrl.split(".").pop().toLowerCase();
-                  if (ext === "docx" || ext === "doc")
-                    return <BsFiletypeDocx size={20} />;
-                  if (ext === "pdf") return <BsFileEarmarkPdf size={20} />;
-                  if (["jpg", "jpeg", "png", "gif", "webp"].includes(ext))
-                    return <BsImage size={20} />;
-                  return <FaRegFile size={20} className="text-gray-600" />;
+                  if (file.type === "LOCAL") {
+                    const ext = file.fileUrl.split(".").pop().toLowerCase();
+                    if (ext === "docx" || ext === "doc")
+                      return <BsFiletypeDocx size={20} />;
+                    if (ext === "pdf") return <BsFileEarmarkPdf size={20} />;
+                    if (["jpg", "jpeg", "png", "gif", "webp"].includes(ext))
+                      return <BsImage size={20} />;
+                    return <GoFile size={20} />;
+                  } else {
+                    return <LiaGoogleDrive size={20} />;
+                  }
                 })()}
 
                 <div className="flex-1">
@@ -65,7 +70,9 @@ const Attachments = ({ card, handleFetchData }) => {
                       download={file.fileUrl?.split("\\").pop()}
                       className="text-blue-600 text-sm break-all"
                     >
-                      {file.fileUrl?.split("\\").pop()}
+                      {file?.type === "LOCAL"
+                        ? file.fileUrl?.split("\\").pop()
+                        : file.fileName}
                     </a>
                   </div>
                   <div className="text-xs text-gray-500">

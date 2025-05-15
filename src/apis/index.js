@@ -26,12 +26,10 @@ export const removeUserWorkspace = (workspaceId, data) =>
 export const fetchBoardById_API = (boardId) =>
   apiRequest.get(`/boards/${boardId}`);
 
-export const getBoardByRecent_API = () =>
-  apiRequest.get(`/boards/user/recent`);
+export const getBoardByRecent_API = () => apiRequest.get(`/boards/user/recent`);
 
 export const getBoardByStarred_API = () =>
   apiRequest.get(`/boards/user/starred`);
-
 
 export const createBoard_API = (data) => apiRequest.post("/boards", data);
 
@@ -81,8 +79,7 @@ export const renameList_API = (columnId, newname) =>
 export const createCard_API = (newCardData) =>
   apiRequest.post("/cards", newCardData);
 
-export const getCardById_API = (cardId) =>
-  apiRequest.get(`/cards/${cardId}`);
+export const getCardById_API = (cardId) => apiRequest.get(`/cards/${cardId}`);
 
 export const uploadCardTitle_API = (cardId, newTitle) =>
   apiRequest.put(`/cards/${cardId}/rename`, { newTitle });
@@ -140,8 +137,21 @@ export const uploadAttachment_API = (files) => {
     headers: { "Content-Type": "multipart/form-data" },
   });
 };
-export const uploadAttachmentPath_API = (cardId, filePaths) =>
-  apiRequest.put(`/cards/${cardId}/attachment`, { filePaths });
+
+export const uploadAttachmentPath_API = (
+  cardId,
+  type = "LOCAL",
+  filePaths,
+  filename
+) => {
+  const payload = { type, filePaths };
+
+  if (filename) {
+    payload.filename = filename;
+  }
+
+  return apiRequest.put(`/cards/${cardId}/attachment`, payload);
+};
 
 export const updateCardDescription_API = (cardId, content) =>
   apiRequest.put(`/cards/${cardId}/description`, { content });
@@ -180,6 +190,12 @@ export const verifyInviteLink = (token) =>
   apiRequest.get(`/invite/${token}`, { token });
 
 export const getNotifications_API = () => apiRequest.get(`users/notifications`);
+
+export const markAsRead_API = () =>
+  apiRequest.patch(`users/notifications/mark-as-read`);
+
+export const markNotifitionAsRead_API = (id) =>
+  apiRequest.patch(`users/notifications/${id}/read`);
 
 //Comment
 

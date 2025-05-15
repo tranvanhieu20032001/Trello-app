@@ -44,7 +44,7 @@ const LABEL_COLORS = [
   "#ff8ed4",
 ];
 
-const LabelModal = ({ card, board, isOpen, onClose }) => {
+const LabelModal = ({ card, board, isOpen, onClose, handleFetchData }) => {
   const dispatch = useDispatch();
   const [form, setForm] = useState({
     name: "",
@@ -61,13 +61,15 @@ const LabelModal = ({ card, board, isOpen, onClose }) => {
   };
 
   const handleCreateLabel = async () => {
+    if (!form.name.trim() || !form.color) return; // đảm bảo nhập tên + màu
     await createLabel_API({
-      name: form.name,
+      name: form.name.trim(),
       color: form.color,
       boardId: board?.id,
     });
     dispatch(fetchBoardById(board?.id));
     resetForm();
+    if (handleFetchData) handleFetchData();
   };
 
   const handleEditLabel = (label) => {
@@ -78,18 +80,25 @@ const LabelModal = ({ card, board, isOpen, onClose }) => {
       isVisible: true,
       isUpdate: true,
     });
+    // Không gọi handleFetchData ở đây vì chỉ mở form edit
   };
 
   const handleUpdateLabel = async () => {
-    await updateLabel_API(form.id, { name: form.name, color: form.color });
+    if (!form.name.trim() || !form.color) return;
+    await updateLabel_API(form.id, {
+      name: form.name.trim(),
+      color: form.color,
+    });
     dispatch(fetchBoardById(board?.id));
     resetForm();
+    if (handleFetchData) handleFetchData();
   };
 
   const handleRemoveLabel = async (labelId) => {
     await removeLabel_API(labelId);
     dispatch(fetchBoardById(board?.id));
     setActiveIndex(null);
+    if (handleFetchData) handleFetchData();
   };
 
   const toggleForm = () => {
@@ -100,11 +109,13 @@ const LabelModal = ({ card, board, isOpen, onClose }) => {
       color: "",
       isUpdate: false,
     }));
+    if (handleFetchData) handleFetchData();
   };
 
   const handleToggleLabel = async (labelId) => {
     await toggleLabel_API({ cardId: card?.id, labelId });
     dispatch(fetchBoardById(board?.id));
+    if (handleFetchData) handleFetchData();
   };
 
   if (!isOpen) return null;
@@ -115,7 +126,8 @@ const LabelModal = ({ card, board, isOpen, onClose }) => {
         <h1 className="text-center font-medium">Labels</h1>
         <button
           onClick={onClose}
-          className="text-gray-500 hover:text-black text-lg font-bold absolute top-0 right-2"
+          className="text-gray-500 hover:text-black text-lg font-bold absolute top-1 right-2"
+          aria-label="Close label modal"
         >
           <LiaTimesSolid size={20} className="cursor-pointer" />
         </button>
@@ -144,7 +156,9 @@ const LabelModal = ({ card, board, isOpen, onClose }) => {
                 </div>
                 <span
                   className="hover:text-red-600"
-                  onClick={() => setActiveIndex(index)}
+                  onClick={() => {
+                    if (activeIndex !== index) setActiveIndex(index);
+                  }}
                 >
                   <LiaTimesSolid size={20} className="cursor-pointer" />
                 </span>
@@ -185,6 +199,7 @@ const LabelModal = ({ card, board, isOpen, onClose }) => {
               type="text"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
+              placeholder="Label title"
             />
           </div>
           <div className="mt-4 grid grid-cols-5 gap-2">
@@ -196,14 +211,15 @@ const LabelModal = ({ card, board, isOpen, onClose }) => {
                 }`}
                 style={{ backgroundColor: color }}
                 onClick={() => setForm({ ...form, color })}
+                aria-label={`Select color ${color}`}
               />
             ))}
           </div>
           <button
-            disabled={!form.color}
+            disabled={!form.color || !form.name.trim()}
             onClick={form.isUpdate ? handleUpdateLabel : handleCreateLabel}
             className={`text-sm px-2 py-1 rounded-sm mt-3 float-end border ${
-              !form.color
+              !form.color || !form.name.trim()
                 ? "bg-gray-300 text-gray-500 border-gray-400 cursor-not-allowed"
                 : "bg-blue-600 text-white border-blue-700 hover:bg-primary"
             }`}

@@ -6,10 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearBoard, fetchBoardById } from "~/store/slices/boardSlice";
 import { fetchWorkspaceData } from "~/store/slices/workSpaceSlice";
 import NofoundPage from "~/components/Workspace/Content/NofoundPage";
-import { cloneDeep, isEmpty } from "lodash";
+import { cloneDeep } from "lodash";
 import { generatePlaceholderCard } from "~/utils/formatters";
-import { toast } from "react-toastify";
-import socket from "~/utils/socket";
 
 function Board() {
   const { boardId } = useParams();
@@ -20,6 +18,8 @@ function Board() {
   const visibility = board?.type;
   const workspaceData = useSelector((state) => state.workspace.workspaceData);
   const user = useSelector((state) => state.auth.user);
+  const filters = useSelector((state) => state.filter);
+  console.log("filters", filters);
 
   const [localBoard, setLocalBoard] = useState(null);
 
@@ -37,19 +37,65 @@ function Board() {
   }, [board?.workspaceId, dispatch]);
 
   useEffect(() => {
-    if (board) {
-      const clonedBoard = cloneDeep(board);
-      clonedBoard.columns.forEach((column) => {
-        if (isEmpty(column.cards)) {
-          const placeholder = generatePlaceholderCard(column);
-          column.cards = [placeholder];
-          column.cardsOrderIds = [placeholder.id];
-        }
-      });
-      setLocalBoard(clonedBoard);
-    }
-  }, [board]);
+    if (!board) return;
 
+    const clonedBoard = cloneDeep(board);
+    clonedBoard.columns.forEach((column) => {
+      let filteredCards = column.cards;
+
+      console.log("filteredCards", filteredCards);
+
+      if (filters.members.length > 0) {
+        filteredCards = filteredCards.filter((card) =>
+          card?.CardMembers?.some((m) => filters.members.includes(m.userId))
+        );
+      }
+
+      // ✅ Lọc theo labels (filter theo label.id)
+      if (filters.labels.length > 0) {
+        filteredCards = filteredCards.filter((card) =>
+          card.labels?.some((label) => filters.labels.includes(label.labelId))
+        );
+      }
+
+      if (filters.status !== null && filters.status !== undefined) {
+        filteredCards = filteredCards.filter(
+          (card) => card?.isComplete === filters.status
+        );
+      }
+
+      if (filters.dueDate.length > 0) {
+        const now = new Date();
+
+        filteredCards = filteredCards.filter((card) => {
+          const due = card?.dueDate ? new Date(card.dueDate) : null;
+
+          const isOverdue =
+            filters.dueDate.includes("Overdue") &&
+            due &&
+            due < now &&
+            !card?.isCompleted;
+
+          const isNoDueDate =
+            filters.dueDate.includes("No dates") && !card?.dueDate;
+
+          return isOverdue || isNoDueDate;
+        });
+      }
+
+      // Nếu rỗng, thêm placeholder
+      if (filteredCards.length === 0) {
+        const placeholder = generatePlaceholderCard(column);
+        column.cards = [placeholder];
+        column.cardsOrderIds = [placeholder.id];
+      } else {
+        column.cards = filteredCards;
+        column.cardsOrderIds = filteredCards.map((card) => card.id);
+      }
+    });
+
+    setLocalBoard(clonedBoard);
+  }, [board, filters]);
 
   const isMemberWorkspace = useMemo(
     () => workspaceData?.members?.some((m) => m.userId === user?.id),

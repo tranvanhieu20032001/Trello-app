@@ -44,11 +44,11 @@ const AttachmentModal = ({ card, onClose }) => {
     if (selectedFiles.length > 0) {
       const res = await uploadAttachment_API(selectedFiles);
       res.data.map((props) => {
-        filePath.push(BE_URL + "/"+props.filePath);
+        filePath.push(BE_URL + "/" + props.filePath);
       });
 
-      await uploadAttachmentPath_API(card?.id, filePath);
-      toast.success("Upload file successfully")
+      await uploadAttachmentPath_API(card?.id, "LOCAL", filePath);
+      toast.success("Upload file successfully");
       setSelectedFiles([]);
     } else {
       alert("Please select or drop files to upload.");

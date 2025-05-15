@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { BsActivity, BsTextLeft } from "react-icons/bs";
 import { IoCloseOutline } from "react-icons/io5";
 import { MdOutlineAttachFile, MdOutlineLabel } from "react-icons/md";
 import {
@@ -12,7 +11,12 @@ import { AiOutlineUser, AiOutlineUserAdd } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { getCardById_API, joinCard_API, leaveCard_API } from "~/apis";
+import {
+  getCardById_API,
+  joinCard_API,
+  leaveCard_API,
+  uploadAttachmentPath_API,
+} from "~/apis";
 import { fetchBoardById } from "~/store/slices/boardSlice";
 import socket from "~/utils/socket";
 
@@ -34,6 +38,9 @@ import Attachments from "../Cards/CardModal/Attachments";
 import Descriptions from "../Cards/CardModal/Descriptions";
 import Comment from "../Cards/CardModal/Comment";
 import Activity from "../Cards/CardModal/Activity";
+import useDrivePicker from "react-google-drive-picker";
+import { LiaGoogleDrive } from "react-icons/lia";
+import { toast } from "react-toastify";
 
 const CardDetailsModal = ({ cardId }) => {
   const dispatch = useDispatch();
@@ -127,6 +134,40 @@ const CardDetailsModal = ({ cardId }) => {
     return () => socket.off("notify", handleFetchData);
   }, [card?.id]);
 
+  const [openPicker, setOpenPicker] = useDrivePicker();
+
+  const handleOpenPicker = async () => {
+    openPicker({
+      clientId:
+        "641804194023-sq787jqgcp5jl3no43kv6lfvc22fn00f.apps.googleusercontent.com",
+      developerKey: "AIzaSyD3M4qDNU8lBac7uRCyJF88-KxNNKEj04A",
+      viewId: "DOCS",
+      showUploadFolders: true,
+      supportDrives: true,
+      multiselect: true,
+      callbackFunction: (data) => {
+        if (data.action === "cancel") {
+          console.log("User clicked cancel/close button");
+        } else if (data.docs) {
+          handleUploadDriveFiles(data.docs);
+        }
+      },
+    });
+  };
+
+  const handleUploadDriveFiles = async (files) => {
+    try {
+      const filePaths = files.map((file) => file.url);
+      const filenames = files.map((file) => file.name);
+
+      await uploadAttachmentPath_API(cardId, "DRIVER", filePaths, filenames);
+      toast.success("Upload file successfully");
+    } catch (error) {
+      toast.error("Upload failed");
+      console.error(error);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
@@ -215,6 +256,11 @@ const CardDetailsModal = ({ cardId }) => {
               label="Attachments"
               onClick={() => handleModalToggle("attachment")}
             />
+            <SideButton
+              icon={<LiaGoogleDrive size={18} />}
+              label="Google Driver"
+              onClick={handleOpenPicker}
+            />
 
             {modalState.cover && (
               <CoverBgCardModal
@@ -230,6 +276,7 @@ const CardDetailsModal = ({ cardId }) => {
                 board={boardData}
                 isOpen
                 onClose={closeAllModals}
+                handleFetchData={handleFetchData}
               />
             )}
             {modalState.checklist && (

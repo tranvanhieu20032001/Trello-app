@@ -13,6 +13,7 @@ import Visibility from "./sections/Visibility";
 import { PiWarningCircleLight } from "react-icons/pi";
 import TitleBoard from "./sections/TitleBoard";
 import Starred from "./sections/Starred";
+import Filter from "./sections/Filter";
 
 function BoardBar({ board }) {
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
@@ -29,7 +30,7 @@ function BoardBar({ board }) {
         <Starred data={board} />
         {board.status && (
           <>
-            <span
+            {/* <span
               id="gg-drive"
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center gap-1"
             >
@@ -45,7 +46,7 @@ function BoardBar({ board }) {
               place="bottom"
             >
               Add to Google Drive
-            </Tooltip>
+            </Tooltip> */}
             <span
               id="automation"
               className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center gap-1"
@@ -62,16 +63,7 @@ function BoardBar({ board }) {
               Automation
             </Tooltip>
 
-            <span
-              id="filter"
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center gap-1"
-            >
-              <MdFilterList size={20} />
-              <span className="hidden lg:inline-block">Filter</span>
-            </span>
-            <Tooltip anchorSelect="#filter" className="z-10" place="bottom">
-              Filter <span className="px-2 py-1 bg-slate-600">F</span>
-            </Tooltip>
+            <Filter/>
           </>
         )}
       </div>
