@@ -8,18 +8,18 @@ import { useNavigate } from "react-router-dom";
 import { IoIosArrowDown } from "react-icons/io";
 
 const backgroundImage = [
-  "https://trellovh.netlify.app/src/assets/background/astronaaut.png",
-  "https://trellovh.netlify.app/src/assets/background/food.jpg",
-  "https://trellovh.netlify.app/src/assets/background/lantern02.jpg",
-  "https://trellovh.netlify.app/src/assets/background/lanterns01.jpg",
-  "https://trellovh.netlify.app/src/assets/background/mountain01.jpg",
-  "https://trellovh.netlify.app/src/assets/background/natural.jpg",
-  "https://trellovh.netlify.app/src/assets/background/seagull.jpg",
-  "https://trellovh.netlify.app/src/assets/color1.svg",
-  "https://trellovh.netlify.app/src/assets/color2.svg",
-  "https://trellovh.netlify.app/src/assets/color3.svg",
-  "https://trellovh.netlify.app/src/assets/color4.svg",
-  "https://trellovh.netlify.app/src/assets/color5.svg",
+  "https://trellovh.netlify.app/assets/background/astronaaut.png",
+  "https://trellovh.netlify.app/assets/background/food.jpg",
+  "https://trellovh.netlify.app/assets/background/lantern02.jpg",
+  "https://trellovh.netlify.app/assets/background/lanterns01.jpg",
+  "https://trellovh.netlify.app/assets/background/mountain01.jpg",
+  "https://trellovh.netlify.app/assets/background/natural.jpg",
+  "https://trellovh.netlify.app/assets/background/seagull.jpg",
+  "https://trellovh.netlify.app/assets/color1.svg",
+  "https://trellovh.netlify.app/assets/color2.svg",
+  "https://trellovh.netlify.app/assets/color3.svg",
+  "https://trellovh.netlify.app/assets/color4.svg",
+  "https://trellovh.netlify.app/assets/color5.svg",
 ];
 
 const visibility = [
