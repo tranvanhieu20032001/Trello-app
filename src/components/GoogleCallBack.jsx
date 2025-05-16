@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import { setUser } from "~/store/slices/authSlice";
 import Loader from "./Loader/Loader";
+import { API_ENDPOINT } from "~/utils/constants";
 
 const GoogleCallBack = () => {
   const navigate = useNavigate();
@@ -16,12 +17,9 @@ const GoogleCallBack = () => {
       const accessToken = searchParams.get("token");
       if (accessToken) {
         try {
-          const response = await axios.get(
-            "http://localhost:3002/api/v1/users/me",
-            {
-              headers: { Authorization: `Bearer ${accessToken}` },
-            }
-          );
+          const response = await axios.get(`${API_ENDPOINT}/v1/users/me`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          });
           dispatch(setUser({ user: response.data, accessToken }));
           navigate("/", { replace: true });
         } catch (error) {
@@ -33,7 +31,7 @@ const GoogleCallBack = () => {
     fetchUser();
   }, [dispatch, navigate, location]);
 
-  return <Loader/>;
+  return <Loader />;
 };
 
 export default GoogleCallBack;
