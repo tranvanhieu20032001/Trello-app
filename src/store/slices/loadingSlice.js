@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const loadingSlice = createSlice({
   name: "loading",
-  initialState: { isLoading: false }, // Mặc định không hiển thị loader
+  initialState: { isLoading: false },
   reducers: {
     startLoading: (state) => {
       state.isLoading = true;

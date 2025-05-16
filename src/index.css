@@ -11,10 +11,14 @@
 
 body{
   height: 100vh;
-  overflow-y: hidden;
+  overflow-y: scroll;
   display: block;
 }
 
 body::-webkit-scrollbar {
   display: none;  /* Ẩn scrollbar */
+}
+
+.mymention{
+  color: #3b82f6;
 }

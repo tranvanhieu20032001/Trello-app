@@ -47,15 +47,15 @@ function Profile() {
     <div className="dropdown relative" ref={dropdownRef}>
       <button
         id="acount"
-        className={`flex items-center gap-1 px-2 py-1 lg:py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 ${
-          isOpen ? "bg-gray-200" : ""
+        className={`flex items-center gap-1 px-4 py-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 ${
+          isOpen ? "bg-gray-200 dark:bg-gray-700" : ""
         }`}
         onClick={() => setIsOpen(!isOpen)}
       >
         {user?.avatar ? (
           <img className="w-7 h-7 rounded-full" src={user?.avatar} alt="" />
         ) : (
-          <div className="w-7 h-7 rounded-full border flex items-center justify-center text-xs bg-blue-500 text-white">
+          <div className="w-7 h-7 rounded-full border flex items-center justify-center text-xs bg-blue-600 text-white">
             {user?.username.slice(0, 2).toUpperCase()}
           </div>
         )}
@@ -66,7 +66,7 @@ function Profile() {
       </Tooltip>
 
       {isOpen && (
-        <div className="absolute text-xs md:text-sm top-full right-0 mt-2 bg-gray-700 border border-gray-200 p-4 rounded-md min-w-80 z-10 text-gray-200">
+        <div className="absolute text-xs md:text-sm top-full right-0 mt-2 bg-light dark:bg-gray-700 border border-gray-200 p-2 rounded-md min-w-60 lg:min-w-80 z-10 text-primary dark:text-secondary">
           <h4 className="font-medium uppercase text-[10px] md:text-[13px]">
             Account
           </h4>
@@ -74,7 +74,7 @@ function Profile() {
             <div className="flex items-center gap-2 py-1">
               <img
                 className="w-10 h-10 rounded-full"
-                src="https://www.google.com/url?sa=i&url=https%3A%2F%2Flifestyle.znews.vn%2Fnhung-hinh-anh-luu-giu-khoanh-khac-dang-nho-cua-doi-nguoi-post860196.html&psig=AOvVaw1zkuh8oY_WL0elD36m6IR6&ust=1734457798229000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCPClufzsrIoDFQAAAAAdAAAAABAE"
+                src={user?.avatar}
                 alt=""
               />
               <div>
@@ -84,20 +84,20 @@ function Profile() {
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-600 p-2">
+            {/* <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-600 p-2">
               <LiaUserCogSolid size={20} /> Manage acount
             </div>
             <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-600 p-2 max-w-screen-lg">
               <PiUserSwitchLight size={20} /> Switch acount
-            </div>
+            </div> */}
           </div>
           <hr className="my-4" />
           <div className="px-4">
-            <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-600 p-2">
+            <div className="flex items-center gap-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 p-2">
               <IoSettingsOutline size={20} /> Setting
             </div>
             <div
-              className="flex items-center gap-2 cursor-pointer hover:bg-gray-600 p-2"
+              className="flex items-center gap-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 p-2"
               onClick={handleLogout}
             >
               <IoIosLogOut size={20} /> Logout

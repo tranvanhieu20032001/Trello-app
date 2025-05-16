@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { joinWorkspace, verifyInviteLink } from "~/apis";
+import { joinWorkspace, joinBoard, verifyInviteLink } from "~/apis";
 import home from "~/assets/home.svg";
 
 const InvitePage = () => {
@@ -12,12 +12,15 @@ const InvitePage = () => {
   const userId = user?.id;
 
   const [workspaceId, setWorkspaceId] = useState(null);
+  const [boardId, setBoardId] = useState(null);
   const [isValid, setIsValid] = useState(null);
+
   useEffect(() => {
     const verifyInvite = async () => {
       try {
         const response = await verifyInviteLink(token);
-        setWorkspaceId(response.data.workspaceId);
+        if (response.data.workspaceId) setWorkspaceId(response.data.workspaceId);
+        if (response.data.boardId) setBoardId(response.data.boardId);
         setIsValid(true);
       } catch (error) {
         setIsValid(false);
@@ -29,14 +32,17 @@ const InvitePage = () => {
     verifyInvite();
   }, [token]);
 
-  const handleJoinWorkSpace = async () => {
-    const data = { workspaceId, userId };
+  const handleJoin = async () => {
     try {
-      const response = await joinWorkspace(data);
-      toast.success(response.data.message);
-      navigate(`/workspace/${workspaceId}/members`);
+      if (workspaceId) {
+        await joinWorkspace({ workspaceId, userId });
+        navigate(`/workspace/${workspaceId}/members`);
+      } else if (boardId) {
+        await joinBoard({ boardId, userId });
+        navigate(`/board/${boardId}`);
+      }
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Failed to join.");
     }
   };
 
@@ -46,10 +52,10 @@ const InvitePage = () => {
         <img className="w-full" src={home} alt="" />
         {isValid ? (
           <h1 className="text-base text-center my-3">
-            You have been invited to a workspace!{" "}
+            You have been invited to a {workspaceId ? "workspace" : "board"}!{" "}
             <button
               className="px-2 text-blue-600 hover:text-primary"
-              onClick={handleJoinWorkSpace}
+              onClick={handleJoin}
             >
               Join Now
             </button>

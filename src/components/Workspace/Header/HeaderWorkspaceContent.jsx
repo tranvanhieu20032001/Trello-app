@@ -1,33 +1,45 @@
 import React, { useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { FaUserPlus } from "react-icons/fa6";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { useWorkspace } from "~/context/WorkspaceContext";
-import AddNewMember from "../Modal/AddNewMember";
+import AddNewMember from "../../Modal/AddNewMember";
 import { updateWorkspaceName } from "~/apis";
 import { toast } from "react-toastify";
+import { setWorkspaceName } from "~/store/slices/workSpaceSlice";
 
 const HeaderWorkspaceContent = () => {
-  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
   const { id } = useParams();
-  const { workspaceData, workspaceName, setWorkspaceName } = useWorkspace();
+  const user = useSelector((state) => state.auth.user);
+  const workspaceData = useSelector((state) => state.workspace.workspaceData);
+  const workspaceName = workspaceData?.name || "Untitled";
 
   const [editName, setEditName] = useState(false);
   const [tempName, setTempName] = useState(workspaceName);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
+
   const handleSave = async () => {
-    if (!tempName.trim()) return;
+    const trimmedName = tempName.trim();
+    if (!trimmedName || trimmedName === workspaceName) {
+      setEditName(false);
+      return;
+    }
+
     try {
-      const data = { workspaceId: id, userId: user.id, newName: tempName };
+      const data = { workspaceId: id, userId: user.id, newName: trimmedName };
       const response = await updateWorkspaceName(data);
-      setWorkspaceName(tempName);
+
+      // Cập nhật Redux store
+      dispatch(setWorkspaceName(trimmedName));
+
       setEditName(false);
       toast.success(response.data.message);
     } catch (error) {
       toast.error("Failed to update workspace name. Please try again.");
     }
   };
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2 p-2">
@@ -56,14 +68,17 @@ const HeaderWorkspaceContent = () => {
               onChange={(e) => setTempName(e.target.value)}
             />
             <button
-              className="text-xs gap-2 font-medium flex items-center px-2 py-1.5 bg-blue-500 text-white hover:bg-primary border border-blue-700 rounded-sm"
+              className="text-xs gap-2 font-medium flex items-center px-2 py-1.5 bg-blue-600 text-white hover:bg-primary border border-blue-700 rounded-sm"
               onClick={handleSave}
             >
               Save
             </button>
             <button
               className="p-1.5 text-xs bg-gray-300 text-primary rounded-sm hover:bg-gray-400 font-medium border border-blue-300"
-              onClick={() => setEditName(false)}
+              onClick={() => {
+                setTempName(workspaceName);
+                setEditName(false);
+              }}
             >
               Cancel
             </button>
@@ -72,7 +87,7 @@ const HeaderWorkspaceContent = () => {
       </div>
 
       <button
-        className="text-[13px] gap-2 font-medium flex items-center px-2 py-1.5 bg-blue-500 text-white hover:bg-primary border border-blue-700 rounded-sm"
+        className="text-[13px] gap-2 font-medium flex items-center px-2 py-1.5 bg-blue-600 text-white hover:bg-primary border border-blue-700 rounded-sm"
         onClick={() => setIsInviteOpen(true)}
       >
         <FaUserPlus size={15} />

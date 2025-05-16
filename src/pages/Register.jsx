@@ -1,25 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaTrello } from "react-icons/fa6";
 import InputComponent from "~/components/Input/InputComponent";
 import { createUser_API } from "~/apis";
 import { toast } from "react-toastify";
 import { PiWarningCircleLight } from "react-icons/pi";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { startLoading, stopLoading } from "~/store/slices/loadingSlice";
 
 const Register = () => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    username: "",
     email: "",
     password: "",
     confirmpassword: "",
   });
   const [errors, setErrors] = useState({
-    username: "",
     email: "",
     password: "",
     confirmpassword: "",
   });
 
   const [notification, setNotification] = useState(null);
+  const user = useSelector((state) => state.auth.user);
 
   const handleChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -29,15 +32,10 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {
-      username: "",
       email: "",
       password: "",
       confirmpassword: "",
     };
-    if (!formData.username) {
-      newErrors.username = "User name is required.";
-    }
-
     if (!formData.email) {
       newErrors.email = "Email is required.";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -65,14 +63,24 @@ const Register = () => {
     }
 
     try {
+      dispatch(startLoading());
       const response = await createUser_API(formData);
       toast.success(response.data.message);
-      setNotification(response.data.message)
+      setNotification(response.data.message);
     } catch (error) {
       toast.error(error.response.data.message);
-      setNotification(null)
+      setNotification(null);
+    } finally {
+      dispatch(stopLoading());
     }
   };
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   return (
     <div className="w-full h-screen bg-[url('assets/register.jpg')] lg:bg-[url('assets/login.png')] bg-cover">
@@ -92,17 +100,10 @@ const Register = () => {
           )}
           <form onSubmit={handleSubmit} className="mt-5">
             <InputComponent
-              label="User name"
-              name="username"
-              required
-              onChange={(value) => handleChange("username", value)} // Cập nhật trường email
-              error={errors.username}
-            />
-            <InputComponent
               label="Email"
               name="email"
               required
-              onChange={(value) => handleChange("email", value)} // Cập nhật trường email
+              onChange={(value) => handleChange("email", value)}
               error={errors.email}
             />
             <InputComponent
@@ -110,7 +111,7 @@ const Register = () => {
               name="password"
               type="password"
               required
-              onChange={(value) => handleChange("password", value)} // Cập nhật trường email
+              onChange={(value) => handleChange("password", value)}
               error={errors.password}
             />
             <InputComponent
@@ -118,7 +119,7 @@ const Register = () => {
               name="confirmpassword"
               type="password"
               required
-              onChange={(value) => handleChange("confirmpassword", value)} // Cập nhật trường email
+              onChange={(value) => handleChange("confirmpassword", value)}
               error={errors.confirmpassword}
             />
             <button

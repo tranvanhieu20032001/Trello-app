@@ -16,6 +16,11 @@ import Column from "./ListColumns/Column/Column";
 import Card from "./ListColumns/Column/ListCards/Card/Card";
 import { cloneDeep, isEmpty } from "lodash";
 import { generatePlaceholderCard } from "~/utils/formatters";
+import { useBoardActions } from "~/utils/hooks/useBoardActions";
+import socket from "~/utils/socket";
+import { fetchBoardById } from "~/store/slices/boardSlice";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 const ACTIVE_ITEM_TYPE = {
   COLOMN: "ACTIVE_COLUMN",
@@ -23,26 +28,78 @@ const ACTIVE_ITEM_TYPE = {
 };
 
 function BoardContent({ board }) {
-  console.log("boards column",board.columns);
+  const dispatch = useDispatch();
   const [orderColumn, setOrderColumn] = useState([]);
   const [boardHeight, setBoardHeight] = useState(0);
   const [activeId, setActiveId] = useState(null);
   const [activeItemType, setActiveItemType] = useState(null);
   const [activeItemData, setActiveItemData] = useState(null);
   const [oldColumn, setOldColumn] = useState(null);
+  const {
+    handleMoveColumn,
+    handleMoveCardInColumnn,
+    handleMoveCardToDifferentColumnn,
+  } = useBoardActions();
 
   useEffect(() => {
-    // const columns = mapOrder(board?.columns, board?.columnOrderIds, "id");
     const columns = mapOrder(board?.columns, board?.columnOrderIds, "id");
     setOrderColumn(columns);
-
-    // Tính toán chiều cao của BoardContent
-    const navbarHeight = document.getElementById("navbar")?.offsetHeight || 0; // Lấy chiều cao của navbar
+    const navbarHeight = document.getElementById("navbar")?.offsetHeight || 0;
     const boardbarHeight =
-      document.getElementById("boardbar")?.offsetHeight || 0; // Lấy chiều cao của boardbar
+      document.getElementById("boardbar")?.offsetHeight || 0;
     const totalHeight = window.innerHeight - navbarHeight - boardbarHeight;
-    setBoardHeight(totalHeight); // Cập nhật chiều cao của BoardContent
+    setBoardHeight(totalHeight);
   }, [board]);
+
+  const updateHandler = () => {
+    dispatch(fetchBoardById(board.id));
+  };
+
+  useEffect(() => {
+    if (!board?.id) return;
+    const handleMemberEvent = (username, reason) => {
+      let message = `${username} has been updated.`;
+      if (reason === "new-member") {
+        message = `${username} has been added to the board!`;
+      } else if (reason === "remove-member") {
+        message = `${username} has been removed from the board.`;
+      } else if (reason === "leave-member") {
+        message = `${username} has left the board.`;
+      }
+      toast.success(message);
+      dispatch(fetchBoardById(board.id));
+    };
+
+    socket.emit("joinBoard", board.id);
+    socket.on("updateColumnOrder", updateHandler);
+    socket.on("notify", updateHandler);
+    socket.on("new-member", (username) =>
+      handleMemberEvent(username, "new-member")
+    );
+    socket.on("remove-member", (username) =>
+      handleMemberEvent(username, "remove-member")
+    );
+    socket.on("leave-member", (username) =>
+      handleMemberEvent(username, "leave-member")
+    );
+
+    return () => {
+      socket.off("updateColumnOrder", updateHandler);
+      socket.off("notify", updateHandler);
+      socket.off("new-member");
+      socket.off("remove-member");
+      socket.off("leave-member");
+    };
+  }, [board?.id, dispatch]);
+
+  useEffect(() => {
+    if (!board?.id) return;
+    socket.emit("joinColumn", board);
+    socket.on("updateOrderCardIds", updateHandler);
+    return () => {
+      socket.off("updateOrderCardIds", updateHandler);
+    };
+  }, [board?.id]);
 
   const handleSetCardBetweenDifferentColumns = (
     overColumn,
@@ -51,7 +108,8 @@ function BoardContent({ board }) {
     over,
     activeColumn,
     activeCardId,
-    activeCardata
+    activeCardata,
+    trigger
   ) => {
     setOrderColumn((prevColumns) => {
       const overCardIndex = overColumn?.cards?.findIndex(
@@ -82,8 +140,6 @@ function BoardContent({ board }) {
           (card) => card.id !== activeCardId
         );
         if (isEmpty(nextActiveColumn.cards)) {
-          console.log("Het roi");
-
           nextActiveColumn.cards = [generatePlaceholderCard(nextActiveColumn)];
         }
 
@@ -115,7 +171,14 @@ function BoardContent({ board }) {
           (card) => card.id
         );
       }
-      console.log("nextColumns", nextColumns);
+      if (trigger === "handleDragEnd") {
+        handleMoveCardToDifferentColumnn(
+          activeCardId,
+          oldColumn?.id,
+          nextOverColumn?.id,
+          nextColumns
+        );
+      }
 
       return nextColumns;
     });
@@ -163,7 +226,8 @@ function BoardContent({ board }) {
           over,
           activeColumn,
           activeCardId,
-          activeCardata
+          activeCardata,
+          "handleDragEnd"
         );
       } else {
         const oldIndex = oldColumn?.cards?.findIndex(
@@ -175,7 +239,7 @@ function BoardContent({ board }) {
 
         const dndOrderedCard = arrayMove(oldColumn?.cards, oldIndex, newIndex);
         // console.log("dndOrderedCard", dndOrderedCard);
-
+        const dndOrderedCardIds = dndOrderedCard.map((card) => card.id);
         setOrderColumn((preColumn) => {
           const nextColumns = cloneDeep(preColumn);
 
@@ -183,9 +247,12 @@ function BoardContent({ board }) {
             (column) => column.id === overColumn.id
           );
           targetColumn.cards = dndOrderedCard;
-          targetColumn.cardOrderIds = dndOrderedCard.map((card) => card.id);
+          targetColumn.cardOrderIds = dndOrderedCardIds;
           return nextColumns;
         });
+
+        handleMoveCardInColumnn(oldColumn?.id, dndOrderedCardIds);
+        console.log("dndOrderedCardIds", dndOrderedCardIds);
       }
     }
 
@@ -198,6 +265,8 @@ function BoardContent({ board }) {
         const newIndex = orderColumn.findIndex(
           (column) => column.id === over.id
         );
+
+        handleMoveColumn(board.id, arrayMove(orderColumn, oldIndex, newIndex));
         setOrderColumn(arrayMove(orderColumn, oldIndex, newIndex));
       }
     }
@@ -234,7 +303,8 @@ function BoardContent({ board }) {
         over,
         activeColumn,
         activeCardId,
-        activeCardata
+        activeCardata,
+        "handleDragOver"
       );
     }
   };

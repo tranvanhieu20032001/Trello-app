@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { startLoading, stopLoading } from "./store/slices/loadingSlice";
 import Loader from "./components/Loader/Loader";
 import { ToastContainer } from "react-toastify";
-import { WorkspaceProvider } from "./context/WorkspaceContext";
 
 function App() {
   const dispatch = useDispatch();
@@ -21,11 +20,9 @@ function App() {
     <>
       <ToastContainer position="top-right" autoClose={3000} />
       {isLoading && <Loader />}
-      <WorkspaceProvider>
-        <main>
-          <Outlet />
-        </main>
-      </WorkspaceProvider>
+      <main className="relative">
+        <Outlet />
+      </main>
     </>
   );
 }

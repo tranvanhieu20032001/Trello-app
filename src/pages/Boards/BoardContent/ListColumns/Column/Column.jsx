@@ -6,17 +6,73 @@ import { TbTemplate } from "react-icons/tb";
 import { Tooltip } from "react-tooltip";
 import ListCards from "./ListCards/ListCards";
 import mapOrder from "~/utils/sort";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
-import { createCard_API } from "~/apis";
-import { useDispatch } from "react-redux";
-import { fetchBoardById } from "~/store/slices/boardSlice";
+import { createCard_API, renameList_API } from "~/apis";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import ListActions from "~/components/Modal/ListActions";
 
 function Column({ column }) {
-  console.log("column", column);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [newTitle, setNewTitle] = useState(column?.title);
+  const inputRef = useRef(null);
+  const isModalOpen = useSelector((state) => state.modal.isModalOpen);
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (inputRef.current && !inputRef.current.contains(e.target)) {
+        setEdit(false);
+        setNewTitle(column?.title);
+      }
+    };
+
+    if (edit) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [edit, newTitle, column?.title]);
+
+  const handleChange = (e) => {
+    setNewTitle(e.target.value);
+  };
+
+  const handleKeyDown = async (e) => {
+    if (e.key === "Enter") {
+      const trimmedTitle = newTitle.trim();
+
+      if (!trimmedTitle) {
+        setNewTitle(column?.title);
+        setEdit(false);
+        return;
+      }
+
+      if (trimmedTitle !== column?.title) {
+        try {
+          setNewTitle(trimmedTitle);
+          await renameList_API(column?.id, trimmedTitle);
+        } catch (error) {
+          toast.error(error.response?.data?.message || "Rename failed");
+          setNewTitle(column?.title);
+        }
+      }
+
+      setTimeout(() => {
+        setEdit(false);
+      }, 500);
+    } else if (e.key === "Escape") {
+      setNewTitle(column?.title);
+      setEdit(false);
+    }
+  };
+
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+  const closeMenu = () => setIsMenuOpen(false);
   const {
     attributes,
     listeners,
@@ -27,6 +83,7 @@ function Column({ column }) {
   } = useSortable({
     id: column.id,
     data: { ...column },
+    disabled: isModalOpen || isMenuOpen,
   });
 
   const style = {
@@ -40,7 +97,6 @@ function Column({ column }) {
 
   const [addNewCard, setAddNewCard] = useState(false);
   const [newCardTitle, setNewCardTitle] = useState("");
-  const dispatch = useDispatch();
   const { boardId } = useParams();
 
   const handleAddNewCard = async () => {
@@ -56,7 +112,6 @@ function Column({ column }) {
     };
     try {
       await createCard_API(newCardData);
-      dispatch(fetchBoardById(boardId));
       toast.success("Card added successfully!");
       setAddNewCard(false);
       setNewCardTitle("");
@@ -71,14 +126,44 @@ function Column({ column }) {
     <div ref={setNodeRef} style={style} {...attributes}>
       <div
         {...listeners}
-        className="column w-64 overflow-x-hidden px-3 py-3 bg-gray-100 dark:bg-gray-800 rounded-md space-y-2 text-primary dark:text-secondary text-xs md:text-sm"
+        className="column w-[17rem] px-3 py-3 bg-gray-100 dark:bg-gray-800 rounded-md space-y-2 text-primary dark:text-secondary text-xs md:text-sm"
       >
-        <div className="flex items-center justify-between">
-          <h1 className="font-medium text-[15px]">{column.title}</h1>
-          <BsThreeDots size={20} />
+        <div
+          className="flex items-center justify-between relative"
+          ref={inputRef}
+        >
+          {!edit ? (
+            <h1
+              className="font-medium px-2 py-1 text-sm border border-transparent"
+              onClick={() => setEdit(true)}
+            >
+              {column?.title}
+            </h1>
+          ) : (
+            <input
+              className="border outline-none px-2 py-1 text-sm rounded-md font-medium text-primary"
+              value={newTitle}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              autoFocus
+            />
+          )}
+          <div data-tooltip-id="listaction" onClick={toggleMenu}>
+            <BsThreeDots size={20} />
+          </div>
+          <Tooltip id="listaction" place="bottom" clickable>
+            List actions
+          </Tooltip>
+          <ListActions
+            list={column}
+            isOpen={isMenuOpen}
+            onClose={closeMenu}
+            onRename={() => setEdit(true)}
+            onAddCard={() => setAddNewCard(true)}
+          />
         </div>
 
-        <ListCards cards={cards} />
+        <ListCards cards={cards} column={column} />
         {!addNewCard ? (
           <div className="flex items-center justify-between">
             <span

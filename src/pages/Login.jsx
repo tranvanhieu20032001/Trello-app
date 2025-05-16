@@ -1,23 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaTrello } from "react-icons/fa6";
 import InputComponent from "~/components/Input/InputComponent";
 import GoogleLogo from "../assets/Google.svg";
 import { login_API } from "~/apis";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "~/store/slices/authSlice";
 import { API_ENDPOINT } from "~/utils/constants";
+import { startLoading, stopLoading } from "~/store/slices/loadingSlice";
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const user = useSelector((state) => state.auth.user);
 
   const handleChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    setErrors((prev) => ({ ...prev, [name]: "" })); // Xóa lỗi khi có thay đổi
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleSubmit = async (e) => {
@@ -45,24 +47,35 @@ const Login = () => {
     }
 
     try {
+      dispatch(startLoading());
       const response = await login_API(formData);
       toast.success(response.message);
       dispatch(
-        setUser({ user: response.data.user, accessToken: response.data.accessToken })
+        setUser({
+          user: response.data.user,
+          accessToken: response.data.accessToken,
+        })
       );
       setTimeout(() => {
         navigate("/");
       }, 1000);
     } catch (error) {
       console.log("error", error);
-      
       toast.error(error.response.data.message);
+    } finally {
+      dispatch(stopLoading());
     }
   };
 
   const handleLoginGoogle = async () => {
     window.location.href = `${API_ENDPOINT}/auth/google/login`;
   };
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   return (
     <div className="w-full h-screen bg-[url('assets/register.jpg')] lg:bg-[url('assets/login.png')] bg-cover">

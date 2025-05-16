@@ -1,12 +1,11 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import { API_ENDPOINT } from "~/utils/constants";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";;
+import { fetchBoardById_API } from "~/apis";
 
 export const fetchBoardById = createAsyncThunk(
   "board/fetchBoardById",
   async (boardId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_ENDPOINT}/boards/${boardId}`);
+      const response = await fetchBoardById_API(boardId);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Failed to fetch board");

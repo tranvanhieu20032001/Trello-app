@@ -12,8 +12,8 @@ import {
 import { toast } from "react-toastify";
 import { createWorkspace_API, getWorkspaceByUser_API } from "~/apis";
 import { useSelector } from "react-redux";
-import AddNewMember from "~/components/Workspace/Modal/AddNewMember";
-import AddNewWorkspace from "~/components/Workspace/Modal/AddNewWorkspace";
+import AddNewMember from "~/components/Modal/AddNewMember";
+import AddNewWorkspace from "~/components/Modal/AddNewWorkspace";
 
 const Sidebar = () => {
   const user = useSelector((state) => state.auth.user);
@@ -36,13 +36,17 @@ const Sidebar = () => {
       toast.error("Please enter workspace name");
       return;
     }
-    const response = await createWorkspace_API({ title });
+    try {
+      const response = await createWorkspace_API({ title });
 
-    if (response.data) {
-      setWorkspaces((prev) => [...prev, response?.data?.data]);
+      if (response.data) {
+        setWorkspaces((prev) => [...prev, response?.data?.data]);
+      }
+      toast.success(response.data?.message);
+      setIsOpen(false);
+    } catch (error) {
+      toast.error(error.response.data?.message);
     }
-    toast.success(response.data?.message);
-    setIsOpen(false);
   };
 
   const openInviteModal = (workspaceId) => {
@@ -132,7 +136,7 @@ const Sidebar = () => {
               </div>
 
               {openWorkspaces[workspace.id] && (
-                <div className="mt-2 w-full bg-white z-10">
+                <div className="w-full bg-white dark:bg-gray-200 z-10">
                   <ul className="py-2 text-sm text-gray-700">
                     <li
                       className="flex justify-between items-center px-4 hover:bg-gray-200 cursor-pointer group transition-all duration-200"
