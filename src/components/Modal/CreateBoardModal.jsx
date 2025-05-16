@@ -7,19 +7,32 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { IoIosArrowDown } from "react-icons/io";
 
+import astronaut from "~/assets/background/astronaaut.png";
+import food from "~/assets/background/food.jpg";
+import lantern02 from "~/assets/background/lantern02.jpg";
+import lanterns01 from "~/assets/background/lanterns01.jpg";
+import mountain01 from "~/assets/background/mountain01.jpg";
+import natural from "~/assets/background/natural.jpg";
+import seagull from "~/assets/background/seagull.jpg";
+import color1 from "~/assets/background/color1.svg";
+import color2 from "~/assets/background/color2.svg";
+import color3 from "~/assets/background/color3.svg";
+import color4 from "~/assets/background/color4.svg";
+import color5 from "~/assets/background/color5.svg";
+
 const backgroundImage = [
-  "https://trello-app-umber.vercel.app//assets/background/astronaaut.png",
-  "https://trello-app-umber.vercel.app//assets/background/food.jpg",
-  "https://trello-app-umber.vercel.app//assets/background/lantern02.jpg",
-  "https://trello-app-umber.vercel.app//assets/background/lanterns01.jpg",
-  "https://trello-app-umber.vercel.app//assets/background/mountain01.jpg",
-  "https://trello-app-umber.vercel.app//assets/background/natural.jpg",
-  "https://trello-app-umber.vercel.app//assets/background/seagull.jpg",
-  "https://trello-app-umber.vercel.app//assets/color1.svg",
-  "https://trello-app-umber.vercel.app//assets/color2.svg",
-  "https://trello-app-umber.vercel.app//assets/color3.svg",
-  "https://trello-app-umber.vercel.app//assets/color4.svg",
-  "https://trello-app-umber.vercel.app//assets/color5.svg",
+  astronaut,
+  food,
+  lantern02,
+  lanterns01,
+  mountain01,
+  natural,
+  seagull,
+  color1,
+  color2,
+  color3,
+  color4,
+  color5,
 ];
 
 const visibility = [
@@ -105,7 +118,7 @@ const CreateBoardModal = ({
       } catch (error) {
         toast.error(error.response.data.message);
       } finally {
-        setBoardTitle("")
+        setBoardTitle("");
         onClose();
       }
     }
