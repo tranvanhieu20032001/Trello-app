@@ -136,7 +136,7 @@ const Sidebar = () => {
               </div>
 
               {openWorkspaces[workspace.id] && (
-                <div className="mt-2 w-full bg-white z-10">
+                <div className="w-full bg-white dark:bg-gray-200 z-10">
                   <ul className="py-2 text-sm text-gray-700">
                     <li
                       className="flex justify-between items-center px-4 hover:bg-gray-200 cursor-pointer group transition-all duration-200"

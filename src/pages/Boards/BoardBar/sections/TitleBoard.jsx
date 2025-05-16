@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { renameBoard_API } from "~/apis";
-import { fetchBoardById } from "~/store/slices/boardSlice";
 
 const TitleBoard = ({ data }) => {
   const [edit, setEdit] = useState(false);
@@ -11,7 +10,6 @@ const TitleBoard = ({ data }) => {
   const user = useSelector((state) => state.auth.user);
   const inputRef = useRef(null);
   const { boardId } = useParams();
-  const dispatch = useDispatch();
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (inputRef.current && !inputRef.current.contains(e.target)) {
@@ -46,7 +44,6 @@ const TitleBoard = ({ data }) => {
       if (trimmedTitle !== data?.title) {
         try {
           await renameBoard_API(boardId, trimmedTitle);
-          dispatch(fetchBoardById(boardId));
         } catch (error) {
           toast.error(error.response.data.message);
           setNewTitle(data?.title);

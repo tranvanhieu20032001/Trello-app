@@ -6,7 +6,6 @@ import { PiUsersThreeLight } from "react-icons/pi";
 import { useDispatch, useSelector } from "react-redux";
 import { Tooltip } from "react-tooltip";
 import { visibilityChange_API } from "~/apis";
-import { fetchBoardById } from "~/store/slices/boardSlice";
 
 const visibilityOptions = [
   {
@@ -34,7 +33,6 @@ const visibilityOptions = [
 const Visibility = () => {
   const dropdownRef = useRef(null);
   const { board } = useSelector((state) => state.board);
-  const dispatch = useDispatch();
   const [currentVisibility, setCurrentVisibility] = useState();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const user = useSelector((state) => state.auth.user);
@@ -54,7 +52,6 @@ const Visibility = () => {
       await visibilityChange_API(board?.data?.id, visibility);
 
       setCurrentVisibility(visibility);
-      dispatch(fetchBoardById(board?.data?.id));
 
       setIsDropdownOpen(false);
     } catch (error) {
@@ -107,7 +104,7 @@ const Visibility = () => {
             <li
               onClick={() => handleVisibilityChange(option.value)}
               key={option.value}
-              className="px-4 py-2 space-y-1 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
+              className="px-4 py-2 space-y-1 cursor-pointer text-primary dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
             >
               <span className="flex items-center gap-1">
                 {option.icon}

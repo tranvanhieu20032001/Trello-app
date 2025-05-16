@@ -20,7 +20,7 @@ const DatesCart = ({ card }) => {
     <>
       {!!card?.startDate && (
         <div
-          className={`flex gap-1 w-fit mx-2 items-center relative text-xs p-0.5 bg-gray-200 rounded-md ${
+          className={`flex gap-1 w-fit mx-2 items-center relative text-xs p-0.5 bg-gray-200 dark:bg-gray-700 rounded-md ${
             !card?.isComplete && dueTime > 0
               ? null
               : card?.isComplete

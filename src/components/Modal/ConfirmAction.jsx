@@ -34,7 +34,7 @@ const ConfirmAction = ({
     >
       <div
         ref={modalRef}
-        className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-gray-400 shadow-sm w-96"
+        className="bg-white dark:bg-gray-700 p-6 rounded-lg dark:text-secondary shadow-gray-400 shadow-sm w-96"
       >
         <h2 className="text-lg font-semibold">{title}</h2>
         <p

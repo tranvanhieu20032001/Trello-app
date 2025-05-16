@@ -1,24 +1,24 @@
 import { useState } from "react";
 import { BsBookmarkStarFill } from "react-icons/bs";
-import { FaGoogleDrive, FaRegStar, FaStar } from "react-icons/fa6";
 import { IoIosFlash } from "react-icons/io";
 import { IoPersonAddOutline } from "react-icons/io5";
-import { MdFilterList } from "react-icons/md";
 import { Tooltip } from "react-tooltip";
 import ConfirmAction from "~/components/Modal/ConfirmAction";
 import InviteMemberToBoard from "~/components/Modal/InviteMemberToBoard";
-import { data } from "~/data/data";
 import { useBoardActions } from "~/utils/hooks/useBoardActions";
-import Visibility from "./sections/Visibility";
 import { PiWarningCircleLight } from "react-icons/pi";
 import TitleBoard from "./sections/TitleBoard";
 import Starred from "./sections/Starred";
 import Filter from "./sections/Filter";
+import { useSelector } from "react-redux";
 
 function BoardBar({ board }) {
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const { handleReOpenBoard } = useBoardActions();
+  const permissionEdit = useSelector(
+    (state) => state.permission.permissionEdit
+  );
 
   return (
     <div
@@ -30,23 +30,6 @@ function BoardBar({ board }) {
         <Starred data={board} />
         {board.status && (
           <>
-            {/* <span
-              id="gg-drive"
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md flex items-center gap-1"
-            >
-              <FaGoogleDrive size={20} />{" "}
-              <span className="hidden lg:inline-block">
-                Add to Google Drive
-              </span>
-            </span>
-            <Tooltip
-              anchorSelect="#gg-drive"
-              clickable
-              className="z-10"
-              place="bottom"
-            >
-              Add to Google Drive
-            </Tooltip> */}
             <span
               id="automation"
               className="rounded-sm flex items-center gap-1 text-sm hover:bg-gray-700 p-2"
@@ -63,7 +46,7 @@ function BoardBar({ board }) {
               Automation
             </Tooltip>
 
-            <Filter/>
+            <Filter />
           </>
         )}
       </div>
@@ -171,7 +154,7 @@ function BoardBar({ board }) {
         <span
           id="invite"
           className="text-sm h-8 ml-6 px-2 lg:px-3 rounded-md bg-primary dark:bg-gray-700 cursor-pointer text-white flex items-center gap-1"
-          onClick={() => setIsInviteOpen(true)}
+          onClick={permissionEdit ? () => setIsInviteOpen(true) : undefined}
         >
           <IoPersonAddOutline size={15} /> Invite
         </span>

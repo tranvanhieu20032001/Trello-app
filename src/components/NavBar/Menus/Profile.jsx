@@ -74,7 +74,7 @@ function Profile() {
             <div className="flex items-center gap-2 py-1">
               <img
                 className="w-10 h-10 rounded-full"
-                src="https://www.google.com/url?sa=i&url=https%3A%2F%2Flifestyle.znews.vn%2Fnhung-hinh-anh-luu-giu-khoanh-khac-dang-nho-cua-doi-nguoi-post860196.html&psig=AOvVaw1zkuh8oY_WL0elD36m6IR6&ust=1734457798229000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCPClufzsrIoDFQAAAAAdAAAAABAE"
+                src={user?.avatar}
                 alt=""
               />
               <div>

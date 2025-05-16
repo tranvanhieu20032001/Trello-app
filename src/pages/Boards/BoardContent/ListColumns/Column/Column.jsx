@@ -10,11 +10,9 @@ import { useEffect, useRef, useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import { createCard_API, renameList_API } from "~/apis";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchBoardById } from "~/store/slices/boardSlice";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import ListActions from "~/components/Modal/ListActions";
-import socket from "~/utils/socket";
 
 function Column({ column }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -58,7 +56,6 @@ function Column({ column }) {
         try {
           setNewTitle(trimmedTitle);
           await renameList_API(column?.id, trimmedTitle);
-          dispatch(fetchBoardById(boardId));
         } catch (error) {
           toast.error(error.response?.data?.message || "Rename failed");
           setNewTitle(column?.title);
@@ -100,7 +97,6 @@ function Column({ column }) {
 
   const [addNewCard, setAddNewCard] = useState(false);
   const [newCardTitle, setNewCardTitle] = useState("");
-  const dispatch = useDispatch();
   const { boardId } = useParams();
 
   const handleAddNewCard = async () => {
@@ -116,7 +112,6 @@ function Column({ column }) {
     };
     try {
       await createCard_API(newCardData);
-      dispatch(fetchBoardById(boardId));
       toast.success("Card added successfully!");
       setAddNewCard(false);
       setNewCardTitle("");

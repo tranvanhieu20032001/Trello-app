@@ -2,18 +2,14 @@ import React, { useState } from "react";
 import { FiCheckSquare } from "react-icons/fi";
 import { GoChevronDown, GoChevronUp } from "react-icons/go";
 import { LiaTimesSolid } from "react-icons/lia";
-import { useDispatch } from "react-redux";
 import {
   addChecklistItem_API,
   removeCheckList_API,
   removeCheckListItem_API,
   toggleChecklistItem_API,
 } from "~/apis";
-import { fetchBoardById } from "~/store/slices/boardSlice";
 
-const CheckList = ({ card, boards }) => {
-
-  const dispatch = useDispatch();
+const CheckList = ({ card }) => {
 
   const [addItemMap, setAddItemMap] = useState({});
   const [inputValueMap, setInputValueMap] = useState({});
@@ -37,7 +33,6 @@ const CheckList = ({ card, boards }) => {
     const value = inputValueMap[checklistId]?.trim();
     if (!value) return;
     await addChecklistItem_API(checklistId, value);
-    dispatch(fetchBoardById(boards?.id));
     setInputValueMap((prev) => ({ ...prev, [checklistId]: "" }));
     setAddItemMap((prev) => ({ ...prev, [checklistId]: true }));
     setVisibleItemsMap((prev) => ({
@@ -48,17 +43,14 @@ const CheckList = ({ card, boards }) => {
 
   const handleCheckItem = async (itemId) => {
     await toggleChecklistItem_API(itemId);
-    dispatch(fetchBoardById(boards?.id));
   };
 
   const handleRemoveCheckList = async (checklistId) => {
     await removeCheckList_API(checklistId);
-    dispatch(fetchBoardById(boards?.id));
   };
 
   const handleRemoveCheckListItem = async (itemId) => {
     await removeCheckListItem_API(itemId);
-    dispatch(fetchBoardById(boards?.id));
   };
 
   const toggleVisibleItems = (checklistId) => {

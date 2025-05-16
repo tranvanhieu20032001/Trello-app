@@ -67,7 +67,6 @@ const LabelModal = ({ card, board, isOpen, onClose, handleFetchData }) => {
       color: form.color,
       boardId: board?.id,
     });
-    dispatch(fetchBoardById(board?.id));
     resetForm();
     if (handleFetchData) handleFetchData();
   };
@@ -89,14 +88,12 @@ const LabelModal = ({ card, board, isOpen, onClose, handleFetchData }) => {
       name: form.name.trim(),
       color: form.color,
     });
-    dispatch(fetchBoardById(board?.id));
     resetForm();
     if (handleFetchData) handleFetchData();
   };
 
   const handleRemoveLabel = async (labelId) => {
     await removeLabel_API(labelId);
-    dispatch(fetchBoardById(board?.id));
     setActiveIndex(null);
     if (handleFetchData) handleFetchData();
   };
@@ -114,7 +111,6 @@ const LabelModal = ({ card, board, isOpen, onClose, handleFetchData }) => {
 
   const handleToggleLabel = async (labelId) => {
     await toggleLabel_API({ cardId: card?.id, labelId });
-    dispatch(fetchBoardById(board?.id));
     if (handleFetchData) handleFetchData();
   };
 

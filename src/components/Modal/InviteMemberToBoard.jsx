@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { joinBoard, searchUser } from "~/apis";
 import LoaderSearch from "../Loader/LoaderSearch";
 import { toast } from "react-toastify";
-import { fetchBoardById } from "~/store/slices/boardSlice";
 import { startLoading, stopLoading } from "~/store/slices/loadingSlice";
 import { IoIosLogOut } from "react-icons/io";
 import { Tooltip } from "react-tooltip";

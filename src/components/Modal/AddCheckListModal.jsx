@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { LiaTimesSolid } from "react-icons/lia";
 import { useDispatch } from "react-redux";
 import { createChecklist_API } from "~/apis";
-import { fetchBoardById } from "~/store/slices/boardSlice";
 
-const AddCheckListModal = ({ card, board, onClose }) => {
+const AddCheckListModal = ({ card, onClose }) => {
   const [titleCheckList, setTitleCheckList] = useState("");
   const dispatch = useDispatch();
 
@@ -13,7 +12,6 @@ const AddCheckListModal = ({ card, board, onClose }) => {
     try {
       await createChecklist_API(card?.id, titleCheckList.trim());
       setTitleCheckList("");
-      dispatch(fetchBoardById(board?.id));
       onClose?.();
     } catch (error) {
       console.error("Failed to create checklist:", error);

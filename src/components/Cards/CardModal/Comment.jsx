@@ -1,17 +1,15 @@
 import { formatUploadTime } from "~/utils/formatters";
 import { GoCommentDiscussion } from "react-icons/go";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { BsDot } from "react-icons/bs";
 import { useRef, useState } from "react";
 import { addComment_API, deleteComment_API, editComment_API } from "~/apis";
-import { fetchBoardById } from "~/store/slices/boardSlice";
 import TinyEditor from "./TinyEditor";
 
 const Comment = ({ card, board }) => {
   const user = useSelector((state) => state.auth.user);
   const comments = card?.comments || [];
-  console.log("comments", comments);
-  
+
   const member = board?.BoardMembers || [];
   const mentionsData = member
     ?.filter((m) => m.user.id !== user?.id)
@@ -20,14 +18,11 @@ const Comment = ({ card, board }) => {
       name: m.user.username,
     }));
 
-  console.log("mentionsData", mentionsData);
-
   const editorRef = useRef(null);
   const editRef = useRef(null);
 
   const [isCommenting, setIsCommenting] = useState(false);
   const [editingCommentId, setEditingCommentId] = useState(null);
-  const dispatch = useDispatch();
 
   const handleSaveComment = async () => {
     if (!editorRef.current) return;
@@ -39,7 +34,6 @@ const Comment = ({ card, board }) => {
       await addComment_API(card.id, content);
       setIsCommenting(false);
       editorRef.current.setContent("");
-      dispatch(fetchBoardById(card?.boardId));
     } catch (error) {
       console.error("Add comment error:", error);
     }
@@ -52,7 +46,6 @@ const Comment = ({ card, board }) => {
     try {
       await editComment_API(commentId, content);
       setEditingCommentId(null);
-      dispatch(fetchBoardById(card?.boardId));
     } catch (error) {
       console.error("Update comment error:", error);
     }
@@ -61,7 +54,6 @@ const Comment = ({ card, board }) => {
   const handleDeleteComment = async (commentId) => {
     try {
       await deleteComment_API(commentId);
-      dispatch(fetchBoardById(card?.boardId));
     } catch (error) {
       console.error("Delete comment error:", error);
     }

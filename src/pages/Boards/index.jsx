@@ -8,6 +8,7 @@ import { fetchWorkspaceData } from "~/store/slices/workSpaceSlice";
 import NofoundPage from "~/components/Workspace/Content/NofoundPage";
 import { cloneDeep } from "lodash";
 import { generatePlaceholderCard } from "~/utils/formatters";
+import { setPermissionEdit } from "~/store/slices/permissionSlice";
 
 function Board() {
   const { boardId } = useParams();
@@ -19,7 +20,6 @@ function Board() {
   const workspaceData = useSelector((state) => state.workspace.workspaceData);
   const user = useSelector((state) => state.auth.user);
   const filters = useSelector((state) => state.filter);
-  console.log("filters", filters);
 
   const [localBoard, setLocalBoard] = useState(null);
 
@@ -42,8 +42,6 @@ function Board() {
     const clonedBoard = cloneDeep(board);
     clonedBoard.columns.forEach((column) => {
       let filteredCards = column.cards;
-
-      console.log("filteredCards", filteredCards);
 
       if (filters.members.length > 0) {
         filteredCards = filteredCards.filter((card) =>
@@ -113,6 +111,16 @@ function Board() {
     (visibility === "workspace" && isMemberWorkspace) ||
     (visibility === "workspace" && isMemberBoard);
 
+  const permissionEdit =
+    (visibility === "public" && isMemberBoard) ||
+    (visibility === "private" && isMemberBoard) ||
+    (visibility === "workspace" && isMemberWorkspace) ||
+    (visibility === "workspace" && isMemberBoard);
+
+  useEffect(() => {
+    dispatch(setPermissionEdit(permissionEdit));
+  }, [permissionEdit, dispatch]);
+
   const backgroundImage = board?.background
     ? `url('${board.background}')`
     : "none";
@@ -128,7 +136,10 @@ function Board() {
             {permissionAccess ? (
               <>
                 <BoardBar board={localBoard} />
-                <BoardContent board={localBoard} />
+                <BoardContent
+                  board={localBoard}
+                  permissionEdit={permissionEdit}
+                />
               </>
             ) : (
               <NofoundPage />

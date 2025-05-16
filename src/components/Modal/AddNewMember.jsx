@@ -69,7 +69,6 @@ const AddNewMember = ({ isOpen, onClose, workspaceId }) => {
         workspaceId,
         userId: selectedUser.id,
       });
-      dispatch(fetchWorkspaceData(workspaceId));
       onClose();
     } catch (error) {
       toast.error(error.response.data.message);

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { LiaTimesSolid } from "react-icons/lia";
 import { useDispatch } from "react-redux";
 import { editDates_API } from "~/apis";
-import { fetchBoardById } from "~/store/slices/boardSlice";
 
 const formatDateForInput = (date) => {
   if (!date) return "";
@@ -49,7 +48,6 @@ const DateModal = ({ card, onClose, position = "top-0 left-full" }) => {
 
     try {
       await editDates_API(card?.id, dates);
-      dispatch(fetchBoardById(card?.boardId));
     } catch (err) {
       console.error("Failed to save dates", err);
     }

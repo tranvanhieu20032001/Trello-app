@@ -15,7 +15,6 @@ import {
   updateCardOrderInColumn_API,
   updateColumnOrder_API,
 } from "~/apis";
-import { fetchBoardById } from "~/store/slices/boardSlice";
 import { startLoading, stopLoading } from "~/store/slices/loadingSlice";
 import { fetchWorkspaceData } from "~/store/slices/workSpaceSlice";
 
@@ -47,7 +46,7 @@ export const useBoardActions = () => {
     }
   }, []);
 
-    const handlGetBoardByStarred = useCallback(async () => {
+  const handlGetBoardByStarred = useCallback(async () => {
     try {
       const response = await getBoardByStarred_API();
       return response.data;
@@ -65,11 +64,9 @@ export const useBoardActions = () => {
       try {
         const response = await closeBoard_API(boardId);
         dispatch(fetchWorkspaceData(workspaceId));
-        dispatch(fetchBoardById(boardId));
-
         toast.success(response.data.message);
       } catch (error) {
-        toast.error("Failed to close board");
+        toast.error(error?.response?.data?.message);
       } finally {
         setTimeout(() => {
           dispatch(stopLoading());
@@ -88,8 +85,6 @@ export const useBoardActions = () => {
       try {
         const response = await reOpenBoard_API(boardId);
         dispatch(fetchWorkspaceData(workspaceId));
-        dispatch(fetchBoardById(boardId));
-
         toast.success(response.data.message);
       } catch (error) {
         toast.error("Failed to reopen board");
@@ -111,10 +106,9 @@ export const useBoardActions = () => {
       try {
         const response = await deleteBoard_API(boardId);
         dispatch(fetchWorkspaceData(workspaceId));
-        dispatch(fetchBoardById(boardId));
         toast.success(response.data.message);
       } catch (error) {
-        toast.error("Failed to reopen board");
+        toast.error(error?.response?.data?.message);
       } finally {
         setTimeout(() => {
           dispatch(stopLoading());
@@ -130,14 +124,12 @@ export const useBoardActions = () => {
 
       try {
         const response = await toggleStarred_API(boardId);
-        dispatch(fetchBoardById(boardId));
       } catch (error) {
         toast.error("Failed to handle board");
       }
     },
     [dispatch]
   );
-  
 
   const getBoardsWithUserStarred = (boards, userId) => {
     return boards.map((board) => {

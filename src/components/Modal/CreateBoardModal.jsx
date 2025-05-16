@@ -155,7 +155,7 @@ const CreateBoardModal = ({
         placeholder="Enter board title"
         value={boardTitle}
         onChange={(e) => setBoardTitle(e.target.value)}
-        className="p-1.5 rounded-md block w-full border border-gray-200"
+        className="p-1.5 rounded-md block w-full border border-gray-200 outline-none dark:bg-gray-700"
       />
       {!boardTitle && (
         <span className="text-sm text-red-500">👋 Board title is required</span>
@@ -171,11 +171,11 @@ const CreateBoardModal = ({
           {selectedWorkspace.name} <IoIosArrowDown size={14} />
         </button>
         {isWorkspaceOpen && workspaces.length > 0 && (
-          <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+          <ul className="absolute left-0 right-0 mt-1 bg-white dark:bg-gray-700 border border-gray-300 rounded-md shadow-lg z-10">
             {workspaces.map((workspace) => (
               <li
                 key={workspace.id}
-                className="p-2 cursor-pointer hover:bg-gray-200"
+                className="p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600"
                 onClick={() => {
                   setSelectedWorkspace(workspace);
                   setIsWorkspaceOpen(false);
@@ -198,11 +198,11 @@ const CreateBoardModal = ({
           {selectedVisibility} <IoIosArrowDown size={14} />
         </button>
         {isVisibilityOpen && (
-          <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10">
+          <ul className="absolute left-0 right-0 mt-1 bg-white dark:bg-gray-700 border border-gray-300 rounded-md shadow-lg z-10">
             {visibility.map((visib, index) => (
               <li
                 key={index}
-                className="p-2 cursor-pointer hover:bg-gray-200"
+                className="p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600"
                 onClick={() => {
                   setSelectedVisibility(visib.label);
                   setIsVisibilityOpen(false);
