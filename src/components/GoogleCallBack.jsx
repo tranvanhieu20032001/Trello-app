@@ -17,7 +17,7 @@ const GoogleCallBack = () => {
       const accessToken = searchParams.get("token");
       if (accessToken) {
         try {
-          const response = await axios.get(`${API_ENDPOINT}/v1/users/me`, {
+          const response = await axios.get(`${API_ENDPOINT}/users/me`, {
             headers: { Authorization: `Bearer ${accessToken}` },
           });
           dispatch(setUser({ user: response.data, accessToken }));
